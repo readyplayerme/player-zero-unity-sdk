@@ -4,7 +4,6 @@ using UnityEngine;
 using PlayerZero.Data;
 using PlayerZero.Api.V1;
 using System.Threading.Tasks;
-using PlayerZero.Api;
 using Object = UnityEngine.Object;
 
 namespace PlayerZero
@@ -35,38 +34,56 @@ namespace PlayerZero
         ///     Used for multiplayer games where the character is required to be prepared ahead of time.
         /// </summary>
         /// <param name="characterId">The character ID of the character to load. </param>
-        /// <param name="blueprint">The blueprint to load the character onto. </param>
+        /// <param name="template">The template game object to load the character on to. </param>
         /// <param name="meshParent">The parent object to attach the character mesh to. </param>
         /// <param name="config">The configuration to use when loading the character. </param>
+        /// <param name="blueprintId">The target blueprint for this character. </param>
         /// <returns> A CharacterData object representing the loaded character. </returns>
-        public async Task<CharacterData> LoadAsync(string characterId, GameObject blueprint, GameObject meshParent = null, CharacterLoaderConfig config = null)
+        public async Task<CharacterData> LoadAsync(
+            string characterId,
+            GameObject template,
+            GameObject meshParent = null,
+            CharacterLoaderConfig config = null,
+            string blueprintId = null
+            )
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
                 Id = characterId,
             });
             
-            var characterData = blueprint.AddComponent<CharacterData>();
-            characterData.Initialize(response.Data.Id, response.Data.BlueprintId);
+            blueprintId ??= response.Data.BlueprintId;
+            
+            var characterData = template.AddComponent<CharacterData>();
+            characterData.Initialize(response.Data.Id, blueprintId);
 
-            return await SetupCharacter(characterData, config, meshParent, response.Data.ModelUrl, response.Data.BlueprintId, response.Data.Id);
+            return await SetupCharacter(characterData, config, meshParent, response.Data.ModelUrl, blueprintId, response.Data.Id);
         }
 
         /// <summary>
         ///     Loads a character based on the given character ID.
         /// </summary>
         /// <param name="characterId">The character ID of the character to load. </param>
-        /// <param name="tag">The tag of the blueprint to load. </param>
+        /// <param name="templateTag">The tag of the template to load. </param>
         /// <param name="config">The configuration to use when loading the character. </param>
+        /// <param name="blueprintId">The target blueprint for this character. </param>
         /// <returns> A CharacterData object representing the loaded character. </returns>
-        public async Task<CharacterData> LoadAsync(string characterId, string tag = "", CharacterLoaderConfig config = null)
+        public async Task<CharacterData> LoadAsync(
+            string characterId,
+            string templateTag = "",
+            CharacterLoaderConfig config = null,
+            string blueprintId = null
+            )
         {
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
                 Id = characterId,
             });
-            var blueprintId = response.Data.BlueprintId;
-            var templatePrefab = GetTemplate(blueprintId, tag);
+            
+            blueprintId ??= response.Data.BlueprintId;
+            
+            var templatePrefab = GetTemplate(blueprintId, templateTag);
+            
             if (templatePrefab == null)
             {
                 Debug.LogError( $"Failed to load character template for character with ID {characterId}." );
@@ -83,7 +100,7 @@ namespace PlayerZero
         {
             config ??= new CharacterLoaderConfig();
             var query= QueryBuilder.BuildQueryString(config);
-            var url = $"{modelUrl}?{query}";
+            var url = $"{modelUrl}?{query}&targetBlueprintId={blueprintId}";
 
             var gltf = new GltfImport();
             if (!await gltf.Load(url))
