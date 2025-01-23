@@ -58,17 +58,7 @@ namespace PlayerZero.Editor.UI.Views
                         left = 12, 
                     }
                 });
-            }
-            
-            EditorGUILayout.Space(10);
-            
-            if (GUILayout.Button("Use Demo Account", new GUIStyle(GUI.skin.button)
-                {
-                    margin = new RectOffset(12, 12, 0, 0)
-                }))
-            {
-                _viewModel.SignInToDemoAccount(onSuccess: onLogin);
-            }
+            } 
             
             if (!string.IsNullOrEmpty(_viewModel.Error))
             {
