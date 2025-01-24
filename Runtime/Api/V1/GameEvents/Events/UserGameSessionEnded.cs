@@ -5,8 +5,8 @@ namespace PlayerZero.Api.V1
 {
     public class UserGameSessionEnded
     {
-        [JsonProperty("name")]
-        public const string Name = "user_game_session_ended";
+        [JsonProperty("event")]
+        public const string Event = "user_game_session_ended";
         [JsonProperty("properties")]
         public UserGameSessionEndedProperties Properties { get; set; }
     }

@@ -4,8 +4,8 @@ namespace PlayerZero.Api.V1
 {
     public class UserGameSessionStarted
     {
-        [JsonProperty("name")]
-        public const string Name = "user_game_session_started";
+        [JsonProperty("event")]
+        public const string Event = "user_game_session_started";
         [JsonProperty("properties")]
         public UserGameSessionStartedProperties Properties { get; set; }
     }

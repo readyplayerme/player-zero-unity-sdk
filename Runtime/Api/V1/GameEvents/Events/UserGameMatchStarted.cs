@@ -5,8 +5,8 @@ namespace PlayerZero.Api.V1
 {
     public class UserGameMatchStarted
     {
-        [JsonProperty("name")]
-        public const string Name = "user_game_match_started";
+        [JsonProperty("event")]
+        public const string Event = "user_game_match_started";
         [JsonProperty("properties")]
         public UserGameMatchStartedProperties Properties { get; set; }
     }
