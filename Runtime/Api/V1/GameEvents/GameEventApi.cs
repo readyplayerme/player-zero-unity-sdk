@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
@@ -15,26 +14,17 @@ namespace PlayerZero.Api.V1
         /// <param name="request">The event data to send.</param>
         public void SendGameEvent<T>(T request)
         {
-            try
+            var apiRequest = new ApiRequest<T>()
             {
-                var apiRequest = new ApiRequest<T>()
+                Url = $"{Settings.ApiBaseUrl}/v1/{Resource}",
+                Method = UnityWebRequest.kHttpVerbPOST,
+                Headers = new Dictionary<string, string>()
                 {
-                    Url = $"{Settings.ApiBaseUrl}/v1/{Resource}",
-                    Method = UnityWebRequest.kHttpVerbPOST,
-                    Headers = new Dictionary<string, string>()
-                    {
-                        { "Content-Type", "application/json" },
-                    },
-                    Payload = request
-                };
-                Dispatch<GameEventResponse, T>(apiRequest);
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            } 
+                    { "Content-Type", "application/json" },
+                },
+                Payload = request
+            };
+            Dispatch<GameEventResponse, T>(apiRequest);
         }
     }
 }
