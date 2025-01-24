@@ -15,8 +15,6 @@ namespace PlayerZero.Editor.UI.ViewModels
 {
     public class DeveloperLoginViewModel
     {
-        private const string DemoProxyURL = "https://api.readyplayer.me/demo";
-        private const string DemoApplicationId = "665e05a50c62c921e5a6ab84";
 
         private readonly DeveloperAuthApi _developerAuthApi;
         private readonly AnalyticsApi _analyticsApi;
@@ -53,9 +51,6 @@ namespace PlayerZero.Editor.UI.ViewModels
 
             var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
 
-            if (settings.ApiProxyUrl == DemoProxyURL)
-                settings.ApiProxyUrl = string.Empty;
-
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -88,62 +83,6 @@ namespace PlayerZero.Editor.UI.ViewModels
             });
 
             Loading = false;
-            onSuccess();
-        }
-
-        public void SignInToDemoAccount(Action onSuccess)
-        {
-            Loading = true;
-
-            DeveloperAuthCache.Data = new DeveloperAuth()
-            {
-                Name = "guest user",
-                IsDemo = true,
-            };
-
-            var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
-            settings.ApiProxyUrl = DemoProxyURL;
-            settings.ApplicationId = DemoApplicationId;
-
-            var skeletonDefinitionConfig = Resources.Load<SkeletonDefinitionConfig>("SkeletonDefinitionConfig");
-
-            var links = skeletonDefinitionConfig.definitionLinks?.ToList() ?? new List<SkeletonDefinitionLink>();
-            var existingLink = links.FirstOrDefault(p => p.characterBlueprintId == "665e05e758e847063761c985");
-            if (existingLink == null)
-            {
-                var matchingAssets = AssetDatabase.FindAssets("RPM_Character_Skeleton_Definition");
-                var assetPath = AssetDatabase.GUIDToAssetPath(matchingAssets[0]);
-                var asset = AssetDatabase.LoadAssetAtPath<SkeletonDefinition>(assetPath);
-
-                links.Add(new SkeletonDefinitionLink()
-                {
-                    characterBlueprintId = "665e05e758e847063761c985",
-                    definitionCacheId = matchingAssets[0],
-                    definition = asset
-                });
-            }
-
-            skeletonDefinitionConfig.definitionLinks = links.ToArray();
-
-            EditorUtility.SetDirty(settings);
-            EditorUtility.SetDirty(skeletonDefinitionConfig);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            _analyticsApi.SendEvent(new AnalyticsEventRequest()
-            {
-                Payload = new AnalyticsEventRequestBody()
-                {
-                    Event = "next gen unity sdk action",
-                    Properties =
-                    {
-                        { "type", "Sign In to Demo Account" },
-                    }
-                }
-            });
-
-            Loading = false;
-            
             onSuccess();
         }
     }

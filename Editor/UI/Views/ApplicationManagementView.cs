@@ -124,6 +124,32 @@ namespace PlayerZero.Editor.UI.Views
             }
 
             GUILayout.Space(20);
+            
+            GUILayout.Label("Game ID", new GUIStyle()
+            {
+                fontStyle = FontStyle.Bold,
+                normal = new GUIStyleState()
+                {
+                    textColor = Color.white
+                },
+                margin = new RectOffset(10, 10, 0, 0),
+                fontSize = 14
+            });
+
+            GUILayout.Label("Paste your Game ID here",
+                new GUIStyle(GUI.skin.label)
+                {
+                    margin = new RectOffset(9, 10, 0, 0)
+                });
+            
+            _viewModel.Settings.GameId =
+                EditorGUILayout.TextField("Game ID", _viewModel.Settings.GameId,
+                    new GUIStyle(GUI.skin.textField)
+                    {
+                        margin = new RectOffset(10, 10, 0, 0)
+                    });
+            
+            GUILayout.Space(20);
 
             characterBlueprintsView.Render();
 

@@ -21,10 +21,10 @@ namespace PlayerZero.Data
         /// </warning>
 
         public string ApiKey = "";
-        
 
         public string ApiProxyUrl = "";
 
+        public string GameId = "";
         public string ApiBaseUrl => string.IsNullOrEmpty(ApiProxyUrl) ? _apiBaseUrl : ApiProxyUrl;
     }
 }
