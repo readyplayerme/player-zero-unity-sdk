@@ -42,10 +42,10 @@ namespace PlayerZero.Api.V1
         [JsonProperty("live_ops_id"), CanBeNull]
         public string LiveOpsId { get; set; }
         
-        [JsonProperty("tier")]
+        [JsonProperty("tier"), CanBeNull]
         public int Tier { get; set; }
         
-        [JsonProperty("round")]
+        [JsonProperty("round"), CanBeNull]
         public int Round { get; set; }
 
         [JsonProperty("map_id"), CanBeNull]
