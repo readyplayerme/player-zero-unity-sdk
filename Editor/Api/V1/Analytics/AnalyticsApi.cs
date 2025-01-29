@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using PlayerZero.Api;
 using PlayerZero.Editor.Api.V1.Analytics.Models;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace PlayerZero.Editor.Api.V1.Analytics
