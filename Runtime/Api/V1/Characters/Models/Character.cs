@@ -15,6 +15,9 @@ namespace PlayerZero.Api.V1
         [JsonProperty("modelUrl")]
         public string ModelUrl { get; set; }
         
+        [JsonProperty("iconUrl")]
+        public string IconUrl { get; set; }
+        
         [JsonProperty("assets")]
         public IDictionary<string, string[]> Assets { get; set; }
         
