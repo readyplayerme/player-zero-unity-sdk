@@ -156,7 +156,7 @@ namespace PlayerZero
             {
                 if (string.IsNullOrEmpty(applicationId))
                 {
-                    applicationId = Resources.Load<Settings>( "ReadyPlayerMeSettings")?.ApplicationId;
+                    applicationId = Resources.Load<Settings>( "PlayerZeroSettings")?.ApplicationId;
                 }
                 templateConfig = Resources.Load<CharacterTemplateConfig>(applicationId);
             }
