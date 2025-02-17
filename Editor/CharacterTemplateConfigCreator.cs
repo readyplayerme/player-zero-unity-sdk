@@ -12,7 +12,7 @@ namespace PlayerZero.Editor
 {
     public static class CharacterTemplateConfigCreator
     {
-        private const string RPM_RESOURCES_PATH = "Assets/Ready Player Me/Resources";
+        private const string RPM_RESOURCES_PATH = "Assets/PlayerZero/Resources";
 
         public static async Task LoadAndCreateTemplateList(string applicationId)
         {
@@ -92,10 +92,10 @@ namespace PlayerZero.Editor
 
         private static void ValidateFolders()
         {
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me"))
-                AssetDatabase.CreateFolder("Assets", "Ready Player Me"); 
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Resources"))
-                AssetDatabase.CreateFolder("Assets/Ready Player Me", "Resources");
+            if (!AssetDatabase.IsValidFolder("Assets/PlayerZero"))
+                AssetDatabase.CreateFolder("Assets", "PlayerZero"); 
+            if (!AssetDatabase.IsValidFolder("Assets/PlayerZero/Resources"))
+                AssetDatabase.CreateFolder("Assets/PlayerZero", "Resources");
         }
     }
 }

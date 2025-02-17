@@ -49,7 +49,7 @@ namespace PlayerZero.Editor.UI.ViewModels
                 }
             });
 
-            var settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
+            var settings = Resources.Load<Settings>("PlayerZeroSettings");
 
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();

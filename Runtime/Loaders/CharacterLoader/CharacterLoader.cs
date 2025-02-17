@@ -4,6 +4,7 @@ using UnityEngine;
 using PlayerZero.Data;
 using PlayerZero.Api.V1;
 using System.Threading.Tasks;
+using PlayerZero.Api;
 using Object = UnityEngine.Object;
 
 namespace PlayerZero

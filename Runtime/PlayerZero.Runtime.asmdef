@@ -1,5 +1,5 @@
 {
-    "name": "ReadyPlayerMe.Runtime",
+    "name": "PlayerZero.Runtime",
     "rootNamespace": "",
     "references": [
         "glTFast"

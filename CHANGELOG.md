@@ -22,7 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.1.0] - 2024.27.09
 
-First release of the Ready Player Me Next Gen SDK
+First release of the PlayerZero SDK
 
 ## Added
 - Style Manager and Cache Creator editor windows

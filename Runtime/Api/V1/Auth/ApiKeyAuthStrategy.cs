@@ -11,7 +11,7 @@ namespace PlayerZero.Api.V1
 
         public ApiKeyAuthStrategy()
         {
-            _settings = Resources.Load<Settings>("ReadyPlayerMeSettings");
+            _settings = Resources.Load<Settings>("PlayerZeroSettings");
         }
         
         public Task AddAuthToRequestAsync<T>(ApiRequest<T> request, CancellationToken cancellationToken = default)

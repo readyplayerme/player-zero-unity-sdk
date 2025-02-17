@@ -11,7 +11,7 @@ namespace PlayerZero.Api
     public abstract class WebApi
     {
         private Settings _settings;
-        protected Settings Settings => _settings ??= Resources.Load<Settings>("ReadyPlayerMeSettings");
+        protected Settings Settings => _settings ??= Resources.Load<Settings>("PlayerZeroSettings");
         protected bool LogWarnings = true;
 
         protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data, CancellationToken cancellationToken = default)

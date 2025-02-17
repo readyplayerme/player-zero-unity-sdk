@@ -7,7 +7,7 @@ namespace PlayerZero.Editor.Cache
 {
     public abstract class Cache
     {
-        private const string BaseDirectory = "Assets/Ready Player Me/Resources/";
+        private const string BaseDirectory = "Assets/PlayerZero/Resources/";
 
         private readonly string _name;
 
@@ -22,20 +22,20 @@ namespace PlayerZero.Editor.Cache
 
         private void EnsureFoldersExist()
         {
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me"))
-                AssetDatabase.CreateFolder("Assets", "Ready Player Me");
+            if (!AssetDatabase.IsValidFolder("Assets/PlayerZero"))
+                AssetDatabase.CreateFolder("Assets", "PlayerZero");
 
-            if (!AssetDatabase.IsValidFolder("Assets/Ready Player Me/Resources"))
-                AssetDatabase.CreateFolder("Assets/Ready Player Me", "Resources");
+            if (!AssetDatabase.IsValidFolder("Assets/PlayerZero/Resources"))
+                AssetDatabase.CreateFolder("Assets/PlayerZero", "Resources");
 
-            if (AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Ready Player Me/Resources/README.txt") == null)
+            if (AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/PlayerZero/Resources/README.txt") == null)
                 CreateTextAsset("README.txt",
-                    "This folder is managed by the Ready Player Me SDK, and you should not make manual changes.",
-                    "Assets/Ready Player Me/Resources"
+                    "This folder is managed by the PlayerZero SDK, and you should not make manual changes.",
+                    "Assets/PlayerZero/Resources"
                 );
 
-            if (!AssetDatabase.IsValidFolder($"Assets/Ready Player Me/Resources/{_name}"))
-                AssetDatabase.CreateFolder("Assets/Ready Player Me/Resources", _name);
+            if (!AssetDatabase.IsValidFolder($"Assets/PlayerZero/Resources/{_name}"))
+                AssetDatabase.CreateFolder("Assets/PlayerZero/Resources", _name);
 
             AssetDatabase.Refresh();
         }
