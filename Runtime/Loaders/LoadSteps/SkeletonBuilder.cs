@@ -6,7 +6,7 @@ namespace PlayerZero
 {
     public class SkeletonBuilder
     {
-        //A static dictionary containing the mapping from joint/bones names of standard Ready Player Me Characters
+        //A static dictionary containing the mapping from joint/bones names of standard PlayerZero Characters
         //in the modelto the names Unity uses for them internally.
         //In this case they match the naming from the included Mixamo model on the left
         //and the Unity equivalent name on the right. 

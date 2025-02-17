@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace PlayerZero
+namespace PlayerZero.Api
 {
     public static class QueryBuilder
     {

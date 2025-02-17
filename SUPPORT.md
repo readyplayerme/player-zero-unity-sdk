@@ -1,4 +1,4 @@
-# Ready Player Me Technical Support
+# Player Zero Technical Support
 
 Please visit the online documentation and join our public `discord` community.
 

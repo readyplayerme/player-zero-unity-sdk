@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace PlayerZero.Editor.UI.Windows
 {
-    public class ReadyPlayerMeEditor : EditorWindow
+    public class PlayerZeroEditor : EditorWindow
     {
         private DeveloperLoginView _developerLoginView;
         private ApplicationManagementView _applicationManagementView;
@@ -20,7 +20,7 @@ namespace PlayerZero.Editor.UI.Windows
         [MenuItem("Tools/Player Zero", false, 0)]
         public static void Generate()
         {
-            var window = GetWindow<ReadyPlayerMeEditor>("Player Zero");
+            var window = GetWindow<PlayerZeroEditor>("Player Zero");
             window.minSize = new Vector2(700, 120);
         }
 
@@ -32,7 +32,7 @@ namespace PlayerZero.Editor.UI.Windows
             var analyticsApi = new AnalyticsApi();
 
             var settingsCache = new ScriptableObjectCache<Settings>();
-            var settings = settingsCache.Init("ReadyPlayerMeSettings");
+            var settings = settingsCache.Init("PlayerZeroSettings");
             
             var skeletonDefinitionCache = new ScriptableObjectCache<SkeletonDefinitionConfig>();
             skeletonDefinitionCache.Init("SkeletonDefinitionConfig");

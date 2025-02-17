@@ -14,8 +14,8 @@ namespace PlayerZero.Data
         /// <summary>
         /// Initialize character data with the given id.
         /// </summary>
-        /// <param name="id">Ready Player Me Character ID.</param>
-        /// <param name="blueprintId">Ready Player Me Character blueprint ID.</param>
+        /// <param name="id">PlayerZero Character ID.</param>
+        /// <param name="blueprintId">PlayerZero Character blueprint ID.</param>
         public CharacterData Initialize(string id, string blueprintId)
         {
             Id = id;
