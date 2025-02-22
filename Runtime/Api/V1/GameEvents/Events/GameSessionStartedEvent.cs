@@ -1,18 +1,19 @@
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using PlayerZero.Api.V1.Contracts;
 
 namespace PlayerZero.Api.V1
 {
-    public class UserGameSessionStartedEvent
+    public class GameSessionStartedEvent : IGameEventStarted<GameSessionStartedProperties>
     {
         [JsonProperty("event")]
         public const string Event = "user_game_session_started";
         
         [JsonProperty("properties")]
-        public UserGameSessionStartedProperties Properties { get; set; }
+        public GameSessionStartedProperties Properties { get; set; }
     }
     
-    public class UserGameSessionStartedProperties
+    public class GameSessionStartedProperties : IGameEventProperties
     {
         [JsonProperty("user_id")]
         public string UserId { get; set; }
@@ -30,7 +31,7 @@ namespace PlayerZero.Api.V1
         public string GameId { get; set; }
         
         [JsonProperty("game_session_id")]
-        public string GameSessionId { get; set; }
+        public string SessionId { get; set; }
 
         [JsonProperty("game_entry_point"), CanBeNull]
         public string GameEntryPoint { get; set; }
