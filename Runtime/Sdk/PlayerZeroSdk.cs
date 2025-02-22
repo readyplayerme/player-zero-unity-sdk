@@ -6,6 +6,8 @@ using System.Web;
 using GLTFast;
 using PlayerZero.Api;
 using PlayerZero.Api.V1;
+using PlayerZero.Api.V1.Contracts;
+using PlayerZero.Data;
 using UnityEngine;
 
 namespace PlayerZero.Runtime.Sdk
@@ -19,7 +21,7 @@ namespace PlayerZero.Runtime.Sdk
         public string BlueprintId { get; set; }
 
         public Transform Parent { get; set; }
-        
+
         public CharacterLoaderConfig CharacterConfig { get; set; }
     }
 
@@ -28,9 +30,13 @@ namespace PlayerZero.Runtime.Sdk
         private static CharacterApi _characterApi;
         private static GameEventApi _gameEventApi;
         private static FileApi _fileApi;
+        private static Settings _settings;
 
         private static void Init()
         {
+            if (_settings == null)
+                _settings = Resources.Load<Settings>("PlayerZeroSettings");
+            
             if (_characterApi == null)
                 _characterApi = new CharacterApi();
 
@@ -44,11 +50,11 @@ namespace PlayerZero.Runtime.Sdk
         public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
         {
             Init();
-            
+
             var fileApi = new FileApi();
             var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?size={size}";
             var texture = await fileApi.DownloadImageAsync(iconUrl);
-            
+
             return Sprite.Create(
                 texture,
                 new Rect(0, 0, texture.width, texture.height),
@@ -60,7 +66,7 @@ namespace PlayerZero.Runtime.Sdk
         public static string GetHotLoadedAvatarId()
         {
             Init();
-            
+
             var fullUrl = Application.absoluteURL;
             var queryParams = GetQueryParameters(fullUrl);
             queryParams.TryGetValue("avatarId", out var avatarId);
@@ -68,15 +74,33 @@ namespace PlayerZero.Runtime.Sdk
             return avatarId;
         }
 
-        public static void SendGameEvent<T>(
-            T eventPayload
-        )
+        public static string SendGameEventStarted<TEvent, TEventProperties>(
+            TEvent eventPayload
+        ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameEventProperties
         {
             Init();
 
+            var sessionId = Guid.NewGuid().ToString();
+            eventPayload.Properties.SessionId = sessionId;
+            eventPayload.Properties.GameId = _settings.GameId;
+
             _gameEventApi.SendGameEvent(eventPayload);
+
+            return eventPayload.Properties.SessionId;
         }
 
+        public static string SendGameEventEnded<TEvent, TEventProperties>(
+            TEvent eventPayload
+        ) where TEvent : IGameEventEnded<TEventProperties> where TEventProperties : class, IGameEventProperties
+        {
+            Init();
+            
+            eventPayload.Properties.GameId = _settings.GameId;
+
+            _gameEventApi.SendGameEvent(eventPayload);
+
+            return eventPayload.Properties.SessionId;
+        }
 
         public static async Task<Character> GetAvatarMetadataAsync(
             string avatarId
@@ -103,8 +127,8 @@ namespace PlayerZero.Runtime.Sdk
             Init();
 
             string url;
-            
-            var query= QueryBuilder.BuildQueryString(request.CharacterConfig);
+
+            var query = QueryBuilder.BuildQueryString(request.CharacterConfig);
 
             if (!string.IsNullOrEmpty(request.AvatarUrl))
             {

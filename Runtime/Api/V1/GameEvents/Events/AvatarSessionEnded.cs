@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using PlayerZero.Api.V1.Contracts;
 
 namespace PlayerZero.Api.V1
 {
-    public class AvatarSessionEndedEvent
+    public class AvatarSessionEndedEvent : IGameEventEnded<AvatarSessionEndedProperties>
     {
         [JsonProperty("event")]
         public const string Event = "avatar_session_ended";
@@ -11,7 +12,7 @@ namespace PlayerZero.Api.V1
         public AvatarSessionEndedProperties Properties { get; set; }
     }
     
-    public class AvatarSessionEndedProperties
+    public class AvatarSessionEndedProperties : IGameEventProperties
     {
         [JsonProperty("user_id")]
         public string UserId { get; set; }
@@ -29,6 +30,6 @@ namespace PlayerZero.Api.V1
         public string GameSessionId { get; set; }
         
         [JsonProperty("avatar_session_id")]
-        public string AvatarSessionId { get; set; }
+        public string SessionId { get; set; }
     }
 }
