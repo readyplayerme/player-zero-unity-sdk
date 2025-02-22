@@ -3,16 +3,16 @@ using Newtonsoft.Json;
 
 namespace PlayerZero.Api.V1
 {
-    public class UserGameSessionStartedEvent
+    public class GameSessionStartedEvent
     {
         [JsonProperty("event")]
         public const string Event = "user_game_session_started";
         
         [JsonProperty("properties")]
-        public UserGameSessionStartedProperties Properties { get; set; }
+        public GameSessionStartedProperties Properties { get; set; }
     }
     
-    public class UserGameSessionStartedProperties
+    public class GameSessionStartedProperties
     {
         [JsonProperty("user_id")]
         public string UserId { get; set; }

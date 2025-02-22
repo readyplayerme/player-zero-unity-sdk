@@ -4,16 +4,16 @@ using Newtonsoft.Json;
 
 namespace PlayerZero.Api.V1
 {
-    public class UserGameMatchEndedEvent
+    public class GameMatchEndedEvent
     {
         [JsonProperty("event")]
         public const string Event = "user_game_match_ended";
         
         [JsonProperty("properties")]
-        public UserGameMatchEndedProperties Properties { get; set; }
+        public GameMatchEndedProperties Properties { get; set; }
     }
 
-    public class UserGameMatchEndedProperties
+    public class GameMatchEndedProperties
     {
         [JsonProperty("user_id")]
         public string UserId { get; set; }
