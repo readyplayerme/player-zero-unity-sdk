@@ -1,19 +1,20 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using PlayerZero.Api.V1.Contracts;
 
 namespace PlayerZero.Api.V1
 {
-    public class UserGameMatchStartedEvent
+    public class GameMatchStartedEvent : IGameEventStarted<GameMatchStartedProperties>
     {
         [JsonProperty("event")]
         public const string Event = "user_game_match_started";
         
         [JsonProperty("properties")]
-        public UserGameMatchStartedProperties Properties { get; set; }
+        public GameMatchStartedProperties Properties { get; set; }
     }
     
-    public class UserGameMatchStartedProperties
+    public class GameMatchStartedProperties : IGameEventProperties
     {
         [JsonProperty("user_id")]
         public string UserId { get; set; }
@@ -31,7 +32,7 @@ namespace PlayerZero.Api.V1
         public string GameId { get; set; }
         
         [JsonProperty("game_session_id")]
-        public string GameSessionId { get; set; }
+        public string SessionId { get; set; }
         
         [JsonProperty("game_match_id")]
         public string GameMatchId { get; set; }

@@ -1,25 +1,26 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using PlayerZero.Api.V1.Contracts;
 
 namespace PlayerZero.Api.V1
 {
-    public class UserGameSessionEndedEvent
+    public class GameSessionEndedEvent : IGameEventEnded<GameSessionEndedProperties>
     {
         [JsonProperty("event")]
         public const string Event = "user_game_session_ended";
         
         [JsonProperty("properties")]
-        public UserGameSessionEndedProperties Properties { get; set; }
+        public GameSessionEndedProperties Properties { get; set; }
     }
     
-    public class UserGameSessionEndedProperties 
+    public class GameSessionEndedProperties : IGameEventProperties
     {
         [JsonProperty("user_id")]
         public string UserId { get; set; }
         
         [JsonProperty("game_session_id")]
-        public string GameSessionId { get; set; }
+        public string SessionId { get; set; }
         
         [JsonProperty("matches_played")]
         public int? MatchesPlayed { get; set; }
@@ -32,5 +33,8 @@ namespace PlayerZero.Api.V1
 
         [JsonProperty("currency_obtained"), CanBeNull]
         public Dictionary<string, object> CurrencyObtained { get; set; } = new Dictionary<string, object>();
+        
+        [JsonProperty("game_id")]
+        public string GameId { get; set; }
     }
 }

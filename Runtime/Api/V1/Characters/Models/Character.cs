@@ -11,6 +11,9 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("blueprintId")]
         public string BlueprintId { get; set; }
+        
+        [JsonProperty("username")]
+        public string Username { get; set; }
 
         [JsonProperty("modelUrl")]
         public string ModelUrl { get; set; }
