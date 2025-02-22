@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using GLTFast;
+using PlayerZero.Api;
 using PlayerZero.Api.V1;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace PlayerZero.Runtime.Sdk
         public string BlueprintId { get; set; }
 
         public Transform Parent { get; set; }
+        
+        public CharacterLoaderConfig CharacterConfig { get; set; }
     }
 
     public static class PlayerZeroSdk
@@ -100,10 +103,12 @@ namespace PlayerZero.Runtime.Sdk
             Init();
 
             string url;
+            
+            var query= QueryBuilder.BuildQueryString(request.CharacterConfig);
 
             if (!string.IsNullOrEmpty(request.AvatarUrl))
             {
-                url = $"{request.AvatarUrl}?targetBlueprintId={request.BlueprintId}";
+                url = $"{request.AvatarUrl}?{query}&targetBlueprintId={request.BlueprintId}";
             }
             else
             {
@@ -112,7 +117,7 @@ namespace PlayerZero.Runtime.Sdk
                     Id = request.AvatarId,
                 });
 
-                url = $"{response.Data.ModelUrl}?targetBlueprintId={request.BlueprintId}";
+                url = $"{response.Data.ModelUrl}?{query}&targetBlueprintId={request.BlueprintId}";
             }
 
             var gltf = new GltfImport();
