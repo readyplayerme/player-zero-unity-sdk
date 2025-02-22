@@ -24,6 +24,7 @@ namespace PlayerZero.Runtime.Sdk
     {
         private static CharacterApi _characterApi;
         private static GameEventApi _gameEventApi;
+        private static FileApi _fileApi;
 
         private static void Init()
         {
@@ -32,6 +33,25 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_gameEventApi == null)
                 _gameEventApi = new GameEventApi();
+
+            if (_fileApi == null)
+                _fileApi = new FileApi();
+        }
+
+        public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
+        {
+            Init();
+            
+            var fileApi = new FileApi();
+            var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?size={size}";
+            var texture = await fileApi.DownloadImageAsync(iconUrl);
+            
+            return Sprite.Create(
+                texture,
+                new Rect(0, 0, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f),
+                100f
+            );
         }
 
         public static string GetHotLoadedAvatarId()
