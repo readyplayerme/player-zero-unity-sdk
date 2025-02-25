@@ -13,14 +13,10 @@ namespace PlayerZero
         /// <param name="source">New character model</param>
         /// <param name="target">Character model existing in the scene</param>
         /// <param name="definition">Skeleton definition</param>
-        public void Transfer(GameObject source, GameObject target, SkeletonDefinition definition = null)
+        public void Transfer(GameObject source, GameObject target)
         {
-            Transform rootBone =
-                target.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == definition?.Root) ??
-                target.transform;
-
             RemoveMeshes(target.transform);
-            TransferMeshes(target.transform, source.transform, rootBone);
+            TransferMeshes(target.transform, source.transform, target.transform);
 
             Object.Destroy(source);
         }

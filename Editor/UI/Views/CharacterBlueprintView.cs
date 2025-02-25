@@ -12,14 +12,12 @@ namespace PlayerZero.Editor.UI.Views
     public class CharacterBlueprintView
     {
         private readonly CharacterBlueprintViewModel _viewModel;
-        private readonly ObjectInput<SkeletonDefinition> _boneDefinitionInput;
         private ObjectInput<GameObject> _defaultTemplatePrefab;
         private CharacterTemplateConfig _characterTemplateConfig;
         private string characterBlueprintId;
         public CharacterBlueprintView(CharacterBlueprintViewModel viewModel)
         {
             _viewModel = viewModel;
-            _boneDefinitionInput = new ObjectInput<SkeletonDefinition>();
             _defaultTemplatePrefab = new ObjectInput<GameObject>();
         }
 
@@ -30,7 +28,6 @@ namespace PlayerZero.Editor.UI.Views
             _characterTemplateConfig = characterTemplateConfig;
             _characterTemplateConfig.GetTemplatePrefabGUID(characterBlueprintId);
             _defaultTemplatePrefab.Init(_characterTemplateConfig.GetTemplatePrefabGUID(characterBlueprintId));
-            _boneDefinitionInput.Init(_viewModel.BoneDefinitionCacheId);
         }
 
         public void Render()
