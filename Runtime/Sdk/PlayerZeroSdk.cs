@@ -65,8 +65,6 @@ namespace PlayerZero.Runtime.Sdk
 
         public static string GetHotLoadedAvatarId()
         {
-            Init();
-
             var fullUrl = Application.absoluteURL;
             var queryParams = GetQueryParameters(fullUrl);
             queryParams.TryGetValue("avatarId", out var avatarId);
