@@ -11,11 +11,8 @@ namespace PlayerZero
 {
     public class CharacterLoader 
     {
-        private const string SKELETON_DEFINITION_LABEL = "SkeletonDefinitionConfig";
-        
         private readonly CharacterApi _characterApi;
         private readonly MeshTransfer _meshTransfer;
-        private readonly SkeletonBuilder _skeletonBuilder;
         private CharacterTemplateConfig templateConfig;
         private string applicationId;
         
@@ -26,7 +23,6 @@ namespace PlayerZero
         {
             _characterApi = new CharacterApi();
             _meshTransfer = new MeshTransfer();
-            _skeletonBuilder = new SkeletonBuilder();
             this.templateConfig = templateConfig;
         }
         
@@ -114,25 +110,12 @@ namespace PlayerZero
 
             await gltf.InstantiateSceneAsync(characterObject.transform);
 
-            var skeletonDefinition = Resources.Load<SkeletonDefinitionConfig>(SKELETON_DEFINITION_LABEL)
-                .definitionLinks
-                .FirstOrDefault(p => p.characterBlueprintId == blueprintId)?
-                .definition;
             var animator = characterData.gameObject.GetComponent<Animator>();
             if( animator == null )
             {
                 animator = characterData.gameObject.AddComponent<Animator>();
             }
             animator.enabled = false;
-        
-            var animationAvatar = animator.avatar;
-            if (animationAvatar == null)
-            {
-                _skeletonBuilder.Build(characterData.gameObject, skeletonDefinition != null
-                    ? skeletonDefinition.GetHumanBones()
-                    : null
-                );
-            }
             
             _meshTransfer.Transfer(characterObject, meshParent ?? characterData.gameObject);
             characterData.gameObject.SetActive(true);
