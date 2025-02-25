@@ -116,6 +116,9 @@ namespace PlayerZero.Runtime.Sdk
 
         public static async Task<GameObject> InstantiateAvatarAsync(CharacterRequestConfig request)
         {
+            if (request.CharacterConfig == null)
+                request.CharacterConfig = new CharacterLoaderConfig();
+            
             if (string.IsNullOrEmpty(request.AvatarId) && string.IsNullOrEmpty(request.AvatarUrl))
                 Debug.LogError("One of either AvatarId or AvatarUrl must be provided.");
 
@@ -130,7 +133,9 @@ namespace PlayerZero.Runtime.Sdk
 
             if (!string.IsNullOrEmpty(request.AvatarUrl))
             {
-                url = $"{request.AvatarUrl}?{query}&targetBlueprintId={request.BlueprintId}";
+                url = string.IsNullOrEmpty(request.BlueprintId)
+                    ? $"{request.AvatarUrl}?{query}"
+                    : $"{request.AvatarUrl}?{query}&targetBlueprintId={request.BlueprintId}";
             }
             else
             {
@@ -139,7 +144,9 @@ namespace PlayerZero.Runtime.Sdk
                     Id = request.AvatarId,
                 });
 
-                url = $"{response.Data.ModelUrl}?{query}&targetBlueprintId={request.BlueprintId}";
+                url = string.IsNullOrEmpty(request.BlueprintId)
+                    ? $"{response.Data.ModelUrl}?{query}"
+                    : $"{response.Data.ModelUrl}?{query}&targetBlueprintId={request.BlueprintId}";
             }
 
             var gltf = new GltfImport();
