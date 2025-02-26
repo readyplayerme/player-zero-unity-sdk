@@ -29,5 +29,29 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("updatedAt")]
         public DateTime? UpdatedAt { get; set; }
+
+        [JsonProperty("equippedCollectibleTiers")]
+        public CharacterCollectibleTiers EquippedCollectibleTiers { get; set; } = new CharacterCollectibleTiers();
+    }
+
+    public class CharacterCollectibleTiers
+    {
+        [JsonProperty("secret")]
+        public int Secret { get; set; }
+        
+        [JsonProperty("mythic")]
+        public int Mythic { get; set; }
+        
+        [JsonProperty("legendary")]
+        public int Legendary { get; set; }
+        
+        [JsonProperty("epic")]
+        public int Epic { get; set; }
+        
+        [JsonProperty("rare")]
+        public int Rare { get; set; }
+        
+        [JsonProperty("common")]
+        public int Common { get; set; }
     }
 }
