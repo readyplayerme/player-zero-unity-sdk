@@ -33,9 +33,6 @@ namespace PlayerZero.Editor.UI.Windows
 
             var settingsCache = new ScriptableObjectCache<Settings>();
             var settings = settingsCache.Init("PlayerZeroSettings");
-            
-            var skeletonDefinitionCache = new ScriptableObjectCache<SkeletonDefinitionConfig>();
-            skeletonDefinitionCache.Init("SkeletonDefinitionConfig");
 
             var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi, analyticsApi);
             _developerLoginView = new DeveloperLoginView(developerLoginViewModel);
