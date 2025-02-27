@@ -9,6 +9,7 @@ namespace PlayerZero.Runtime.Sdk
     {
         private const string PZ_SESSION_ID = "PZ_SESSION_ID";
         private const string PZ_AVATAR_SESSION_ID = "PZ_AVATAR_SESSION_ID";
+        private const int HEARTBEAT_INTERVAL_IN_SECONDS = 60;
         
         private static PlayerZeroAnalytics _instance;
         private static Settings _settings;
@@ -76,7 +77,7 @@ namespace PlayerZero.Runtime.Sdk
         {
             while (true)
             {
-                yield return new WaitForSeconds(60);
+                yield return new WaitForSeconds(HEARTBEAT_INTERVAL_IN_SECONDS);
 
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()) &&
                     PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
