@@ -72,9 +72,9 @@ namespace PlayerZero.Runtime.Sdk
             return avatarId;
         }
 
-        public static string SendGameEventStarted<TEvent, TEventProperties>(
+        public static string StartEventSession<TEvent, TEventProperties>(
             TEvent eventPayload
-        ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameEventProperties
+        ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameSession, IGame
         {
             Init();
 
@@ -86,14 +86,12 @@ namespace PlayerZero.Runtime.Sdk
 
             return eventPayload.Properties.SessionId;
         }
-
-        public static string SendGameEventEnded<TEvent, TEventProperties>(
+        
+        public static string SendEvent<TEvent, TEventProperties>(
             TEvent eventPayload
-        ) where TEvent : IGameEventEnded<TEventProperties> where TEventProperties : class, IGameEventProperties
+        ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession
         {
             Init();
-            
-            eventPayload.Properties.GameId = _settings.GameId;
 
             _gameEventApi.SendGameEvent(eventPayload);
 
