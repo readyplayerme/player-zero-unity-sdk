@@ -12,16 +12,13 @@ namespace PlayerZero.Api.V1
         public AvatarSessionStartedProperties Properties { get; set; }
     }
     
-    public class AvatarSessionStartedProperties : IGameEventProperties
+    public class AvatarSessionStartedProperties : IGameSession, IGame
     {
-        [JsonProperty("user_id")]
-        public string UserId { get; set; }
-        
         [JsonProperty("avatar_id")]
         public string AvatarId { get; set; }
 
         [JsonProperty("avatar_type")]
-        public string AvatarType { get; set; } = "FullBody";
+        public string AvatarType { get; set; } = "fullbody";
 
         [JsonProperty("game_id")]
         public string GameId { get; set; }

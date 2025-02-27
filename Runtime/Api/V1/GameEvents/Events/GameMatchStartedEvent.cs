@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using PlayerZero.Api.V1.Contracts;
 
@@ -14,18 +13,15 @@ namespace PlayerZero.Api.V1
         public GameMatchStartedProperties Properties { get; set; }
     }
     
-    public class GameMatchStartedProperties : IGameEventProperties
+    public class GameMatchStartedProperties : IGameSession, IGame
     {
-        [JsonProperty("user_id")]
-        public string UserId { get; set; }
-        
         [JsonProperty("avatar_id")]
         public string AvatarId { get; set; }
 
-        [JsonProperty("application_id"), CanBeNull]
+        [JsonProperty("application_id")]
         public string ApplicationId { get; set; }
 
-        [JsonProperty("product_name"), CanBeNull]
+        [JsonProperty("product_name")]
         public string ProductName { get; set; }
         
         [JsonProperty("game_id")]
@@ -37,31 +33,31 @@ namespace PlayerZero.Api.V1
         [JsonProperty("game_match_id")]
         public string GameMatchId { get; set; }
 
-        [JsonProperty("start_context"), CanBeNull]
+        [JsonProperty("start_context")]
         public string StartContext { get; set; }
 
-        [JsonProperty("live_ops_id"), CanBeNull]
+        [JsonProperty("live_ops_id")]
         public string LiveOpsId { get; set; }
         
-        [JsonProperty("tier"), CanBeNull]
-        public int Tier { get; set; }
+        [JsonProperty("tier")]
+        public int? Tier { get; set; }
         
-        [JsonProperty("round"), CanBeNull]
-        public int Round { get; set; }
+        [JsonProperty("round")]
+        public int? Round { get; set; }
 
-        [JsonProperty("map_id"), CanBeNull]
+        [JsonProperty("map_id")]
         public string MapId { get; set; }
 
-        [JsonProperty("game_mode"), CanBeNull]
+        [JsonProperty("game_mode")]
         public string GameMode { get; set; }
 
-        [JsonProperty("class"), CanBeNull]
+        [JsonProperty("class")]
         public string Class { get; set; }
 
-        [JsonProperty("team"), CanBeNull]
+        [JsonProperty("team")]
         public string Team { get; set; }
 
-        [JsonProperty("loadout"), CanBeNull]
+        [JsonProperty("loadout")]
         public Dictionary<string, object> Loadout { get; set; }
     }
 }
