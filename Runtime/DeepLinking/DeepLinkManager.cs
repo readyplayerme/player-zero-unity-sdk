@@ -39,7 +39,7 @@ namespace PlayerZero.Runtime.DeepLinking
             }
         }
 
-        protected virtual void OnDeepLinkActivated(string url)
+        private void OnDeepLinkActivated(string url)
         {
             DeeplinkURL = url;
             parameters.Clear();
