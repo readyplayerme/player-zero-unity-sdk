@@ -8,6 +8,7 @@ using PlayerZero.Api;
 using PlayerZero.Api.V1;
 using PlayerZero.Api.V1.Contracts;
 using PlayerZero.Data;
+using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
 
 namespace PlayerZero.Runtime.Sdk
@@ -31,6 +32,8 @@ namespace PlayerZero.Runtime.Sdk
         private static GameEventApi _gameEventApi;
         private static FileApi _fileApi;
         private static Settings _settings;
+        
+        public static Action<string> OnHotLoadedAvatarIdChanged;
 
         private static void Init()
         {
@@ -45,6 +48,8 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_fileApi == null)
                 _fileApi = new FileApi();
+            
+            DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
         }
 
         public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
@@ -177,6 +182,11 @@ namespace PlayerZero.Runtime.Sdk
                 .AllKeys
                 .Where(key => key != null)
                 .ToDictionary(key => key, key => HttpUtility.ParseQueryString(new Uri(url).Query)[key]);
+        }
+        
+        private static void OnDeepLinkDataReceived(DeepLinkData data)
+        {
+            OnHotLoadedAvatarIdChanged?.Invoke(data.AvatarId);
         }
     }
 }
