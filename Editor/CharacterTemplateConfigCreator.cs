@@ -25,7 +25,6 @@ namespace PlayerZero.Editor
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
                 templateListObject = Resources.Load<CharacterTemplateConfig>(applicationId);
-                Debug.Log( $"New CharacterTemplateConfig created for" );
             }
             var blueprints = await GetBlueprints(applicationId);
             var missingBlueprints = templateListObject.Templates == null || templateListObject.Templates.Length == 0  ? blueprints : blueprints.Where(blueprint => templateListObject.Templates.All(template => template.BlueprintId != blueprint.Id)).ToArray();
@@ -44,7 +43,6 @@ namespace PlayerZero.Editor
             AssetDatabase.SaveAssetIfDirty(templateListObject);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log( $"Template config updated with {missingBlueprints.Length} new templates." );
         }
 
         private static async Task<CharacterTemplate[]> LoadAndCreateCharacterTemplates(CharacterBlueprint[] blueprints)

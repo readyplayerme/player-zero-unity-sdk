@@ -13,7 +13,7 @@ namespace PlayerZero.Api.V1
         public GameMatchEndedProperties Properties { get; set; }
     }
 
-    public class GameMatchEndedProperties : IGameSession
+    public class GameMatchEndedProperties : IGameSession, IGame
     {
         [JsonProperty("game_match_id")]
         public string GameMatchId { get; set; }

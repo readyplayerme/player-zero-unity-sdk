@@ -2,6 +2,7 @@
 using PlayerZero.Api.V1;
 using PlayerZero.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace PlayerZero.Runtime.Sdk
 {
@@ -10,16 +11,18 @@ namespace PlayerZero.Runtime.Sdk
         private const string PZ_SESSION_ID = "PZ_SESSION_ID";
         private const string PZ_AVATAR_SESSION_ID = "PZ_AVATAR_SESSION_ID";
         private const int HEARTBEAT_INTERVAL_IN_SECONDS = 60;
-        
+
         private static PlayerZeroAnalytics _instance;
         private static Settings _settings;
 
         private Coroutine _heartbeatTimer;
 
+        public bool debugMode = false;
+
         private void Awake()
         {
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
-            
+
             if (_settings == null || string.IsNullOrEmpty(_settings.GameId))
             {
                 Debug.LogError("Player Zero Game ID is required. Please set it in tools -> Player Zero.");
@@ -30,12 +33,15 @@ namespace PlayerZero.Runtime.Sdk
             {
                 _instance = this;
                 DontDestroyOnLoad(gameObject);
-                
+
                 if (_heartbeatTimer != null)
                     StopCoroutine(_heartbeatTimer);
-                
+
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()))
                 {
+                    if (debugMode)
+                        Debug.Log("Sending game session started event to Player Zero.");
+
                     var sessionId =
                         PlayerZeroSdk.StartEventSession<GameSessionStartedEvent, GameSessionStartedProperties>(
                             new GameSessionStartedEvent()
@@ -46,7 +52,10 @@ namespace PlayerZero.Runtime.Sdk
                                 }
                             }
                         );
-				
+
+                    if (debugMode)
+                        Debug.Log("Sending avatar session started event to Player Zero.");
+
                     var avatarSessionId =
                         PlayerZeroSdk.StartEventSession<AvatarSessionStartedEvent, AvatarSessionStartedProperties>(
                             new AvatarSessionStartedEvent()
@@ -58,12 +67,12 @@ namespace PlayerZero.Runtime.Sdk
                                 }
                             }
                         );
-				
+
                     PlayerPrefs.SetString(PZ_SESSION_ID, sessionId);
                     PlayerPrefs.SetString(PZ_AVATAR_SESSION_ID, avatarSessionId);
                     PlayerPrefs.Save();
                 }
-                
+
                 _heartbeatTimer = StartCoroutine(Heartbeat());
             }
             else
@@ -73,7 +82,7 @@ namespace PlayerZero.Runtime.Sdk
             }
         }
 
-        private static IEnumerator Heartbeat()
+        private IEnumerator Heartbeat()
         {
             while (true)
             {
@@ -82,6 +91,9 @@ namespace PlayerZero.Runtime.Sdk
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()) &&
                     PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
                 {
+                    if (debugMode)
+                        Debug.Log("Sending avatar heartbeat event to Player Zero.");
+
                     PlayerZeroSdk.SendEvent<AvatarSessionHeartbeatEvent, AvatarSessionHeartbeatProperties>(
                         new AvatarSessionHeartbeatEvent()
                         {
@@ -100,12 +112,15 @@ namespace PlayerZero.Runtime.Sdk
                 return;
 
             _instance = null;
-            
+
             if (string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()))
                 return;
 
             if (PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
             {
+                if (debugMode)
+                    Debug.Log("Sending avatar session ended event to Player Zero.");
+                
                 PlayerZeroSdk.SendEvent<AvatarSessionEndedEvent, AvatarSessionEndedProperties>(
                     new AvatarSessionEndedEvent()
                     {
@@ -115,12 +130,15 @@ namespace PlayerZero.Runtime.Sdk
                         }
                     }
                 );
-                    
+
                 PlayerPrefs.DeleteKey(PZ_AVATAR_SESSION_ID);
             }
 
             if (PlayerPrefs.HasKey(PZ_SESSION_ID))
             {
+                if (debugMode)
+                    Debug.Log("Sending game session ended event to Player Zero.");
+                
                 PlayerZeroSdk.SendEvent<GameSessionEndedEvent, GameSessionEndedProperties>(
                     new GameSessionEndedEvent()
                     {
@@ -130,10 +148,10 @@ namespace PlayerZero.Runtime.Sdk
                         }
                     }
                 );
-                    
+
                 PlayerPrefs.DeleteKey(PZ_SESSION_ID);
             }
-                
+
             PlayerPrefs.Save();
         }
     }

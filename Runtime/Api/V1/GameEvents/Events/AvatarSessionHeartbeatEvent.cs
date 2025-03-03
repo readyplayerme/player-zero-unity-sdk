@@ -12,9 +12,12 @@ namespace PlayerZero.Api.V1
         public AvatarSessionHeartbeatProperties Properties { get; set; }
     }
     
-    public class AvatarSessionHeartbeatProperties : IGameSession
+    public class AvatarSessionHeartbeatProperties : IGameSession, IGame
     {
         [JsonProperty("avatar_session_id")]
         public string SessionId { get; set; }
+        
+        [JsonProperty("game_id")]
+        public string GameId { get; set; }
     }
 }
