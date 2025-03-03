@@ -12,9 +12,12 @@ namespace PlayerZero.Api.V1
         public AvatarSessionEndedProperties Properties { get; set; }
     }
     
-    public class AvatarSessionEndedProperties : IGameSession
+    public class AvatarSessionEndedProperties : IGameSession, IGame
     {
         [JsonProperty("avatar_session_id")]
         public string SessionId { get; set; }
+        
+        [JsonProperty("game_id")]
+        public string GameId { get; set; }
     }
 }

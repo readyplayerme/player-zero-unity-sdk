@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine.Networking;
 
 namespace PlayerZero.Api.V1
@@ -12,7 +13,7 @@ namespace PlayerZero.Api.V1
         /// </summary>
         /// <typeparam name="T">The type of the payload.</typeparam>
         /// <param name="request">The event data to send.</param>
-        public void SendGameEvent<T>(T request)
+        public async Task SendGameEventAsync<T>(T request)
         {
             var apiRequest = new ApiRequest<T>()
             {
@@ -24,7 +25,7 @@ namespace PlayerZero.Api.V1
                 },
                 Payload = request
             };
-            Dispatch<GameEventResponse, T>(apiRequest);
+            await Dispatch<GameEventResponse, T>(apiRequest);
         }
     }
 }

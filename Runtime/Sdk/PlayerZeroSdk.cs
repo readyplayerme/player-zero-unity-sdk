@@ -82,18 +82,34 @@ namespace PlayerZero.Runtime.Sdk
             eventPayload.Properties.SessionId = sessionId;
             eventPayload.Properties.GameId = _settings.GameId;
 
-            _gameEventApi.SendGameEvent(eventPayload);
+            _gameEventApi.SendGameEventAsync(eventPayload)
+                .ContinueWith(eventResponse =>
+                {
+                    if (eventResponse.Status != TaskStatus.RanToCompletion)
+                    {
+                        Debug.LogWarning("A Player Zero event failed to send.");
+                    }
+                });
 
             return eventPayload.Properties.SessionId;
         }
         
         public static string SendEvent<TEvent, TEventProperties>(
             TEvent eventPayload
-        ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession
+        ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession, IGame
         {
             Init();
 
-            _gameEventApi.SendGameEvent(eventPayload);
+            eventPayload.Properties.GameId = _settings.GameId;
+            
+            _gameEventApi.SendGameEventAsync(eventPayload)
+                .ContinueWith(eventResponse =>
+                {
+                    if (eventResponse.Status != TaskStatus.RanToCompletion)
+                    {
+                        Debug.LogWarning("A Player Zero event failed to send.");
+                    }
+                });
 
             return eventPayload.Properties.SessionId;
         }

@@ -13,7 +13,7 @@ namespace PlayerZero.Api.V1
         public GameSessionEndedProperties Properties { get; set; }
     }
     
-    public class GameSessionEndedProperties : IGameSession
+    public class GameSessionEndedProperties : IGameSession, IGame
     {
         [JsonProperty("game_session_id")]
         public string SessionId { get; set; }
@@ -29,5 +29,8 @@ namespace PlayerZero.Api.V1
 
         [JsonProperty("currency_obtained")]
         public Dictionary<string, object> CurrencyObtained { get; set; } = new Dictionary<string, object>();
+        
+        [JsonProperty("game_id")]
+        public string GameId { get; set; }
     }
 }
