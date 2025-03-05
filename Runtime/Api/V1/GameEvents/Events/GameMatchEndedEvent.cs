@@ -16,7 +16,7 @@ namespace PlayerZero.Api.V1
     public class GameMatchEndedProperties : IGameSession, IGame
     {
         [JsonProperty("game_match_id")]
-        public string GameMatchId { get; set; }
+        public string SessionId { get; set; }
         
         [JsonProperty("outcome")]
         public int? Outcome { get; set; }
@@ -26,11 +26,5 @@ namespace PlayerZero.Api.V1
 
         [JsonProperty("currency_obtained")]
         public Dictionary<string, object> CurrencyObtained { get; set; } = new Dictionary<string, object>();
-        
-        [JsonProperty("game_id")]
-        public string GameId { get; set; }
-        
-        [JsonProperty("game_session_id")]
-        public string SessionId { get; set; }
     }
 }

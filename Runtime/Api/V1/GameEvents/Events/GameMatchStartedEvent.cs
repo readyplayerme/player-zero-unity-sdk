@@ -28,10 +28,10 @@ namespace PlayerZero.Api.V1
         public string GameId { get; set; }
         
         [JsonProperty("game_session_id")]
-        public string SessionId { get; set; }
+        public string GameSessionId { get; set; }
         
         [JsonProperty("game_match_id")]
-        public string GameMatchId { get; set; }
+        public string SessionId { get; set; }
 
         [JsonProperty("start_context")]
         public string StartContext { get; set; }
