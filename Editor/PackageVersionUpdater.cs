@@ -60,7 +60,7 @@ namespace PlayerZero.Editor
             if (string.IsNullOrEmpty(version)) return;
 
             // Load the existing settings ScriptableObject
-            var settings = Resources.Load<Settings>(PackageName);
+            var settings = Resources.Load<Settings>(SettingsResourcePath);
 
             if (settings == null)
             {
