@@ -26,5 +26,19 @@ namespace PlayerZero.Data
 
         public string GameId = "";
         public string ApiBaseUrl => string.IsNullOrEmpty(ApiProxyUrl) ? _apiBaseUrl : ApiProxyUrl;
+        
+        private string version = "2.1.1";
+        public string Version => version;
+
+        public void SetVersion(string newVersion)
+        {
+            if (version == newVersion) return;
+            version = newVersion;
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+            UnityEditor.AssetDatabase.SaveAssets();
+            Debug.Log($"Updated package version to {version}");
+#endif
+        }
     }
 }
