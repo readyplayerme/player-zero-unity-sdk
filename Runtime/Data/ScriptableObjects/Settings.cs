@@ -27,7 +27,7 @@ namespace PlayerZero.Data
         public string GameId = "";
         public string ApiBaseUrl => string.IsNullOrEmpty(ApiProxyUrl) ? _apiBaseUrl : ApiProxyUrl;
         
-        private string version = "2.1.1";
+        private string version = "2.1.0";
         public string Version => version;
 
         public void SetVersion(string newVersion)
