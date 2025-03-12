@@ -13,7 +13,7 @@ namespace PlayerZero.Api.V1
         public GameMatchStartedProperties Properties { get; set; }
     }
     
-    public class GameMatchStartedProperties : IGameSession, IGame
+    public class GameMatchStartedProperties : IGameSession, IGame, IEventContext
     {
         [JsonProperty("avatar_id")]
         public string AvatarId { get; set; }
@@ -59,5 +59,11 @@ namespace PlayerZero.Api.V1
 
         [JsonProperty("loadout")]
         public Dictionary<string, object> Loadout { get; set; }
+        
+        [JsonProperty("device_id")]
+        public string DeviceId { get; set; }
+        
+        [JsonProperty("sdk_version")]
+        public string SdkVersion { get; set; }
     }
 }
