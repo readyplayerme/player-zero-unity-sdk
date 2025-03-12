@@ -34,6 +34,7 @@ namespace PlayerZero.Runtime.Sdk
         private static Settings _settings;
         
         public static Action<string> OnHotLoadedAvatarIdChanged;
+        public static string DeviceId;
 
         private static void Init()
         {
@@ -48,7 +49,7 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_fileApi == null)
                 _fileApi = new FileApi();
-            
+            DeviceId = GetUniqueDeviceId();
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
         }
 
@@ -79,14 +80,14 @@ namespace PlayerZero.Runtime.Sdk
 
         public static string StartEventSession<TEvent, TEventProperties>(
             TEvent eventPayload
-        ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameSession, IGame
+        ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameSession, IGame, IEventContext
         {
             Init();
 
             var sessionId = Guid.NewGuid().ToString();
             eventPayload.Properties.SessionId = sessionId;
             eventPayload.Properties.GameId = _settings.GameId;
-
+            eventPayload.Properties.DeviceId = DeviceId;
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>
                 {
@@ -203,6 +204,15 @@ namespace PlayerZero.Runtime.Sdk
         private static void OnDeepLinkDataReceived(DeepLinkData data)
         {
             OnHotLoadedAvatarIdChanged?.Invoke(data.AvatarId);
+        }
+        
+        private static string GetUniqueDeviceId()
+        {
+#if UNITY_WEBGL
+            var id = PlayerPrefs.GetString("pz_device_id", "");
+            return string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id;
+#endif
+            return SystemInfo.deviceUniqueIdentifier;
         }
     }
 }
