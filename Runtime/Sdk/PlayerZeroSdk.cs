@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -87,6 +87,7 @@ namespace PlayerZero.Runtime.Sdk
             var sessionId = Guid.NewGuid().ToString();
             eventPayload.Properties.SessionId = sessionId;
             eventPayload.Properties.GameId = _settings.GameId;
+            eventPayload.Properties.SdkVersion = _settings.Version;
             eventPayload.Properties.DeviceId = DeviceId;
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>
@@ -102,11 +103,14 @@ namespace PlayerZero.Runtime.Sdk
         
         public static string SendEvent<TEvent, TEventProperties>(
             TEvent eventPayload
-        ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession, IGame
+        ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession, IGame, IEventContext
         {
             Init();
 
             eventPayload.Properties.GameId = _settings.GameId;
+            eventPayload.Properties.SdkVersion = _settings.Version;
+            //TODO get device id
+            //eventPayload.Properties.DeviceId = "";
             
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>
