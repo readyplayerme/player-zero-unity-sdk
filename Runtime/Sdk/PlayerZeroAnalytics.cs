@@ -46,8 +46,7 @@ namespace PlayerZero.Runtime.Sdk
                             {
                                 Properties = new GameSessionStartedProperties()
                                 {
-                                    AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
-                                    SdkVersion = _settings.Version
+                                    AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId()
                                 }
                             }
                         );
@@ -62,8 +61,7 @@ namespace PlayerZero.Runtime.Sdk
                                 Properties = new AvatarSessionStartedProperties()
                                 {
                                     AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
-                                    GameSessionId = sessionId,
-                                    SdkVersion = _settings.Version
+                                    GameSessionId = sessionId
                                 }
                             }
                         );
@@ -99,8 +97,7 @@ namespace PlayerZero.Runtime.Sdk
                         {
                             Properties = new AvatarSessionHeartbeatProperties()
                             {
-                                SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID),
-                                SdkVersion = _settings.Version
+                                SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID)
                             }
                         });
                 }
@@ -127,8 +124,7 @@ namespace PlayerZero.Runtime.Sdk
                     {
                         Properties = new AvatarSessionEndedProperties()
                         {
-                            SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID),
-                            SdkVersion = _settings.Version
+                            SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID)
                         }
                     }
                 );
@@ -146,8 +142,7 @@ namespace PlayerZero.Runtime.Sdk
                     {
                         Properties = new GameSessionEndedProperties()
                         {
-                            SessionId = PlayerPrefs.GetString(PZ_SESSION_ID),
-                            SdkVersion = _settings.Version
+                            SessionId = PlayerPrefs.GetString(PZ_SESSION_ID)
                         }
                     }
                 );
