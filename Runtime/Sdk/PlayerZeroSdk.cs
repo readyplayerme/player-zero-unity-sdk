@@ -32,9 +32,10 @@ namespace PlayerZero.Runtime.Sdk
         private static GameEventApi _gameEventApi;
         private static FileApi _fileApi;
         private static Settings _settings;
+        private static string _deviceId;
         
         public static Action<string> OnHotLoadedAvatarIdChanged;
-        public static string DeviceId;
+
 
         private static void Init()
         {
@@ -49,7 +50,7 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_fileApi == null)
                 _fileApi = new FileApi();
-            DeviceId = GetUniqueDeviceId();
+            _deviceId = GetUniqueDeviceId();
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
         }
 
@@ -88,7 +89,7 @@ namespace PlayerZero.Runtime.Sdk
             eventPayload.Properties.SessionId = sessionId;
             eventPayload.Properties.GameId = _settings.GameId;
             eventPayload.Properties.SdkVersion = _settings.Version;
-            eventPayload.Properties.DeviceId = DeviceId;
+            eventPayload.Properties.DeviceId = _deviceId;
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>
                 {
@@ -109,8 +110,7 @@ namespace PlayerZero.Runtime.Sdk
 
             eventPayload.Properties.GameId = _settings.GameId;
             eventPayload.Properties.SdkVersion = _settings.Version;
-            //TODO get device id
-            //eventPayload.Properties.DeviceId = "";
+            eventPayload.Properties.DeviceId = _deviceId;
             
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>
@@ -212,11 +212,18 @@ namespace PlayerZero.Runtime.Sdk
         
         private static string GetUniqueDeviceId()
         {
-#if UNITY_WEBGL
             var id = PlayerPrefs.GetString("pz_device_id", "");
-            return string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id;
+            if (string.IsNullOrEmpty(id))
+            {
+#if UNITY_WEBGL
+                id = Guid.NewGuid().ToString();
+#else
+                id = SystemInfo.deviceUniqueIdentifier;
 #endif
-            return SystemInfo.deviceUniqueIdentifier;
+                PlayerPrefs.SetString("pz_device_id", id);
+                PlayerPrefs.Save();
+            }
+            return id;
         }
     }
 }
