@@ -10,6 +10,7 @@ namespace PlayerZero.Runtime.Sdk
         private const string PZ_SESSION_ID = "PZ_SESSION_ID";
         private const string PZ_AVATAR_SESSION_ID = "PZ_AVATAR_SESSION_ID";
         private const int HEARTBEAT_INTERVAL_IN_SECONDS = 60;
+        private const string UNITY_PLATFORM = "Unity";
 
         private static PlayerZeroAnalytics _instance;
         private static Settings _settings;
@@ -62,7 +63,8 @@ namespace PlayerZero.Runtime.Sdk
                                 {
                                     AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
                                     GameSessionId = sessionId,
-                                    SdkVersion = _settings.Version
+                                    SdkVersion = _settings.Version,
+                                    SdkPlatform = UNITY_PLATFORM
                                 }
                             }
                         );
