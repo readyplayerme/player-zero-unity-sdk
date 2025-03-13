@@ -34,5 +34,8 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("sdk_version")]
         public string SdkVersion { get; set; }
+                
+        [JsonProperty("device_context")]
+        public DeviceContext DeviceContext { get; set; }
     }
 }
