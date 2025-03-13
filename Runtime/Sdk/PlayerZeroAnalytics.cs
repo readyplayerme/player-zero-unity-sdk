@@ -61,7 +61,8 @@ namespace PlayerZero.Runtime.Sdk
                                 Properties = new AvatarSessionStartedProperties()
                                 {
                                     AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
-                                    GameSessionId = sessionId
+                                    GameSessionId = sessionId,
+                                    SdkVersion = _settings.Version
                                 }
                             }
                         );
