@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Globalization;
 using PlayerZero.Api.V1;
 using PlayerZero.Data;
 using UnityEngine;
@@ -18,6 +20,9 @@ namespace PlayerZero.Runtime.Sdk
 
         public bool debugMode;
         
+        private long lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        private Vector3 lastMousePosition;
+        
         private void Awake()
         {
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
@@ -29,6 +34,10 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_instance == null || _instance == this)
             {
+#if ENABLE_INPUT_SYSTEM
+        // Capture any input event (keyboard, mouse, gamepad, touch)
+        InputSystem.onEvent += OnNewInputEvent;
+#endif
                 _instance = this;
                 DontDestroyOnLoad(gameObject);
 
@@ -79,12 +88,52 @@ namespace PlayerZero.Runtime.Sdk
                 Destroy(this);
             }
         }
+        
+        private void Update()
+        {
+            if (DetectLegacyInput())
+            {
+                lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            }
+        }
+        
+        private bool DetectLegacyInput()
+        {
+            // Legacy Input System (No setup needed)
+            if (Input.anyKeyDown) return true;
+
+            if (Input.mousePosition != lastMousePosition)
+            {
+                lastMousePosition = Input.mousePosition;
+                return true;
+            }
+
+            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)) return true;
+
+            if (Input.touchCount > 0) return true;
+
+            if (Input.GetJoystickNames().Length > 0)
+            {
+                if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) > 0.1f || Mathf.Abs(Input.GetAxisRaw("Vertical")) > 0.1f)
+                    return true;
+            }
+
+            return false;
+        }
+        
+#if ENABLE_INPUT_SYSTEM
+    private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
+    {
+        // Any input event from any device
+        lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    }
+#endif
 
         private IEnumerator Heartbeat()
         {
             while (true)
             {
-                yield return new WaitForSeconds(HEARTBEAT_INTERVAL_IN_SECONDS);
+                yield return new WaitForSecondsRealtime(HEARTBEAT_INTERVAL_IN_SECONDS);
 
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()) &&
                     PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
@@ -97,7 +146,8 @@ namespace PlayerZero.Runtime.Sdk
                         {
                             Properties = new AvatarSessionHeartbeatProperties()
                             {
-                                SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID)
+                                SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID),
+                                LastAvatarActivityAt = lastPlayerActivityAt
                             }
                         });
                 }
@@ -110,6 +160,9 @@ namespace PlayerZero.Runtime.Sdk
                 return;
 
             _instance = null;
+#if ENABLE_INPUT_SYSTEM
+        InputSystem.onEvent -= OnNewInputEvent; // Cleanup to avoid memory leaks
+#endif
 
             if (string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()))
                 return;
@@ -151,6 +204,7 @@ namespace PlayerZero.Runtime.Sdk
             }
 
             PlayerPrefs.Save();
+            StopAllCoroutines();
         }
     }
 }

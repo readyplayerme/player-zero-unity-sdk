@@ -25,5 +25,8 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("sdk_version")]
         public string SdkVersion { get; set; }
+        
+        [JsonProperty("last_avatar_activity_at")]
+        public long LastAvatarActivityAt { get; set; }
     }
 }
