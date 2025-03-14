@@ -30,15 +30,17 @@ namespace PlayerZero.Data
         private string version = "2.1.0";
         public string Version => version;
 
+#if UNITY_EDITOR
         public void SetVersion(string newVersion)
         {
             if (version == newVersion) return;
             version = newVersion;
-#if UNITY_EDITOR
+
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssets();
             Debug.Log($"Updated package version to {version}");
-#endif
+
         }
+#endif
     }
 }

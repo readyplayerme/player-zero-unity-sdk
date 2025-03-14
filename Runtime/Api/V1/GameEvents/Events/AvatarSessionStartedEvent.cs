@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using PlayerZero.Api.V1.Contracts;
 
 namespace PlayerZero.Api.V1
@@ -12,7 +12,7 @@ namespace PlayerZero.Api.V1
         public AvatarSessionStartedProperties Properties { get; set; }
     }
     
-    public class AvatarSessionStartedProperties : IGameSession, IGame, IEventContext
+    public class AvatarSessionStartedProperties : IGameSession, IGame
     {
         [JsonProperty("avatar_id")]
         public string AvatarId { get; set; }
@@ -28,12 +28,12 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("avatar_session_id")]
         public string SessionId { get; set; }
-
-        [JsonProperty("device_id")]
-        public string DeviceId { get; set; }
         
         [JsonProperty("sdk_version")]
         public string SdkVersion { get; set; }
+        
+        [JsonProperty("sdk_platform")]
+        public string SdkPlatform { get; set; }
                 
         [JsonProperty("device_context")]
         public DeviceContext DeviceContext { get; set; }
