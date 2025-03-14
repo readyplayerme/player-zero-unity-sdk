@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using UnityEngine;
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
@@ -14,7 +15,7 @@ namespace PlayerZero
         
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
-        private static extern string GetDeviceData();
+        private static extern IntPtr  GetDeviceData();
         
         private static string GenerateDeviceId(DeviceContext deviceInfo, long firstLoadTime)
         {
@@ -58,9 +59,33 @@ namespace PlayerZero
             }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-            // Call JS function to get WebGL data
-            var jsonData = GetDeviceData();
-            deviceInfo = JsonUtility.FromJson<DeviceContext>(jsonData);
+            string jsonData = "{}";
+            IntPtr ptr = GetDeviceData();
+            if (ptr != IntPtr.Zero)
+            {
+                jsonData = Marshal.PtrToStringUTF8(ptr);
+            }
+
+            Debug.Log($"JSON DATA : {jsonData}");
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                Debug.LogError("WebGL Device Data is NULL or EMPTY!");
+                jsonData = "{}"; 
+            }
+            try
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore          
+                };
+                deviceInfo = JsonConvert.DeserializeObject<DeviceContext>(jsonData, settings);
+            }
+            catch (JsonException ex)
+            {
+                Debug.LogError($"Failed to parse DeviceContext JSON: {ex.Message}");
+                deviceInfo = new DeviceContext(); // Fallback to avoid null issues
+            }
 #else
             // Use Unity APIs for Mobile
             deviceInfo = new DeviceContext
@@ -79,8 +104,9 @@ namespace PlayerZero
 #if UNITY_WEBGL && !UNITY_EDITOR
             deviceInfo.DeviceId = GenerateDeviceId(deviceInfo, firstLoadTime);
 #endif
-
             deviceInfo.TimeOfFirstGameLoad = firstLoadTime;
+            var json = JsonConvert.SerializeObject(deviceInfo, Formatting.Indented);
+            Debug.Log($"Device Info: {json}");
             return deviceInfo;
         }
     }
