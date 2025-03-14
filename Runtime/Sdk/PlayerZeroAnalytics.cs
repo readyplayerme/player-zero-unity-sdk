@@ -65,7 +65,7 @@ namespace PlayerZero.Runtime.Sdk
                                     AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
                                     GameSessionId = sessionId,
                                     SdkVersion = _settings.Version,
-                                    SdkPlatform = UNITY_PLATFORM
+                                    SdkPlatform = UNITY_PLATFORM,
                                     DeviceContext = _deviceContext
                                 }
                             }
