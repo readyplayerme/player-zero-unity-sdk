@@ -15,7 +15,7 @@ namespace PlayerZero
         
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
-        private static extern IntPtr  GetDeviceData();
+        private static extern IntPtr GetBrowser();
         
         private static string GenerateDeviceId(DeviceContext deviceInfo, long firstLoadTime)
         {
@@ -23,7 +23,7 @@ namespace PlayerZero
             {
                 string rawData = firstLoadTime.ToString();
 
-                rawData += $"{deviceInfo.Os}-{deviceInfo.Browser}-{deviceInfo.GpuModel}-{deviceInfo.ScreenResolution}-{deviceInfo.CpuCores}";
+                rawData += $"{deviceInfo.Os}-{deviceInfo.Browser}-{deviceInfo.GpuModel}-{deviceInfo.CpuCores}={deviceInfo.SystemMemory}-{deviceInfo.DeviceModel}";
 
                 byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
@@ -39,13 +39,21 @@ namespace PlayerZero
 
         public static DeviceContext GetDeviceInfo()
         {
-            DeviceContext deviceInfo;
-            
+            var deviceInfo = new DeviceContext
+            {
+                DeviceId = SystemInfo.deviceUniqueIdentifier, // wont work for WebGL, gets overwritten later
+                Os = SystemInfo.operatingSystem,
+                GpuModel = SystemInfo.graphicsDeviceName,
+                CpuCores = SystemInfo.processorCount,
+                SystemMemory = SystemInfo.systemMemorySize, 
+                DeviceModel = SystemInfo.deviceModel,
+                Browser = GetBrowserInfo(),
+                GameWindowResolution = $"{Screen.width}x{Screen.height}"
+            };;
             var firstLoadTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             if (PlayerPrefs.HasKey(FirstGameLoadTimeKey))
             {
-                // Parse stored string as long
                 if (long.TryParse(PlayerPrefs.GetString(FirstGameLoadTimeKey), out long storedTime))
                 {
                     firstLoadTime = storedTime;
@@ -58,56 +66,28 @@ namespace PlayerZero
                 PlayerPrefs.Save();
             }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            string jsonData = "{}";
-            IntPtr ptr = GetDeviceData();
-            if (ptr != IntPtr.Zero)
-            {
-                jsonData = Marshal.PtrToStringUTF8(ptr);
-            }
-
-            Debug.Log($"JSON DATA : {jsonData}");
-            if (string.IsNullOrEmpty(jsonData))
-            {
-                Debug.LogError("WebGL Device Data is NULL or EMPTY!");
-                jsonData = "{}"; 
-            }
-            try
-            {
-                var settings = new JsonSerializerSettings
-                {
-                    MissingMemberHandling = MissingMemberHandling.Ignore,
-                    NullValueHandling = NullValueHandling.Ignore          
-                };
-                deviceInfo = JsonConvert.DeserializeObject<DeviceContext>(jsonData, settings);
-            }
-            catch (JsonException ex)
-            {
-                Debug.LogError($"Failed to parse DeviceContext JSON: {ex.Message}");
-                deviceInfo = new DeviceContext(); // Fallback to avoid null issues
-            }
-#else
-            // Use Unity APIs for Mobile
-            deviceInfo = new DeviceContext
-            {
-                DeviceId = SystemInfo.deviceUniqueIdentifier, // ✅ Uses reliable built-in UUID
-                Os = SystemInfo.operatingSystem,
-                GpuModel = SystemInfo.graphicsDeviceName,
-                ScreenResolution = $"{Screen.width}x{Screen.height}",
-                CpuCores = SystemInfo.processorCount,
-                SystemMemory = SystemInfo.systemMemorySize, // RAM in MB
-                DeviceModel = SystemInfo.deviceModel
-            };
-#endif
-
-            // ✅ Generate device ID in Unity (WebGL only)
+            // Generate device ID in Unity (WebGL only)
 #if UNITY_WEBGL && !UNITY_EDITOR
             deviceInfo.DeviceId = GenerateDeviceId(deviceInfo, firstLoadTime);
 #endif
             deviceInfo.TimeOfFirstGameLoad = firstLoadTime;
             var json = JsonConvert.SerializeObject(deviceInfo, Formatting.Indented);
-            Debug.Log($"Device Info: {json}");
             return deviceInfo;
+        }
+
+        private static string GetBrowserInfo()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            IntPtr ptr = GetBrowser();
+            if (ptr != IntPtr.Zero)
+            {
+                return Marshal.PtrToStringUTF8(ptr);
+            }
+            Debug.LogError("WebGL Browser Data is NULL!");
+            return "Unknown";
+#else
+            return ""; 
+#endif
         }
     }
 }
