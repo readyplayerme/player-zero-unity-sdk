@@ -28,5 +28,11 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("avatar_session_id")]
         public string SessionId { get; set; }
+        
+        [JsonProperty("sdk_version")]
+        public string SdkVersion { get; set; }
+        
+        [JsonProperty("sdk_platform")]
+        public string SdkPlatform { get; set; }
     }
 }

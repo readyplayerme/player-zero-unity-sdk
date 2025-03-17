@@ -86,7 +86,6 @@ namespace PlayerZero.Runtime.Sdk
             var sessionId = Guid.NewGuid().ToString();
             eventPayload.Properties.SessionId = sessionId;
             eventPayload.Properties.GameId = _settings.GameId;
-
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>
                 {

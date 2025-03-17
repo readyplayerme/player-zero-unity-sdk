@@ -2,7 +2,6 @@
 using PlayerZero.Api.V1;
 using PlayerZero.Data;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace PlayerZero.Runtime.Sdk
 {
@@ -17,12 +16,11 @@ namespace PlayerZero.Runtime.Sdk
 
         private Coroutine _heartbeatTimer;
 
-        public bool debugMode = false;
-
+        public bool debugMode;
+        
         private void Awake()
         {
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
-
             if (_settings == null || string.IsNullOrEmpty(_settings.GameId))
             {
                 Debug.LogError("Player Zero Game ID is required. Please set it in tools -> Player Zero.");
@@ -64,6 +62,8 @@ namespace PlayerZero.Runtime.Sdk
                                 {
                                     AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
                                     GameSessionId = sessionId,
+                                    SdkVersion = _settings.Version,
+                                    SdkPlatform = "Unity"
                                 }
                             }
                         );
@@ -99,7 +99,7 @@ namespace PlayerZero.Runtime.Sdk
                         {
                             Properties = new AvatarSessionHeartbeatProperties()
                             {
-                                SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID),
+                                SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID)
                             }
                         });
                 }
@@ -126,7 +126,7 @@ namespace PlayerZero.Runtime.Sdk
                     {
                         Properties = new AvatarSessionEndedProperties()
                         {
-                            SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID),
+                            SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID)
                         }
                     }
                 );
