@@ -79,16 +79,13 @@ namespace PlayerZero.Runtime.Sdk
 
         public static string StartEventSession<TEvent, TEventProperties>(
             TEvent eventPayload
-        ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameSession, IGame, IEventContext
+        ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameSession, IGame
         {
             Init();
 
             var sessionId = Guid.NewGuid().ToString();
             eventPayload.Properties.SessionId = sessionId;
             eventPayload.Properties.GameId = _settings.GameId;
-            eventPayload.Properties.SdkVersion = _settings.Version;
-            //TODO get device id
-            //eventPayload.Properties.DeviceId = "";
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>
                 {
@@ -103,14 +100,11 @@ namespace PlayerZero.Runtime.Sdk
         
         public static string SendEvent<TEvent, TEventProperties>(
             TEvent eventPayload
-        ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession, IGame, IEventContext
+        ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession, IGame
         {
             Init();
 
             eventPayload.Properties.GameId = _settings.GameId;
-            eventPayload.Properties.SdkVersion = _settings.Version;
-            //TODO get device id
-            //eventPayload.Properties.DeviceId = "";
             
             _gameEventApi.SendGameEventAsync(eventPayload)
                 .ContinueWith(eventResponse =>

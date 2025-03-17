@@ -13,7 +13,7 @@ namespace PlayerZero.Api.V1
         public GameSessionEndedProperties Properties { get; set; }
     }
     
-    public class GameSessionEndedProperties : IGameSession, IGame, IEventContext
+    public class GameSessionEndedProperties : IGameSession, IGame
     {
         [JsonProperty("game_session_id")]
         public string SessionId { get; set; }
@@ -32,11 +32,5 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("game_id")]
         public string GameId { get; set; }
-        
-        [JsonProperty("device_id")]
-        public string DeviceId { get; set; }
-        
-        [JsonProperty("sdk_version")]
-        public string SdkVersion { get; set; }
     }
 }
