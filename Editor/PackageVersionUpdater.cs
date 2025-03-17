@@ -25,6 +25,13 @@ namespace PlayerZero.Editor
         
         private static void OnPackagesChanged(PackageRegistrationEventArgs args)
         {
+            if (!PackageUpdated(args)) return;
+            Debug.Log($"Detected update to {PackageName}. Syncing version number...");
+            EnsureVersionIsUpdated();
+        }
+
+        private static bool PackageUpdated(PackageRegistrationEventArgs args)
+        {
             var packageUpdated = false;
         
             // Check if our package was updated
@@ -46,11 +53,7 @@ namespace PlayerZero.Editor
                 }
             }
 
-            if (packageUpdated)
-            {
-                Debug.Log($"Detected update to {PackageName}. Syncing version number...");
-                EnsureVersionIsUpdated();
-            }
+            return packageUpdated;
         }
 
         private static void EnsureVersionIsUpdated()
@@ -59,7 +62,6 @@ namespace PlayerZero.Editor
             var version = GetPackageVersionFromJson();
             if (string.IsNullOrEmpty(version)) return;
 
-            // Load the existing settings ScriptableObject
             var settings = Resources.Load<Settings>(SettingsResourcePath);
 
             if (settings == null)
