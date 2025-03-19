@@ -26,5 +26,8 @@ namespace PlayerZero.Api.V1
 
         [JsonProperty("currency_obtained")]
         public Dictionary<string, object> CurrencyObtained { get; set; } = new Dictionary<string, object>();
+
+        [JsonProperty("game_id")]
+        public string GameId { get; set; }
     }
 }
