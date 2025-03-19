@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using PlayerZero.Api.V1.Contracts;
 
 namespace PlayerZero.Api.V1
@@ -34,5 +34,8 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("sdk_platform")]
         public string SdkPlatform { get; set; }
+                
+        [JsonProperty("device_context")]
+        public DeviceContext DeviceContext { get; set; }
     }
 }

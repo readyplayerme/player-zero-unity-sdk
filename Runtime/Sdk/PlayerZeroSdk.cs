@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,14 +32,15 @@ namespace PlayerZero.Runtime.Sdk
         private static GameEventApi _gameEventApi;
         private static FileApi _fileApi;
         private static Settings _settings;
-        
+
         public static Action<string> OnHotLoadedAvatarIdChanged;
+
 
         private static void Init()
         {
             if (_settings == null)
                 _settings = Resources.Load<Settings>("PlayerZeroSettings");
-            
+
             if (_characterApi == null)
                 _characterApi = new CharacterApi();
 
@@ -48,7 +49,6 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_fileApi == null)
                 _fileApi = new FileApi();
-            
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
         }
 
@@ -97,7 +97,7 @@ namespace PlayerZero.Runtime.Sdk
 
             return eventPayload.Properties.SessionId;
         }
-        
+
         public static string SendEvent<TEvent, TEventProperties>(
             TEvent eventPayload
         ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession, IGame
@@ -136,7 +136,7 @@ namespace PlayerZero.Runtime.Sdk
         {
             if (request.CharacterConfig == null)
                 request.CharacterConfig = new CharacterLoaderConfig();
-            
+
             if (string.IsNullOrEmpty(request.AvatarId) && string.IsNullOrEmpty(request.AvatarUrl))
                 Debug.LogError("One of either AvatarId or AvatarUrl must be provided.");
 
@@ -198,7 +198,7 @@ namespace PlayerZero.Runtime.Sdk
                 .Where(key => key != null)
                 .ToDictionary(key => key, key => HttpUtility.ParseQueryString(new Uri(url).Query)[key]);
         }
-        
+
         private static void OnDeepLinkDataReceived(DeepLinkData data)
         {
             OnHotLoadedAvatarIdChanged?.Invoke(data.AvatarId);

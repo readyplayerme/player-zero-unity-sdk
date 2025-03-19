@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Globalization;
 using PlayerZero.Api.V1;
@@ -19,6 +19,7 @@ namespace PlayerZero.Runtime.Sdk
         private Coroutine _heartbeatTimer;
 
         public bool debugMode;
+        private static DeviceContext _deviceContext;
         
         private long lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         private Vector3 lastMousePosition;
@@ -40,7 +41,7 @@ namespace PlayerZero.Runtime.Sdk
 #endif
                 _instance = this;
                 DontDestroyOnLoad(gameObject);
-
+                _deviceContext = DeviceAnalytics.GetDeviceInfo();
                 if (_heartbeatTimer != null)
                     StopCoroutine(_heartbeatTimer);
 
@@ -72,7 +73,8 @@ namespace PlayerZero.Runtime.Sdk
                                     AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
                                     GameSessionId = sessionId,
                                     SdkVersion = _settings.Version,
-                                    SdkPlatform = "Unity"
+                                    SdkPlatform = "Unity",
+                                    DeviceContext = _deviceContext
                                 }
                             }
                         );
