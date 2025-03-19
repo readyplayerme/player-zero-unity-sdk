@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using PlayerZero.Api.V1.Contracts;
 
 namespace PlayerZero.Api.V1
@@ -19,5 +19,7 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("game_id")]
         public string GameId { get; set; }
+        [JsonProperty("last_avatar_activity_at")]
+        public long LastAvatarActivityAt { get; set; }
     }
 }
