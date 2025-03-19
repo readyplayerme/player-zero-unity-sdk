@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using PlayerZero.Api.V1;
 using PlayerZero.Data;
 using UnityEngine;
@@ -17,6 +17,7 @@ namespace PlayerZero.Runtime.Sdk
         private Coroutine _heartbeatTimer;
 
         public bool debugMode;
+        private static DeviceContext _deviceContext;
         
         private void Awake()
         {
@@ -31,7 +32,7 @@ namespace PlayerZero.Runtime.Sdk
             {
                 _instance = this;
                 DontDestroyOnLoad(gameObject);
-
+                _deviceContext = DeviceAnalytics.GetDeviceInfo();
                 if (_heartbeatTimer != null)
                     StopCoroutine(_heartbeatTimer);
 
@@ -63,7 +64,8 @@ namespace PlayerZero.Runtime.Sdk
                                     AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
                                     GameSessionId = sessionId,
                                     SdkVersion = _settings.Version,
-                                    SdkPlatform = "Unity"
+                                    SdkPlatform = "Unity",
+                                    DeviceContext = _deviceContext
                                 }
                             }
                         );
