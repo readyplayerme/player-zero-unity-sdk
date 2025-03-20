@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
-using System.Globalization;
-using PlayerZero.Api.V1;
-using PlayerZero.Data;
 using UnityEngine;
+using System.Globalization;
+
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+#endif
 
 namespace PlayerZero.Runtime.Sdk
 {
@@ -14,96 +17,43 @@ namespace PlayerZero.Runtime.Sdk
         private const int HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
         private static PlayerZeroAnalytics _instance;
-        private static Settings _settings;
-
         private Coroutine _heartbeatTimer;
-
         public bool debugMode;
-        private static DeviceContext _deviceContext;
-        
+
         private long lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         private Vector3 lastMousePosition;
-        
+
         private void Awake()
         {
-            _settings = Resources.Load<Settings>("PlayerZeroSettings");
-            if (_settings == null || string.IsNullOrEmpty(_settings.GameId))
-            {
-                Debug.LogError("Player Zero Game ID is required. Please set it in tools -> Player Zero.");
-                return;
-            }
-
             if (_instance == null || _instance == this)
             {
-#if ENABLE_INPUT_SYSTEM
-        // Capture any input event (keyboard, mouse, gamepad, touch)
-        InputSystem.onEvent += OnNewInputEvent;
-#endif
                 _instance = this;
                 DontDestroyOnLoad(gameObject);
-                _deviceContext = DeviceAnalytics.GetDeviceInfo();
-                if (_heartbeatTimer != null)
-                    StopCoroutine(_heartbeatTimer);
 
-                if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()))
-                {
-                    if (debugMode)
-                        Debug.Log("Sending game session started event to Player Zero.");
-
-                    var sessionId =
-                        PlayerZeroSdk.StartEventSession<GameSessionStartedEvent, GameSessionStartedProperties>(
-                            new GameSessionStartedEvent()
-                            {
-                                Properties = new GameSessionStartedProperties()
-                                {
-                                    AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId()
-                                }
-                            }
-                        );
-
-                    if (debugMode)
-                        Debug.Log("Sending avatar session started event to Player Zero.");
-
-                    var avatarSessionId =
-                        PlayerZeroSdk.StartEventSession<AvatarSessionStartedEvent, AvatarSessionStartedProperties>(
-                            new AvatarSessionStartedEvent()
-                            {
-                                Properties = new AvatarSessionStartedProperties()
-                                {
-                                    AvatarId = PlayerZeroSdk.GetHotLoadedAvatarId(),
-                                    GameSessionId = sessionId,
-                                    SdkVersion = _settings.Version,
-                                    SdkPlatform = "Unity",
-                                    DeviceContext = _deviceContext
-                                }
-                            }
-                        );
-
-                    PlayerPrefs.SetString(PZ_SESSION_ID, sessionId);
-                    PlayerPrefs.SetString(PZ_AVATAR_SESSION_ID, avatarSessionId);
-                    PlayerPrefs.Save();
-                }
+#if ENABLE_INPUT_SYSTEM
+                InputSystem.onEvent += OnNewInputEvent;
+#endif
 
                 _heartbeatTimer = StartCoroutine(Heartbeat());
             }
             else
             {
-                Debug.LogWarning("Removing duplicate Player Zero analytics component.");
                 Destroy(this);
             }
         }
-        
+#if ENABLE_LEGACY_INPUT_MANAGER
         private void Update()
         {
+
             if (DetectLegacyInput())
             {
                 lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             }
+
         }
         
         private bool DetectLegacyInput()
         {
-            // Legacy Input System (No setup needed)
             if (Input.anyKeyDown) return true;
 
             if (Input.mousePosition != lastMousePosition)
@@ -124,13 +74,13 @@ namespace PlayerZero.Runtime.Sdk
 
             return false;
         }
-        
+#endif
+
 #if ENABLE_INPUT_SYSTEM
-    private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
-    {
-        // Any input event from any device
-        lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-    }
+        private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
+        {
+            lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        }
 #endif
 
         private IEnumerator Heartbeat()
@@ -138,23 +88,7 @@ namespace PlayerZero.Runtime.Sdk
             while (true)
             {
                 yield return new WaitForSecondsRealtime(HEARTBEAT_INTERVAL_IN_SECONDS);
-
-                if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()) &&
-                    PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
-                {
-                    if (debugMode)
-                        Debug.Log("Sending avatar heartbeat event to Player Zero.");
-
-                    PlayerZeroSdk.SendEvent<AvatarSessionHeartbeatEvent, AvatarSessionHeartbeatProperties>(
-                        new AvatarSessionHeartbeatEvent()
-                        {
-                            Properties = new AvatarSessionHeartbeatProperties()
-                            {
-                                SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID),
-                                LastAvatarActivityAt = lastPlayerActivityAt
-                            }
-                        });
-                }
+                Debug.Log("Sending heartbeat event with last activity: " + lastPlayerActivityAt);
             }
         }
 
@@ -164,50 +98,11 @@ namespace PlayerZero.Runtime.Sdk
                 return;
 
             _instance = null;
+
 #if ENABLE_INPUT_SYSTEM
-        InputSystem.onEvent -= OnNewInputEvent; // Cleanup to avoid memory leaks
+            InputSystem.onEvent -= OnNewInputEvent;
 #endif
 
-            if (string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()))
-                return;
-
-            if (PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
-            {
-                if (debugMode)
-                    Debug.Log("Sending avatar session ended event to Player Zero.");
-                
-                PlayerZeroSdk.SendEvent<AvatarSessionEndedEvent, AvatarSessionEndedProperties>(
-                    new AvatarSessionEndedEvent()
-                    {
-                        Properties = new AvatarSessionEndedProperties()
-                        {
-                            SessionId = PlayerPrefs.GetString(PZ_AVATAR_SESSION_ID)
-                        }
-                    }
-                );
-
-                PlayerPrefs.DeleteKey(PZ_AVATAR_SESSION_ID);
-            }
-
-            if (PlayerPrefs.HasKey(PZ_SESSION_ID))
-            {
-                if (debugMode)
-                    Debug.Log("Sending game session ended event to Player Zero.");
-                
-                PlayerZeroSdk.SendEvent<GameSessionEndedEvent, GameSessionEndedProperties>(
-                    new GameSessionEndedEvent()
-                    {
-                        Properties = new GameSessionEndedProperties()
-                        {
-                            SessionId = PlayerPrefs.GetString(PZ_SESSION_ID)
-                        }
-                    }
-                );
-
-                PlayerPrefs.DeleteKey(PZ_SESSION_ID);
-            }
-
-            PlayerPrefs.Save();
             StopAllCoroutines();
         }
     }
