@@ -4,6 +4,10 @@ using System.Globalization;
 using PlayerZero.Api.V1;
 using PlayerZero.Data;
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+#endif
 
 namespace PlayerZero.Runtime.Sdk
 {
@@ -93,6 +97,7 @@ namespace PlayerZero.Runtime.Sdk
             }
         }
         
+#if ENABLE_LEGACY_INPUT_MANAGER      
         private void Update()
         {
             if (DetectLegacyInput())
@@ -124,6 +129,7 @@ namespace PlayerZero.Runtime.Sdk
 
             return false;
         }
+#endif  
         
 #if ENABLE_INPUT_SYSTEM
     private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
