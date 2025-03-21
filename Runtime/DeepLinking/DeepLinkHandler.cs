@@ -22,9 +22,10 @@ namespace PlayerZero.Runtime.DeepLinking
             Application.deepLinkActivated += OnDeepLinkActivated;
         }
 
-        private static void OnDeepLinkActivated(string url)
+        public static void OnDeepLinkActivated(string url)
         {
             DeeplinkURL = url;
+            Debug.Log($"Deep link activated: {url}");
             parameters.Clear();
             if (url.Contains(LINK_NAME))
             {
@@ -38,10 +39,12 @@ namespace PlayerZero.Runtime.DeepLinking
                 if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
                 {
                     data.AvatarId = avatarId;
+                    Debug.Log($"Avatar Id: {data.AvatarId}");
                 }
                 if (parameters.TryGetValue(USER_NAME_KEY, out var userName))
                 {
                     data.UserName = userName;
+                    Debug.Log($"User Name: {data.UserName}");
                 }
             }
             OnDeepLinkDataReceived.Invoke(data);
