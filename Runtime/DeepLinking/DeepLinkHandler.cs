@@ -29,9 +29,8 @@ namespace PlayerZero.Runtime.DeepLinking
             parameters.Clear();
             if (url.Contains(LINK_NAME))
             {
-                var uri = new Uri(url);
-                var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                foreach (var key in query.AllKeys)
+                var query = QueryStringParser.Parse(url);
+                foreach (var key in query.Keys)
                 {
                     parameters[key] = query[key];
                 }

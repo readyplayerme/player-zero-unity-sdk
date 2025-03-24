@@ -35,7 +35,6 @@ namespace PlayerZero.Runtime.Sdk
 
         public static Action<string> OnHotLoadedAvatarIdChanged;
 
-
         private static void Init()
         {
             if (_settings == null)
@@ -192,11 +191,9 @@ namespace PlayerZero.Runtime.Sdk
         {
             if (string.IsNullOrEmpty(url))
                 return new Dictionary<string, string>();
-
-            return HttpUtility.ParseQueryString(new Uri(url).Query)
-                .AllKeys
-                .Where(key => key != null)
-                .ToDictionary(key => key, key => HttpUtility.ParseQueryString(new Uri(url).Query)[key]);
+            
+            var query = QueryStringParser.Parse(url).Keys.Where( key => key != null).ToDictionary(key => key, key => QueryStringParser.Parse(url)[key]);
+            return query;
         }
 
         private static void OnDeepLinkDataReceived(DeepLinkData data)
