@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace PlayerZero
+namespace PlayerZero.Api.V1
 {
     [System.Serializable]
     public class DeviceContext
