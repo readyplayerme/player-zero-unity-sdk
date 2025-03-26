@@ -48,6 +48,7 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_fileApi == null)
                 _fileApi = new FileApi();
+            
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
         }
 

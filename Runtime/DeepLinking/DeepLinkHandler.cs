@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace PlayerZero.Runtime.DeepLinking
 {
     public static class DeepLinkHandler 
@@ -22,7 +23,7 @@ namespace PlayerZero.Runtime.DeepLinking
             Application.deepLinkActivated += OnDeepLinkActivated;
         }
 
-        public static void OnDeepLinkActivated(string url)
+        private static void OnDeepLinkActivated(string url)
         {
             DeeplinkURL = url;
             Debug.Log($"Deep link activated: {url}");
@@ -47,6 +48,30 @@ namespace PlayerZero.Runtime.DeepLinking
                 }
             }
             OnDeepLinkDataReceived.Invoke(data);
+        }
+        
+        public static void CheckForDeepLink()
+        {
+#if UNITY_STANDALONE_WIN && UNITY_EDITOR
+        // Read command-line args (deep link will be one of them if triggered via URI)
+        string[] args = Environment.GetCommandLineArgs();
+
+        foreach (string arg in args)
+        {
+            if (arg.StartsWith("playerzero"))
+            {
+                Debug.Log("Received deep link: " + arg);
+
+                OnDeepLinkActivated(arg);
+                break;
+            }
+        }
+#endif
+            if (Application.isMobilePlatform)
+            {
+                OnDeepLinkActivated(Application.absoluteURL);
+            }
+            
         }
     }
 }
