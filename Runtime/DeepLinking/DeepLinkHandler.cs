@@ -28,25 +28,29 @@ namespace PlayerZero.Runtime.DeepLinking
             DeeplinkURL = url;
             Debug.Log($"Deep link activated: {url}");
             parameters.Clear();
+            var isNewData = true;
             if (url.Contains(LINK_NAME))
             {
                 var query = QueryStringParser.Parse(url);
-                foreach (var key in query.Keys)
+                if (query.TryGetValue(AVATAR_ID_KEY, out var avatarId))
                 {
-                    parameters[key] = query[key];
-                }
-                
-                if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
-                {
+                    isNewData = data.AvatarId != avatarId;
                     data.AvatarId = avatarId;
                     Debug.Log($"Avatar Id: {data.AvatarId}");
                 }
-                if (parameters.TryGetValue(USER_NAME_KEY, out var userName))
+                if (query.TryGetValue(USER_NAME_KEY, out var userName))
                 {
                     data.UserName = userName;
                     Debug.Log($"User Name: {data.UserName}");
                 }
+                
+                foreach (var key in query.Keys)
+                {
+                    parameters[key] = query[key];
+                }
             }
+
+            if (!isNewData) return; // don't invoke if data has not changed
             OnDeepLinkDataReceived.Invoke(data);
         }
         
