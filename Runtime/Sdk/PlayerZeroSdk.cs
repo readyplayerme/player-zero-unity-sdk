@@ -34,8 +34,6 @@ namespace PlayerZero.Runtime.Sdk
         private static Settings _settings;
 
         public static Action<string> OnHotLoadedAvatarIdChanged;
-        
-        private static string lastHotLoadedAvatarId;
 
         private static void Init()
         {
@@ -52,6 +50,7 @@ namespace PlayerZero.Runtime.Sdk
                 _fileApi = new FileApi();
             
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
+            DeepLinkHandler.CheckForDeepLink();
         }
 
         public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
@@ -201,9 +200,6 @@ namespace PlayerZero.Runtime.Sdk
 
         private static void OnDeepLinkDataReceived(DeepLinkData data)
         {
-            if(data.AvatarId == lastHotLoadedAvatarId)
-                return;
-            lastHotLoadedAvatarId = data.AvatarId;
             OnHotLoadedAvatarIdChanged?.Invoke(data.AvatarId);
         }
     }
