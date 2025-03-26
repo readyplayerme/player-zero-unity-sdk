@@ -67,11 +67,7 @@ namespace PlayerZero.Runtime.DeepLinking
             }
         }
 #endif
-            if (Application.isMobilePlatform)
-            {
-                OnDeepLinkActivated(Application.absoluteURL);
-            }
-            
+            OnDeepLinkActivated(Application.absoluteURL);
         }
     }
 }
