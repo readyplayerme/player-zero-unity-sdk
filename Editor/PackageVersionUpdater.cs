@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using PlayerZero.Data;
+using PlayerZero.Editor.Cache;
 using UnityEditor.PackageManager;
 
 namespace PlayerZero.Editor
@@ -66,8 +67,8 @@ namespace PlayerZero.Editor
 
             if (settings == null)
             {
-                Debug.LogError("PackageSettings not found in Resources! Ensure it exists.");
-                return;
+                var settingsCache = new ScriptableObjectCache<Settings>();
+                settings = settingsCache.Init("PlayerZeroSettings");
             }
             
             settings.SetVersion(version);
