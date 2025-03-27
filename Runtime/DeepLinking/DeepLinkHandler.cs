@@ -26,7 +26,6 @@ namespace PlayerZero.Runtime.DeepLinking
         private static void OnDeepLinkActivated(string url)
         {
             DeeplinkURL = url;
-            Debug.Log($"Deep link activated: {url}");
             parameters.Clear();
             var isNewData = true;
             if (url.Contains(LINK_NAME))
@@ -36,12 +35,12 @@ namespace PlayerZero.Runtime.DeepLinking
                 {
                     isNewData = data.AvatarId != avatarId;
                     data.AvatarId = avatarId;
-                    Debug.Log($"Avatar Id: {data.AvatarId}");
+                    Debug.Log($"DeepLink Avatar Id: {data.AvatarId}");
                 }
                 if (query.TryGetValue(USER_NAME_KEY, out var userName))
                 {
                     data.UserName = userName;
-                    Debug.Log($"User Name: {data.UserName}");
+                    Debug.Log($"DeepLink User Name: {data.UserName}");
                 }
                 
                 foreach (var key in query.Keys)
@@ -51,6 +50,7 @@ namespace PlayerZero.Runtime.DeepLinking
             }
 
             if (!isNewData) return; // don't invoke if data has not changed
+            Debug.Log($"Deep link activated: {url}");
             OnDeepLinkDataReceived.Invoke(data);
         }
         
@@ -70,6 +70,8 @@ namespace PlayerZero.Runtime.DeepLinking
                 break;
             }
         }
+
+        return;
 #endif
             OnDeepLinkActivated(Application.absoluteURL);
         }
