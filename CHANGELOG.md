@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.2.0] - 2025.03.27
-- various analytics improvements
+## Added
+- SDK version and Sdk platform properties added to AvatarSessionStarted
+- DeviceContext data added to AvatarSessionStarted
+- DeviceID is now generated and sent in AvatarSessionStarted for webGl builds
+- lastActivityAt is now sent in AvatarSessionHeartbeatEvent for idle detection
+- DeeplinkHandler class added for handling deeplinks
+- OnHotLoadedAvatarIdChanged added to PlayerZeroSDKManager 
 
 ## [1.1.0] - 2025.01.02
 
