@@ -35,7 +35,6 @@ namespace PlayerZero.Runtime.Sdk
 
         public static Action<string> OnHotLoadedAvatarIdChanged;
 
-
         private static void Init()
         {
             if (_settings == null)
@@ -49,7 +48,9 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_fileApi == null)
                 _fileApi = new FileApi();
+            
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
+            DeepLinkHandler.CheckForDeepLink();
         }
 
         public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
@@ -192,11 +193,9 @@ namespace PlayerZero.Runtime.Sdk
         {
             if (string.IsNullOrEmpty(url))
                 return new Dictionary<string, string>();
-
-            return HttpUtility.ParseQueryString(new Uri(url).Query)
-                .AllKeys
-                .Where(key => key != null)
-                .ToDictionary(key => key, key => HttpUtility.ParseQueryString(new Uri(url).Query)[key]);
+            
+            var query = QueryStringParser.Parse(url).Keys.Where( key => key != null).ToDictionary(key => key, key => QueryStringParser.Parse(url)[key]);
+            return query;
         }
 
         private static void OnDeepLinkDataReceived(DeepLinkData data)

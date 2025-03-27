@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace PlayerZero.Runtime.DeepLinking
 {
     public static class DeepLinkHandler 
@@ -26,25 +27,53 @@ namespace PlayerZero.Runtime.DeepLinking
         {
             DeeplinkURL = url;
             parameters.Clear();
+            var isNewData = true;
             if (url.Contains(LINK_NAME))
             {
-                var uri = new Uri(url);
-                var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                foreach (var key in query.AllKeys)
+                var query = QueryStringParser.Parse(url);
+                if (query.TryGetValue(AVATAR_ID_KEY, out var avatarId))
+                {
+                    isNewData = data.AvatarId != avatarId;
+                    data.AvatarId = avatarId;
+                    Debug.Log($"DeepLink Avatar Id: {data.AvatarId}");
+                }
+                if (query.TryGetValue(USER_NAME_KEY, out var userName))
+                {
+                    data.UserName = userName;
+                    Debug.Log($"DeepLink User Name: {data.UserName}");
+                }
+                
+                foreach (var key in query.Keys)
                 {
                     parameters[key] = query[key];
                 }
-                
-                if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
-                {
-                    data.AvatarId = avatarId;
-                }
-                if (parameters.TryGetValue(USER_NAME_KEY, out var userName))
-                {
-                    data.UserName = userName;
-                }
             }
+
+            if (!isNewData) return; // don't invoke if data has not changed
+            Debug.Log($"Deep link activated: {url}");
             OnDeepLinkDataReceived.Invoke(data);
+        }
+        
+        public static void CheckForDeepLink()
+        {
+#if UNITY_STANDALONE_WIN && UNITY_EDITOR
+        // Read command-line args (deep link will be one of them if triggered via URI)
+        string[] args = Environment.GetCommandLineArgs();
+
+        foreach (string arg in args)
+        {
+            if (arg.StartsWith("playerzero"))
+            {
+                Debug.Log("Received deep link: " + arg);
+
+                OnDeepLinkActivated(arg);
+                break;
+            }
+        }
+
+        return;
+#endif
+            OnDeepLinkActivated(Application.absoluteURL);
         }
     }
 }
