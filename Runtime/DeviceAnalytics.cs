@@ -1,5 +1,6 @@
 using System;
 using Newtonsoft.Json;
+using PlayerZero.Api.V1;
 using UnityEngine;
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
