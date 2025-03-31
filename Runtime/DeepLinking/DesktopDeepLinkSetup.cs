@@ -1,5 +1,6 @@
 using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
 using System.Runtime.InteropServices;
@@ -9,7 +10,7 @@ using PlayerZero.Data;
 public class DesktopDeepLinkSetup : MonoBehaviour
 {
     [SerializeField]
-    private bool registerOnStart;
+    private bool setupOnStart = true;
     
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
     [DllImport("UriSchemeRegistrar")]
@@ -39,7 +40,7 @@ public class DesktopDeepLinkSetup : MonoBehaviour
 
     private void Start()
     {
-        if (registerOnStart)
+        if (setupOnStart)
         {
             Setup();
         }
