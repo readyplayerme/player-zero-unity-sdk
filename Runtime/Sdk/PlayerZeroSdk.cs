@@ -119,9 +119,7 @@ namespace PlayerZero.Runtime.Sdk
             return eventPayload.Properties.SessionId;
         }
 
-        public static async Task<Character> GetAvatarMetadataAsync(
-            string avatarId
-        )
+        public static async Task<Character> GetAvatarMetadataAsync(string avatarId)
         {
             Init();
 
