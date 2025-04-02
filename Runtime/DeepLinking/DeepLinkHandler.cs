@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PlayerZero.Runtime.DeepLinking
@@ -15,7 +14,6 @@ namespace PlayerZero.Runtime.DeepLinking
         private  const string USER_NAME_KEY = "userName";
         
         private static DeepLinkData data;
-        private static Dictionary<string, string> parameters = new Dictionary<string, string>();
 
         static DeepLinkHandler()
         {
@@ -25,16 +23,9 @@ namespace PlayerZero.Runtime.DeepLinking
         private static void OnDeepLinkActivated(string url)
         {
             DeeplinkURL = url;
-            parameters.Clear();
             if (url.Contains(LINK_NAME))
             {
-                var uri = new Uri(url);
-                var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                foreach (var key in query.AllKeys)
-                {
-                    parameters[key] = query[key];
-                }
-                
+                var parameters = ZeroQueryParams.GetParams();
                 if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
                 {
                     data.AvatarId = avatarId;
@@ -43,8 +34,10 @@ namespace PlayerZero.Runtime.DeepLinking
                 {
                     data.UserName = userName;
                 }
+                OnDeepLinkDataReceived.Invoke(data);
+                return;
             }
-            OnDeepLinkDataReceived.Invoke(data);
+            Debug.LogWarning($"No Deeplink data found at URL: {url}");
         }
     }
 }
