@@ -212,5 +212,10 @@ namespace PlayerZero.Runtime.Sdk
             PlayerPrefs.SetString(CACHED_AVATAR_ID, avatarId);
             OnHotLoadedAvatarIdChanged?.Invoke(avatarId);
         }
+        
+        public static void ClearCachedAvatarId()
+        {
+            PlayerPrefs.DeleteKey(CACHED_AVATAR_ID);
+        }
     }
 }
