@@ -1,0 +1,62 @@
+using PlayerZero.Runtime.DeepLinking;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+using PlayerZero.Data;
+#endif
+
+public class DesktopDeepLinkSetup : MonoBehaviour
+{
+    [SerializeField]
+    private bool setupOnStart = true;
+    
+#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
+    [DllImport("UriSchemeRegistrar")]
+    private static extern int RegisterUriScheme(string scheme, string exePath);
+
+    public static void TryRegisterCustomScheme(string scheme)
+    {
+        var processModule = System.Diagnostics.Process.GetCurrentProcess().MainModule;
+        Debug.Log($"TryRegisterCustomScheme: {processModule}");
+        if (processModule != null)
+        {
+            var exePath = processModule.FileName;
+            int result = RegisterUriScheme(scheme, exePath);
+
+            if (result == 0)
+            {
+                Debug.Log($"URI scheme '{scheme}' registered successfully.");
+            }
+            Debug.LogError($"Failed to register URI scheme '{scheme}'. Error code: {result}");
+        }
+        else
+        {
+            Debug.LogError($"Failed to register URI scheme '{scheme}'.");
+        }
+    }
+#endif
+
+    private void Start()
+    {
+        if (setupOnStart)
+        {
+            Setup();
+        }
+    }
+
+    public void Setup()
+    {
+#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
+        var settings = Resources.Load<Settings>("PlayerZeroSettings");
+        if (settings != null)
+        {
+            TryRegisterCustomScheme(settings.GameId);
+        }
+        return;
+#endif
+        Debug.LogWarning("RegisterUriScheme is only supported on Windows Standalone builds.");
+    }
+    
+}

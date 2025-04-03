@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using GLTFast;
 using PlayerZero.Api;
 using PlayerZero.Api.V1;
@@ -37,7 +34,6 @@ namespace PlayerZero.Runtime.Sdk
         
         private const string CACHED_AVATAR_ID = "PO_HotloadedAvatarId";
 
-
         private static void Init()
         {
             if (_settings == null)
@@ -51,7 +47,9 @@ namespace PlayerZero.Runtime.Sdk
 
             if (_fileApi == null)
                 _fileApi = new FileApi();
+            
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
+            DeepLinkHandler.CheckForDeepLink();
         }
 
         public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
@@ -127,9 +125,7 @@ namespace PlayerZero.Runtime.Sdk
             return eventPayload.Properties.SessionId;
         }
 
-        public static async Task<Character> GetAvatarMetadataAsync(
-            string avatarId
-        )
+        public static async Task<Character> GetAvatarMetadataAsync(string avatarId)
         {
             Init();
 
