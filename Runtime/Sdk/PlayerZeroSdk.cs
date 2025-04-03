@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using GLTFast;
 using PlayerZero.Api;
 using PlayerZero.Api.V1;
@@ -34,6 +31,8 @@ namespace PlayerZero.Runtime.Sdk
         private static Settings _settings;
 
         public static Action<string> OnHotLoadedAvatarIdChanged;
+        
+        private const string CACHED_AVATAR_ID = "PO_HotloadedAvatarId";
 
         private static void Init()
         {
@@ -71,10 +70,17 @@ namespace PlayerZero.Runtime.Sdk
 
         public static string GetHotLoadedAvatarId()
         {
-            var fullUrl = Application.absoluteURL;
-            var queryParams = GetQueryParameters(fullUrl);
+            var queryParams = ZeroQueryParams.GetParams();
             queryParams.TryGetValue("avatarId", out var avatarId);
-
+            if (!string.IsNullOrEmpty(avatarId))
+            {
+                PlayerPrefs.SetString(CACHED_AVATAR_ID, avatarId);
+            }
+            else
+            {
+                // If no avatarId is found in the URL, check PlayerPrefs
+                avatarId = PlayerPrefs.GetString(CACHED_AVATAR_ID, string.Empty);
+            }
             return avatarId;
         }
 
@@ -186,19 +192,26 @@ namespace PlayerZero.Runtime.Sdk
 
             return playerZeroCharacter;
         }
-
-        private static Dictionary<string, string> GetQueryParameters(string url)
-        {
-            if (string.IsNullOrEmpty(url))
-                return new Dictionary<string, string>();
-            
-            var query = QueryStringParser.Parse(url).Keys.Where( key => key != null).ToDictionary(key => key, key => QueryStringParser.Parse(url)[key]);
-            return query;
-        }
+        
 
         private static void OnDeepLinkDataReceived(DeepLinkData data)
         {
-            OnHotLoadedAvatarIdChanged?.Invoke(data.AvatarId);
+            var avatarId = string.IsNullOrEmpty(data.AvatarId) ? 
+                PlayerPrefs.GetString(CACHED_AVATAR_ID, string.Empty) 
+                : data.AvatarId;
+            if(string.IsNullOrEmpty(avatarId))
+            {
+                Debug.LogWarning("No AvatarId found in the deep link data or PlayerPrefs.");
+                return;
+            }
+
+            PlayerPrefs.SetString(CACHED_AVATAR_ID, avatarId);
+            OnHotLoadedAvatarIdChanged?.Invoke(avatarId);
+        }
+        
+        public static void ClearCachedAvatarId()
+        {
+            PlayerPrefs.DeleteKey(CACHED_AVATAR_ID);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -16,7 +15,6 @@ namespace PlayerZero.Runtime.DeepLinking
         private  const string USER_NAME_KEY = "userName";
         
         private static DeepLinkData data;
-        private static Dictionary<string, string> parameters = new Dictionary<string, string>();
 
         static DeepLinkHandler()
         {
@@ -26,45 +24,36 @@ namespace PlayerZero.Runtime.DeepLinking
         private static void OnDeepLinkActivated(string url)
         {
             DeeplinkURL = url;
-            parameters.Clear();
-            var isNewData = true;
             if (url.Contains(LINK_NAME))
             {
-                var query = QueryStringParser.Parse(url);
-                if (query.TryGetValue(AVATAR_ID_KEY, out var avatarId))
+                var parameters = ZeroQueryParams.GetParams();
+                if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
                 {
-                    isNewData = data.AvatarId != avatarId;
                     data.AvatarId = avatarId;
                     Debug.Log($"DeepLink Avatar Id: {data.AvatarId}");
                 }
-                if (query.TryGetValue(USER_NAME_KEY, out var userName))
+                if (parameters.TryGetValue(USER_NAME_KEY, out var userName))
                 {
                     data.UserName = userName;
                     Debug.Log($"DeepLink User Name: {data.UserName}");
                 }
-                
-                foreach (var key in query.Keys)
-                {
-                    parameters[key] = query[key];
-                }
+                OnDeepLinkDataReceived.Invoke(data);
+                return;
             }
-
-            if (!isNewData) return; // don't invoke if data has not changed
-            Debug.Log($"Deep link activated: {url}");
-            OnDeepLinkDataReceived.Invoke(data);
+            Debug.LogWarning($"No Deeplink data found at URL: {url}");
         }
         
         public static void CheckForDeepLink()
         {
 #if UNITY_STANDALONE_WIN && UNITY_EDITOR
         // Read command-line args (deep link will be one of them if triggered via URI)
-        string[] args = Environment.GetCommandLineArgs();
+        var args = Environment.GetCommandLineArgs();
 
-        foreach (string arg in args)
+        foreach (var arg in args)
         {
-            if (arg.StartsWith("playerzero"))
+            if (arg.StartsWith(LINK_NAME))
             {
-                Debug.Log("Received deep link: " + arg);
+                Debug.Log($"Received deep link: {arg}");
 
                 OnDeepLinkActivated(arg);
                 break;
