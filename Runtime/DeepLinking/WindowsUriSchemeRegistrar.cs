@@ -4,16 +4,17 @@ using System.Runtime.InteropServices;
 using PlayerZero.Data;
 #endif
 
-public static class WindowsUriSchemeRegistrar 
+namespace PlayerZero.Runtime.DeepLinking
 {
-#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
+    public static class WindowsUriSchemeRegistrar
+    {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
     [DllImport("UriSchemeRegistrar")]
     private static extern int RegisterUriScheme(string scheme, string exePath);
 
     public static void TryRegisterCustomScheme(string scheme)
     {
         var processModule = System.Diagnostics.Process.GetCurrentProcess().MainModule;
-        Debug.Log($"TryRegisterCustomScheme: {processModule}");
         if (processModule != null)
         {
             var exePath = processModule.FileName;
@@ -31,10 +32,10 @@ public static class WindowsUriSchemeRegistrar
         }
     }
 #endif
-    
-    public static void Setup()
-    {
-#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
+
+        public static void Setup()
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
         var settings = Resources.Load<Settings>("PlayerZeroSettings");
         if (settings != null)
         {
@@ -42,7 +43,8 @@ public static class WindowsUriSchemeRegistrar
         }
         return;
 #endif
-        Debug.LogWarning("RegisterUriScheme is only supported on Windows Standalone builds.");
+            Debug.LogWarning("RegisterUriScheme is only supported on Windows Standalone builds.");
+        }
+
     }
-    
 }
