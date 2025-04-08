@@ -3,7 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0] - 2025.04.09
+
+## Added
+
 ## [2.2.0] - 2025.03.27
+
 ## Added
 - SDK version and Sdk platform properties added to AvatarSessionStarted
 - DeviceContext data added to AvatarSessionStarted
