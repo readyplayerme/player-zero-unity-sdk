@@ -1,17 +1,11 @@
-using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
-using UnityEngine.Serialization;
-
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
 using System.Runtime.InteropServices;
 using PlayerZero.Data;
 #endif
 
-public class DesktopDeepLinkSetup : MonoBehaviour
+public static class WindowsUriSchemeRegistrar 
 {
-    [SerializeField]
-    private bool setupOnStart = true;
-    
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
     [DllImport("UriSchemeRegistrar")]
     private static extern int RegisterUriScheme(string scheme, string exePath);
@@ -37,16 +31,8 @@ public class DesktopDeepLinkSetup : MonoBehaviour
         }
     }
 #endif
-
-    private void Start()
-    {
-        if (setupOnStart)
-        {
-            Setup();
-        }
-    }
-
-    public void Setup()
+    
+    public static void Setup()
     {
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
         var settings = Resources.Load<Settings>("PlayerZeroSettings");
