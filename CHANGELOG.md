@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.3.0] - 2025.04.09
 
 ## Added
+- LinXmlAutoGenerator class added for generating XML files to prevent code stripping issues
+- ZeroQueryParams class now handles all url parameter extractions
+- PlayerZeroSdk now auto caches avatarId in playerPrefs
 
 ## [2.2.0] - 2025.03.27
 
