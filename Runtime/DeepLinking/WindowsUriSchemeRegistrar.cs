@@ -23,6 +23,7 @@ namespace PlayerZero.Runtime.DeepLinking
             if (result == 0)
             {
                 Debug.Log($"URI scheme '{scheme}' registered successfully.");
+                return;
             }
             Debug.LogError($"Failed to register URI scheme '{scheme}'. Error code: {result}");
         }
