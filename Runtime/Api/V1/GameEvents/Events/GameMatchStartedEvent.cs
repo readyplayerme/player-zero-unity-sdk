@@ -59,5 +59,8 @@ namespace PlayerZero.Api.V1
 
         [JsonProperty("loadout")]
         public Dictionary<string, object> Loadout { get; set; }
+        
+        [JsonProperty("lobby_id")]
+        public string LobbyId { get; set; }
     }
 }
