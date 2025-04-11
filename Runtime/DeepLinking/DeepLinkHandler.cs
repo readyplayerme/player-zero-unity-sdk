@@ -20,13 +20,31 @@ namespace PlayerZero.Runtime.DeepLinking
         {
             Application.deepLinkActivated += OnDeepLinkActivated;
         }
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void OnAppStart()
+        {
+            Application.quitting += Shutdown;
+        }
+
+        private static void Shutdown()
+        {
+            Application.deepLinkActivated -= OnDeepLinkActivated;
+            Application.quitting -= Shutdown;
+        }
 
         private static void OnDeepLinkActivated(string url)
         {
+            if (DeeplinkURL == url)
+            {
+                Debug.LogWarning($"Deeplink URL already processed: {url}");
+                return;
+            }
             DeeplinkURL = url;
+
             if (url.Contains(LINK_NAME))
             {
-                var parameters = ZeroQueryParams.GetParams();
+                var parameters = ZeroQueryParams.GetParams(url);
                 if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
                 {
                     data.AvatarId = avatarId;
@@ -37,6 +55,7 @@ namespace PlayerZero.Runtime.DeepLinking
                     data.UserName = userName;
                     Debug.Log($"DeepLink User Name: {data.UserName}");
                 }
+                
                 OnDeepLinkDataReceived.Invoke(data);
                 return;
             }
@@ -45,24 +64,28 @@ namespace PlayerZero.Runtime.DeepLinking
         
         public static void CheckForDeepLink()
         {
-#if UNITY_STANDALONE_WIN
-        // Read command-line args (deep link will be one of them if triggered via URI)
-        var args = Environment.GetCommandLineArgs();
-
-        foreach (var arg in args)
-        {
-            if (arg.StartsWith(LINK_NAME))
-            {
-                Debug.Log($"Received deep link: {arg}");
-
-                OnDeepLinkActivated(arg);
-                break;
-            }
-        }
-
-        return;
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+            OnDeepLinkActivated(GetDesktopUrl());
+            return;
 #endif
             OnDeepLinkActivated(Application.absoluteURL);
+        }
+
+        public static string GetDesktopUrl()
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+        // Read command-line args (deep link will be one of them if triggered via URI)
+        var args = Environment.GetCommandLineArgs();
+         
+                 foreach (var arg in args)
+                 {
+                     if (arg.StartsWith(LINK_NAME))
+                     {
+                         return arg;
+                     }
+                 }
+#endif
+            return string.Empty;
         }
     }
 }

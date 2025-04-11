@@ -1,25 +1,20 @@
-using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
-using UnityEngine.Serialization;
-
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
 using System.Runtime.InteropServices;
 using PlayerZero.Data;
 #endif
 
-public class DesktopDeepLinkSetup : MonoBehaviour
+namespace PlayerZero.Runtime.DeepLinking
 {
-    [SerializeField]
-    private bool setupOnStart = true;
-    
-#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
+    public static class WindowsUriSchemeRegistrar
+    {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
     [DllImport("UriSchemeRegistrar")]
     private static extern int RegisterUriScheme(string scheme, string exePath);
 
     public static void TryRegisterCustomScheme(string scheme)
     {
         var processModule = System.Diagnostics.Process.GetCurrentProcess().MainModule;
-        Debug.Log($"TryRegisterCustomScheme: {processModule}");
         if (processModule != null)
         {
             var exePath = processModule.FileName;
@@ -28,6 +23,7 @@ public class DesktopDeepLinkSetup : MonoBehaviour
             if (result == 0)
             {
                 Debug.Log($"URI scheme '{scheme}' registered successfully.");
+                return;
             }
             Debug.LogError($"Failed to register URI scheme '{scheme}'. Error code: {result}");
         }
@@ -38,17 +34,9 @@ public class DesktopDeepLinkSetup : MonoBehaviour
     }
 #endif
 
-    private void Start()
-    {
-        if (setupOnStart)
+        public static void Setup()
         {
-            Setup();
-        }
-    }
-
-    public void Setup()
-    {
-#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
         var settings = Resources.Load<Settings>("PlayerZeroSettings");
         if (settings != null)
         {
@@ -56,7 +44,8 @@ public class DesktopDeepLinkSetup : MonoBehaviour
         }
         return;
 #endif
-        Debug.LogWarning("RegisterUriScheme is only supported on Windows Standalone builds.");
+            Debug.LogWarning("RegisterUriScheme is only supported on Windows Standalone builds.");
+        }
+
     }
-    
 }

@@ -33,28 +33,32 @@ namespace PlayerZero.Runtime.Sdk
         public static Action<string> OnHotLoadedAvatarIdChanged;
         
         private const string CACHED_AVATAR_ID = "PO_HotloadedAvatarId";
-
-        private static void Init()
+        
+        private static bool _isInitialized;
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void OnAppStart()
         {
-            if (_settings == null)
-                _settings = Resources.Load<Settings>("PlayerZeroSettings");
-
-            if (_characterApi == null)
-                _characterApi = new CharacterApi();
-
-            if (_gameEventApi == null)
-                _gameEventApi = new GameEventApi();
-
-            if (_fileApi == null)
-                _fileApi = new FileApi();
-            
+            Application.quitting += Shutdown;
             DeepLinkHandler.OnDeepLinkDataReceived += OnDeepLinkDataReceived;
+        }
+
+        public static void Initialize()
+        {
+            if (_isInitialized)
+                return;
+
+            _settings = Resources.Load<Settings>("PlayerZeroSettings");
+            _characterApi ??= new CharacterApi();
+            _gameEventApi ??= new GameEventApi();
+            _fileApi ??= new FileApi();
             DeepLinkHandler.CheckForDeepLink();
+            _isInitialized = true;
         }
 
         public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
         {
-            Init();
+            Initialize();
 
             var fileApi = new FileApi();
             var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?size={size}";
@@ -88,7 +92,7 @@ namespace PlayerZero.Runtime.Sdk
             TEvent eventPayload
         ) where TEvent : IGameEventStarted<TEventProperties> where TEventProperties : class, IGameSession, IGame
         {
-            Init();
+            Initialize();
 
             var sessionId = Guid.NewGuid().ToString();
             eventPayload.Properties.SessionId = sessionId;
@@ -109,7 +113,7 @@ namespace PlayerZero.Runtime.Sdk
             TEvent eventPayload
         ) where TEvent : IGameEvent<TEventProperties> where TEventProperties : class, IGameSession, IGame
         {
-            Init();
+            Initialize();
 
             eventPayload.Properties.GameId = _settings.GameId;
             
@@ -127,7 +131,7 @@ namespace PlayerZero.Runtime.Sdk
 
         public static async Task<Character> GetAvatarMetadataAsync(string avatarId)
         {
-            Init();
+            Initialize();
 
             var response = await _characterApi.FindByIdAsync(new CharacterFindByIdRequest()
             {
@@ -148,7 +152,7 @@ namespace PlayerZero.Runtime.Sdk
             if (!string.IsNullOrEmpty(request.AvatarId) && !string.IsNullOrEmpty(request.AvatarUrl))
                 Debug.LogError("Only one of either AvatarId or AvatarUrl must be provided.");
 
-            Init();
+            Initialize();
 
             string url;
 
@@ -212,6 +216,16 @@ namespace PlayerZero.Runtime.Sdk
         public static void ClearCachedAvatarId()
         {
             PlayerPrefs.DeleteKey(CACHED_AVATAR_ID);
+        }
+        
+        public static void Shutdown()
+        {
+            if (!_isInitialized)
+                return;
+
+            Application.quitting -= Shutdown;
+            DeepLinkHandler.OnDeepLinkDataReceived -= OnDeepLinkDataReceived;
+            _isInitialized = false;
         }
     }
 }
