@@ -1,76 +1,101 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
-using System.Collections.Generic;
 
 namespace PlayerZero
 {
     public class MeshTransfer
     {
         /// <summary>
-        ///     Transfer meshes from source to target GameObject
+        ///     Transfer meshes from source to target GameObject.
+        ///     Destroys the source after transfer.
         /// </summary>
-        /// <param name="source">New character model</param>
-        /// <param name="target">Character model existing in the scene</param>
-        /// <param name="definition">Skeleton definition</param>
         public void Transfer(GameObject source, GameObject target)
         {
-            RemoveMeshes(target.transform);
-            TransferMeshes(target.transform, source.transform, target.transform);
+            var animator = target.GetComponent<Animator>();
+            if (animator != null) animator.enabled = false;
 
-            Object.Destroy(source);
+            RemoveMeshes(target.transform);
+            TransferMeshes(target.transform, source.transform, GetDefaultRootBone(target.transform));
+
+            SafeDestroy(source);
+            
+            if (animator != null)
+            {
+                animator.enabled = true;
+                animator.Rebind();
+                animator.Update(0f);
+            }
         }
         
-        /// Remove all meshes from the target armature
+        private void SafeDestroy(GameObject obj)
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Object.DestroyImmediate(obj);
+                return;
+            }
+#endif
+            Object.Destroy(obj);
+        }
+
+        /// <summary>
+        /// Removes all non-attached SkinnedMeshRenderers from the target armature.
+        /// </summary>
         private void RemoveMeshes(Transform targetArmature)
         {
             Renderer[] renderers = GetRenderers(targetArmature);
             foreach (Renderer renderer in renderers)
             {
                 if (!renderer.gameObject.TryGetComponent<TemplateAttachment>(out _))
-                    Object.Destroy(renderer.gameObject);
+                {
+                    SafeDestroy(renderer.gameObject);
+                }
             }
         }
 
-        /// Set meshes from source armature to target armature
+        /// <summary>
+        /// Transfers all SkinnedMeshRenderers from sourceArmature to targetArmature,
+        /// remapping bones by name using a complete bone map built from all target meshes.
+        /// </summary>
         public void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone)
         {
-            Transform[] bones = GetBones(targetArmature);
-            Renderer[] sourceRenderers = sourceArmature.GetComponentsInChildren<Renderer>();
-            
+            var targetBoneMap = GetAllTargetBonesMap(targetArmature);
+            var sourceRenderers = GetRenderers(sourceArmature);
+
+            var targetMeshRenderers = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>();
+            Transform targetMeshParent = targetMeshRenderers.Length > 1
+                ? targetMeshRenderers[1].transform.parent
+                : targetMeshRenderers.FirstOrDefault()?.transform.parent ?? targetArmature;
+
             foreach (Renderer renderer in sourceRenderers)
             {
-                Transform[] bonesCopy = new Transform[bones.Length];
-                Transform[] sourceBones = GetBones(sourceArmature);
-            
-                for (int i = 0; i < bones.Length; i++)
-                {
-                    for(int j = 0; j < bones.Length; j++)
-                    {
-                        if(bones.Length <= j)
-                            continue;
-
-                        if (sourceBones.Length <= i)
-                            continue;
-                    
-                        if (bones[j].name == sourceBones[i].name)
-                        {
-                            bonesCopy[i] = bones[j];
-                            break;
-                        }
-                    }
-                }
-                
-                renderer.gameObject.transform.SetParent(targetArmature);
-                renderer.gameObject.transform.localPosition = Vector3.zero;
-                renderer.gameObject.transform.localEulerAngles = Vector3.zero;
+                renderer.transform.SetParent(targetMeshParent, worldPositionStays: false);
+                renderer.gameObject.SetActive(true);
 
                 if (renderer is SkinnedMeshRenderer skinnedMeshRenderer)
                 {
-                    skinnedMeshRenderer.rootBone = rootBone;
-                    skinnedMeshRenderer.bones = bonesCopy;
+                    Transform[] originalBones = skinnedMeshRenderer.bones;
+                    Transform[] remappedBones = new Transform[originalBones.Length];
 
-                    skinnedMeshRenderer.sharedMesh.RecalculateBounds();
+                    for (int i = 0; i < originalBones.Length; i++)
+                    {
+                        string boneName = originalBones[i]?.name;
+                        if (boneName != null && targetBoneMap.TryGetValue(boneName, out var targetBone))
+                        {
+                            remappedBones[i] = targetBone;
+                        }
+                    }
+
+                    skinnedMeshRenderer.rootBone = rootBone;
+                    skinnedMeshRenderer.bones = remappedBones;
+
+                    if (skinnedMeshRenderer.sharedMesh != null && skinnedMeshRenderer.sharedMesh.isReadable)
+                    {
+                        skinnedMeshRenderer.sharedMesh.RecalculateBounds();
+                    }
                 }
             }
 
@@ -78,39 +103,51 @@ namespace PlayerZero
                 rootBone.SetAsLastSibling();
         }
 
-        /// Get bones from the target armature
-        private Transform[] GetBones(Transform targetArmature)
+        private Dictionary<string, Transform> GetAllTargetBonesMap(Transform targetArmature)
         {
-            SkinnedMeshRenderer sampleMesh = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>()[0];
-            Transform[] bones = sampleMesh.bones;
-            return bones;
+            var skinnedMeshes = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>();
+            var boneMap = new Dictionary<string, Transform>();
+
+            foreach (var smr in skinnedMeshes)
+            {
+                foreach (var bone in smr.bones)
+                {
+                    if (bone != null && !boneMap.ContainsKey(bone.name))
+                    {
+                        boneMap[bone.name] = bone;
+                    }
+                }
+            }
+
+            return boneMap;
         }
 
-        private Renderer[] GetRenderers(Transform targetArmature)
+        private Renderer[] GetRenderers(Transform armature)
         {
             List<Renderer> renderers = new List<Renderer>();
-            GetRenderersRecursive(targetArmature, renderers);
+            GetRenderersRecursive(armature, renderers);
             return renderers.ToArray();
         }
 
         private void GetRenderersRecursive(Transform parent, List<Renderer> renderers)
         {
-            // Ignore from TemplateAttachment
             if (parent.GetComponent<TemplateAttachment>() != null)
-            {
                 return;
-            }
 
             foreach (Transform child in parent)
             {
-                Renderer renderer = child.GetComponent<Renderer>();
-                if (renderer != null)
+                if (child.TryGetComponent<SkinnedMeshRenderer>(out var smr))
                 {
-                    renderers.Add(renderer);
+                    renderers.Add(smr);
                 }
-
                 GetRenderersRecursive(child, renderers);
             }
+        }
+
+        private Transform GetDefaultRootBone(Transform targetArmature)
+        {
+            var smr = targetArmature.GetComponentInChildren<SkinnedMeshRenderer>();
+            return smr != null ? smr.rootBone : targetArmature;
         }
     }
 }
