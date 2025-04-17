@@ -33,8 +33,11 @@ namespace PlayerZero.Editor.Cache
                     "Assets/PlayerZero/Resources"
                 );
 
+            if (string.IsNullOrEmpty(_name)) return;
             if (!AssetDatabase.IsValidFolder($"Assets/PlayerZero/Resources/{_name}"))
+            {
                 AssetDatabase.CreateFolder("Assets/PlayerZero/Resources", _name);
+            }
 
             AssetDatabase.Refresh();
         }

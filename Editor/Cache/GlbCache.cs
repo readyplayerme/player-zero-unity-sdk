@@ -13,7 +13,7 @@ namespace PlayerZero.Editor.Cache
         {
             var path = $"{CacheDirectory}/{id}.glb";
 #if UNITY_2020_1_OR_NEWER
-            await File.Async(path, bytes);
+            await File.WriteAllBytesAsync(path, bytes);
 #else
             await Task.Run(() => File.WriteAllBytes(path, bytes));
 #endif

@@ -69,7 +69,11 @@ namespace PlayerZero.Api.V1
         
         private async Task<Texture2D> GetTextureFromFile(string path)
         {
+#if UNITY_2020_1_OR_NEWER
+            byte[] bytes = await File.ReadAllBytesAsync(path);
+#else
             byte[] bytes = await Task.Run(() => File.ReadAllBytes(path));
+#endif
             var texture = new Texture2D(2, 2);
             texture.LoadImage(bytes);
             return texture;
@@ -100,19 +104,17 @@ namespace PlayerZero.Api.V1
             }
 
 #if UNITY_2020_1_OR_NEWER
-            if (request.result == UnityWebRequest.Result.Success)
+    if (request.result == UnityWebRequest.Result.Success)
 #else
             if (!request.isNetworkError && !request.isHttpError)
 #endif
             {
-                Debug.LogError("Failed to download file: " + request.error);
-            }
-            else
-            {
                 return request.downloadHandler.data;
             }
 
+            Debug.LogError($"Failed to download file from url: {url} \n Error: {request.error}");
             return null;
         }
+
     }
 }
