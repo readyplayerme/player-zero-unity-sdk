@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
 using AssetDatabase = UnityEditor.AssetDatabase;
-using TextAsset = UnityEngine.TextCore.Text.TextAsset;
 
 namespace PlayerZero.Editor.Cache
 {

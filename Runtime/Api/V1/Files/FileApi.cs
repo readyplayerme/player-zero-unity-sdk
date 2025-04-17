@@ -49,7 +49,7 @@ namespace PlayerZero.Api.V1
             if(!File.Exists(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id))
             {
                 // download thumbnail
-                using UnityWebRequest iconRequest = UnityWebRequest.Get(asset.IconUrl);
+                UnityWebRequest iconRequest = UnityWebRequest.Get(asset.IconUrl);
                 iconRequest.downloadHandler = new DownloadHandlerFile(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id);
                 AsyncOperation iconOp = iconRequest.SendWebRequest();
                 while (!iconOp.isDone)
@@ -67,9 +67,9 @@ namespace PlayerZero.Api.V1
             return await GetTextureFromFile(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id);
         }
         
-        private async Task<Texture2D> GetTextureFromFile(string path, CancellationToken cancellationToken = default)
+        private async Task<Texture2D> GetTextureFromFile(string path)
         {
-            byte[] bytes = await File.ReadAllBytesAsync(path, cancellationToken);
+            byte[] bytes = await Task.Run(() => File.ReadAllBytes(path));
             var texture = new Texture2D(2, 2);
             texture.LoadImage(bytes);
             return texture;
@@ -82,7 +82,7 @@ namespace PlayerZero.Api.V1
         
         public virtual async Task<byte[]> DownloadFileIntoMemoryAsync(string url, CancellationToken cancellationToken = default)
         {
-            using var request = new UnityWebRequest();
+            var request = new UnityWebRequest();
             request.url = url;
             request.downloadHandler = new DownloadHandlerBuffer();
 
@@ -99,7 +99,11 @@ namespace PlayerZero.Api.V1
                 await Task.Yield();
             }
 
-            if (request.result != UnityWebRequest.Result.Success)
+#if UNITY_2020_1_OR_NEWER
+            if (request.result == UnityWebRequest.Result.Success)
+#else
+            if (!request.isNetworkError && !request.isHttpError)
+#endif
             {
                 Debug.LogError("Failed to download file: " + request.error);
             }

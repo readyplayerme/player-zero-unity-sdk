@@ -32,7 +32,7 @@ namespace PlayerZero.Editor
             
             var missingTemplates = await LoadAndCreateCharacterTemplates(missingBlueprints);
             var list = new List<CharacterTemplate>();
-            if (templateListObject.Templates is { Length: > 0 })
+            if (templateListObject.Templates != null && templateListObject.Templates.Length > 0)
             {
                 list = new List<CharacterTemplate>(templateListObject.Templates);
             }
@@ -40,7 +40,6 @@ namespace PlayerZero.Editor
             if(list.Count == 0) return;
             templateListObject.Templates = list.ToArray();
             EditorUtility.SetDirty(templateListObject);
-            AssetDatabase.SaveAssetIfDirty(templateListObject);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }

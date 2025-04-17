@@ -49,9 +49,18 @@ namespace PlayerZero.Runtime.Sdk
                 return;
 
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
-            _characterApi ??= new CharacterApi();
-            _gameEventApi ??= new GameEventApi();
-            _fileApi ??= new FileApi();
+            if(_characterApi == null)
+            {
+                _characterApi = new CharacterApi();
+            }
+            if (_gameEventApi == null)
+            {
+                _gameEventApi = new GameEventApi();
+            }
+            if (_fileApi == null)
+            {
+                _fileApi = new FileApi();
+            }
             DeepLinkHandler.CheckForDeepLink();
             _isInitialized = true;
         }

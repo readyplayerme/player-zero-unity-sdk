@@ -1,10 +1,9 @@
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_2020_1_OR_NEWER
 using UnityEditor;
 using UnityEngine;
 using System.IO;
 using PlayerZero.Data;
 using PlayerZero.Editor.Cache;
-using UnityEditor.PackageManager;
 
 namespace PlayerZero.Editor
 {
