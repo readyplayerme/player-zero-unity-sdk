@@ -10,7 +10,9 @@ namespace PlayerZero.Runtime.DeepLinking
         
         public static Action<DeepLinkData> OnDeepLinkDataReceived;
         
-        private const string LINK_NAME = "playerzero";
+        private const string PZERO_LINK_NAME = "playerzero";
+        private const string EPIC_LINK_NAME = "com.epicgames.launcher://";
+        private const string STEAM_LINK_NAME = "steam://";
         private const string AVATAR_ID_KEY = "avatarId";
         private  const string USER_NAME_KEY = "userName";
         
@@ -42,7 +44,7 @@ namespace PlayerZero.Runtime.DeepLinking
             }
             DeeplinkURL = url;
 
-            if (url.Contains(LINK_NAME))
+            if (url.Contains(PZERO_LINK_NAME))
             {
                 var parameters = ZeroQueryParams.GetParams(url);
                 if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
@@ -73,13 +75,13 @@ namespace PlayerZero.Runtime.DeepLinking
 
         public static string GetDesktopUrl()
         {
-#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+#if UNITY_STANDALONE_WIN && UNITY_EDITOR
         // Read command-line args (deep link will be one of them if triggered via URI)
         var args = Environment.GetCommandLineArgs();
          
                  foreach (var arg in args)
                  {
-                     if (arg.StartsWith(LINK_NAME))
+                     if (arg.StartsWith(PZERO_LINK_NAME, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(EPIC_LINK_NAME, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(STEAM_LINK_NAME, StringComparison.OrdinalIgnoreCase))
                      {
                          return arg;
                      }
