@@ -9,7 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - MeshTransfer class now supports meshes with varying bone counts
 - General improvements to MeshTransfer class
-
+- DeepLinkHandler class now supports steam and epic games store deeplinks
+- Various script updates to support Unity 2019
 
 ## [2.3.0] - 2025.04.11
 
