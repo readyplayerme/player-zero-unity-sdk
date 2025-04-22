@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using PlayerZero.Data;
 using PlayerZero.Editor.UI.ViewModels;
 using UnityEngine;
-using Application = UnityEngine.Device.Application;
 
 namespace PlayerZero.Editor.UI.Views
 {
@@ -65,7 +64,8 @@ namespace PlayerZero.Editor.UI.Views
                 margin = new RectOffset(10, 10, 0, 0)
             });
 
-            if (!blueprintListViewModel.Loading && blueprintListViewModel.CharacterBlueprints?.Count is null or 0)
+            if (!blueprintListViewModel.Loading && (blueprintListViewModel.CharacterBlueprints == null || blueprintListViewModel.CharacterBlueprints.Count == 0)
+            )
             {
                 GUILayout.Label("You have no character blueprints setup for this application.",
                     new GUIStyle(GUI.skin.label)

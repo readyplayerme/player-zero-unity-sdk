@@ -24,8 +24,11 @@ namespace PlayerZero.Api
             var queryString = new StringBuilder();
             queryString.Append('?');
 
-            foreach (var (key, value) in properties)
+            foreach (var kvp in properties)
             {
+                var key = kvp.Key;
+                var value = kvp.Value;
+
                 if (value is IDictionary dictionary)
                 {
                     foreach (DictionaryEntry entry in dictionary)
@@ -46,7 +49,7 @@ namespace PlayerZero.Api
                     queryString.Append($"{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value.ToString())}&");
                 }
             }
-
+            
             // Remove the trailing '&' and return the query string
             return queryString.ToString().TrimEnd('&');
         }

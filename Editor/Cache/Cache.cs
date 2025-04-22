@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
 using AssetDatabase = UnityEditor.AssetDatabase;
-using TextAsset = UnityEngine.TextCore.Text.TextAsset;
 
 namespace PlayerZero.Editor.Cache
 {
@@ -34,8 +33,11 @@ namespace PlayerZero.Editor.Cache
                     "Assets/PlayerZero/Resources"
                 );
 
+            if (string.IsNullOrEmpty(_name)) return;
             if (!AssetDatabase.IsValidFolder($"Assets/PlayerZero/Resources/{_name}"))
+            {
                 AssetDatabase.CreateFolder("Assets/PlayerZero/Resources", _name);
+            }
 
             AssetDatabase.Refresh();
         }

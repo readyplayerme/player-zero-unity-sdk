@@ -49,7 +49,10 @@ namespace PlayerZero
                 Id = characterId,
             });
             
-            blueprintId ??= response.Data.BlueprintId;
+            if (blueprintId == null)
+            {
+                blueprintId = response.Data.BlueprintId;
+            }
             
             var characterData = template.AddComponent<CharacterData>();
             characterData.Initialize(response.Data.Id, blueprintId);
@@ -77,7 +80,10 @@ namespace PlayerZero
                 Id = characterId,
             });
             
-            blueprintId ??= response.Data.BlueprintId;
+            if (blueprintId == null)
+            {
+                blueprintId = response.Data.BlueprintId;
+            }
             
             var templatePrefab = GetTemplate(blueprintId, templateTag);
             
@@ -95,7 +101,10 @@ namespace PlayerZero
 
         private async Task<CharacterData> SetupCharacter(CharacterData characterData, CharacterLoaderConfig config, GameObject meshParent, string modelUrl, string blueprintId, string characterId)
         {
-            config ??= new CharacterLoaderConfig();
+            if(config == null)
+            {
+                config = new CharacterLoaderConfig();
+            }
             var query= QueryBuilder.BuildQueryString(config);
             var url = $"{modelUrl}?{query}&targetBlueprintId={blueprintId}";
 
