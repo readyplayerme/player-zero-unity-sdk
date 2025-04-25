@@ -106,7 +106,7 @@ namespace PlayerZero.Runtime.Sdk
             var sessionId = Guid.NewGuid().ToString();
             eventPayload.Properties.SessionId = sessionId;
             eventPayload.Properties.GameId = _settings.GameId;
-            _gameEventApi.SendGameEventAsync(eventPayload)
+            _gameEventApi.SendGameEventAsync<TEvent, TEventProperties>(eventPayload)
                 .ContinueWith(eventResponse =>
                 {
                     if (eventResponse.Status != TaskStatus.RanToCompletion)
@@ -126,7 +126,7 @@ namespace PlayerZero.Runtime.Sdk
 
             eventPayload.Properties.GameId = _settings.GameId;
             
-            _gameEventApi.SendGameEventAsync(eventPayload)
+            _gameEventApi.SendGameEventAsync<TEvent, TEventProperties>(eventPayload)
                 .ContinueWith(eventResponse =>
                 {
                     if (eventResponse.Status != TaskStatus.RanToCompletion)
