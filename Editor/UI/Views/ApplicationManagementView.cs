@@ -50,7 +50,7 @@ namespace PlayerZero.Editor.UI.Views
 
         public void Render()
         {
-            using var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
+            var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
             _scrollPosition = scrollViewScope.scrollPosition;
 
             GUILayout.Space(15);

@@ -5,8 +5,8 @@ namespace PlayerZero.Api
 {
     public interface IAuthenticationStrategy
     {
-        public Task AddAuthToRequestAsync<T>(ApiRequest<T> request, CancellationToken cancellationToken = default);
+        Task AddAuthToRequestAsync<T>(ApiRequest<T> request, CancellationToken cancellationToken = default);
 
-        public Task<bool> TryRefreshAsync<T>(ApiRequest<T> request, CancellationToken cancellationToken = default);
+        Task<bool> TryRefreshAsync<T>(ApiRequest<T> request, CancellationToken cancellationToken = default);
     }
 }

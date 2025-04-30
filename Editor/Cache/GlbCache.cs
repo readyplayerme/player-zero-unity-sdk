@@ -12,7 +12,11 @@ namespace PlayerZero.Editor.Cache
         public async Task Save(byte[] bytes, string id)
         {
             var path = $"{CacheDirectory}/{id}.glb";
+#if UNITY_2020_1_OR_NEWER
             await File.WriteAllBytesAsync(path, bytes);
+#else
+            await Task.Run(() => File.WriteAllBytes(path, bytes));
+#endif
                 
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
             AssetDatabase.SaveAssets();

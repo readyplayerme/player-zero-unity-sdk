@@ -2,6 +2,6 @@
 {
     public interface IGameEvent<T> where T : class, IGameSession
     {
-        public T Properties { get; set; }
+        T Properties { get; set; }
     }
 }

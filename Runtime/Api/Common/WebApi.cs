@@ -11,7 +11,8 @@ namespace PlayerZero.Api
     public abstract class WebApi
     {
         private Settings _settings;
-        protected Settings Settings => _settings ??= Resources.Load<Settings>("PlayerZeroSettings");
+        protected Settings Settings => _settings != null ? _settings : (_settings = Resources.Load<Settings>("PlayerZeroSettings"));
+        
         protected bool LogWarnings = true;
 
         protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data, CancellationToken cancellationToken = default)
@@ -38,7 +39,7 @@ namespace PlayerZero.Api
         protected virtual async Task<TResponse> Dispatch<TResponse>(ApiRequest<string> data, CancellationToken cancellationToken = default)
             where TResponse : ApiResponse, new()
         {
-            using var request = new UnityWebRequest();
+            var request = new UnityWebRequest();
             request.url = data.Url;
             request.method = data.Method;
             request.downloadHandler = new DownloadHandlerBuffer();
@@ -68,8 +69,11 @@ namespace PlayerZero.Api
                 }
                 await Task.Yield();
             }
-
+#if UNITY_2020_1_OR_NEWER
             if (request.result == UnityWebRequest.Result.Success)
+#else
+            if (!request.isNetworkError && !request.isHttpError)
+#endif
                 return JsonConvert.DeserializeObject<TResponse>(request.downloadHandler.text);
 
             if (LogWarnings)
