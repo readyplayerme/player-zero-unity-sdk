@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
+using UnityGLTF;
 
 namespace PlayerZero
 {
@@ -101,6 +102,14 @@ namespace PlayerZero
 
             if (rootBone != null)
                 rootBone.SetAsLastSibling();
+            
+            #if PZERO_UNITY_GLTF
+            var gltfcomponent = targetArmature.GetComponent<InstantiatedGLTFObject>();
+            if(gltfcomponent == null)
+            {
+                targetArmature.gameObject.AddComponent<InstantiatedGLTFObject>();
+            }
+            #endif
         }
 
         private Dictionary<string, Transform> GetAllTargetBonesMap(Transform targetArmature)

@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using GLTFast;
 using PlayerZero.Api;
 using PlayerZero.Api.V1;
 using PlayerZero.Api.V1.Contracts;
@@ -185,21 +184,13 @@ namespace PlayerZero.Runtime.Sdk
                     : $"{response.Data.ModelUrl}?{query}&targetBlueprintId={request.BlueprintId}";
             }
 
-            var gltf = new GltfImport();
-            if (!await gltf.Load(url))
+            var playerZeroCharacter = await GltfLoader.LoadModelAsync(url);
+            if (playerZeroCharacter == null)
             {
                 Debug.LogError($"Failed to load Player Zero Character");
             }
-
-            var playerZeroCharacterParent = new GameObject("PlayerZeroImportContainer");
-
-            await gltf.InstantiateSceneAsync(playerZeroCharacterParent.transform);
-
-            var playerZeroCharacter = playerZeroCharacterParent.transform.GetChild(0).gameObject;
+            
             playerZeroCharacter.transform.parent = request.Parent;
-
-            GameObject.Destroy(playerZeroCharacterParent);
-
             playerZeroCharacter.transform.localPosition = Vector3.zero;
             playerZeroCharacter.transform.localEulerAngles = Vector3.zero;
 
