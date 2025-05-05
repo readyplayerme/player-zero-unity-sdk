@@ -9,11 +9,11 @@ mergeInto(LibraryManager.library, {
         return buffer;
     }
     
-    GameEnd: function (score, gameDurationSeconds, gameId) {
+    GameEnd: function (score, scoreType, gameDurationSeconds, gameId) {
         const data = {
             type: "gameProgress",
             score: score,
-            scoreType: "points",
+            scoreType: scoreType,
             endOfRun: true,
             gameDurationSeconds: gameDurationSeconds,
             game: gameId

@@ -39,10 +39,11 @@ namespace PlayerZero.Runtime.Sdk
         private const string CACHED_AVATAR_ID = "PO_HotloadedAvatarId";
         
         private static bool _isInitialized;
+        private static float startTime;
         
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
-        private static extern void GameEnd(int score, float gameDurationSeconds, string gameId);
+        private static extern void GameEnd(int score, string scoreType, float gameDurationSeconds, string gameId);
 #endif
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -56,7 +57,7 @@ namespace PlayerZero.Runtime.Sdk
         {
             if (_isInitialized)
                 return;
-
+            startTime = Time.realtimeSinceStartup;
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
             if(_characterApi == null)
             {
@@ -246,10 +247,11 @@ namespace PlayerZero.Runtime.Sdk
             _isInitialized = false;
         }
 
-        public static void SendBackToPlayerZero(int score, float gameDurationSeconds)
+        public static void SendBackToPlayerZero(int score, string scoreType = "points")
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            GameEnd(score, gameDurationSeconds, gameDurationSeconds,_settings.GameId);
+            var gameDurationSeconds = Time.realtimeSinceStartup - startTime;
+            GameEnd(score, scoreType, gameDurationSeconds, gameDurationSeconds,_settings.GameId);
 #endif
         }
     }
