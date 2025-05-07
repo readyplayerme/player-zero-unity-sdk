@@ -8,4 +8,16 @@ mergeInto(LibraryManager.library, {
         stringToUTF8(browser, buffer, bufferSize);
         return buffer;
     }
+    
+    GameEnd: function (score, scoreType, gameDurationSeconds, gameId) {
+        const data = {
+            type: "gameProgress",
+            score: score,
+            scoreType: scoreType,
+            endOfRun: true,
+            gameDurationSeconds: gameDurationSeconds,
+            game: gameId
+        };
+        window.top.postMessage(data, "*");
+    }
 });

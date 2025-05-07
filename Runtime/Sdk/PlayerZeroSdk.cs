@@ -8,6 +8,10 @@ using PlayerZero.Data;
 using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
+
 namespace PlayerZero.Runtime.Sdk
 {
     public struct CharacterRequestConfig
@@ -35,6 +39,12 @@ namespace PlayerZero.Runtime.Sdk
         private const string CACHED_AVATAR_ID = "PO_HotloadedAvatarId";
         
         private static bool _isInitialized;
+        private static float startTime;
+        
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern void GameEnd(int score, string scoreType, float gameDurationSeconds, string gameId);
+#endif
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void OnAppStart()
@@ -47,7 +57,7 @@ namespace PlayerZero.Runtime.Sdk
         {
             if (_isInitialized)
                 return;
-
+            startTime = Time.realtimeSinceStartup;
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
             if(_characterApi == null)
             {
@@ -235,6 +245,14 @@ namespace PlayerZero.Runtime.Sdk
             Application.quitting -= Shutdown;
             DeepLinkHandler.OnDeepLinkDataReceived -= OnDeepLinkDataReceived;
             _isInitialized = false;
+        }
+
+        public static void SendBackToPlayerZero(int score, string scoreType = "points")
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            var gameDurationSeconds = Time.realtimeSinceStartup - startTime;
+            GameEnd(score, scoreType, gameDurationSeconds, gameDurationSeconds,_settings.GameId);
+#endif
         }
     }
 }
