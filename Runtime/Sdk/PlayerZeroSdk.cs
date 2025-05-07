@@ -251,7 +251,7 @@ namespace PlayerZero.Runtime.Sdk
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
             var gameDurationSeconds = Time.realtimeSinceStartup - startTime;
-            GameEnd(score, scoreType, gameDurationSeconds, gameDurationSeconds,_settings.GameId);
+            GameEnd(score, scoreType, gameDurationSeconds, _settings.GameId);
 #endif
         }
     }
