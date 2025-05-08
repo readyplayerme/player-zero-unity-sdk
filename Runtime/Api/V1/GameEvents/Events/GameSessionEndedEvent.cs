@@ -11,6 +11,9 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("properties")]
         public GameSessionEndedProperties Properties { get; set; }
+        
+        [JsonProperty("token")]
+        public string Token { get; set; }
     }
     
     public class GameSessionEndedProperties : IGameSession, IGame

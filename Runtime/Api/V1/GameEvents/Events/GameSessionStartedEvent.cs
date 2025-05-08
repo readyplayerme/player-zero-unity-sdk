@@ -10,6 +10,8 @@ namespace PlayerZero.Api.V1
         
         [JsonProperty("properties")]
         public GameSessionStartedProperties Properties { get; set; }
+
+        public string Token { get; set; }
     }
     
     public class GameSessionStartedProperties : IGameSession, IGame

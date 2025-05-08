@@ -36,7 +36,7 @@ namespace PlayerZero.Runtime.Sdk
                 Debug.LogError("Player Zero Game ID is required. Please set it in tools -> Player Zero.");
                 return;
             }
-
+            
             if (_instance == null || _instance == this)
             {
 #if ENABLE_INPUT_SYSTEM
