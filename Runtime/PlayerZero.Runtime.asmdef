@@ -3,7 +3,9 @@
     "rootNamespace": "",
     "references": [
         "glTFast",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "UnityGLTFScripts",
+        "GLTFSerialization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

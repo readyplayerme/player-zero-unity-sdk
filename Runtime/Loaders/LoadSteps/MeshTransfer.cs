@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
+using UnityGLTF;
 
 namespace PlayerZero
 {
@@ -69,6 +70,14 @@ namespace PlayerZero
             Transform targetMeshParent = targetMeshRenderers.Length > 1
                 ? targetMeshRenderers[1].transform.parent
                 : targetMeshRenderers.FirstOrDefault()?.transform.parent ?? targetArmature;
+            
+#if PZERO_UNITY_GLTF
+            var gltfcomponent = sourceArmature.GetComponentInChildren<InstantiatedGLTFObject>();
+            if(gltfcomponent != null)
+            {
+                gltfcomponent.TransferComponent(targetArmature.gameObject);
+            }
+#endif
 
             foreach (Renderer renderer in sourceRenderers)
             {
@@ -98,6 +107,7 @@ namespace PlayerZero
                     }
                 }
             }
+            Debug.Log($"Added {sourceRenderers.Length} meshes to {targetArmature.name}");
 
             if (rootBone != null)
                 rootBone.SetAsLastSibling();
