@@ -1,11 +1,9 @@
 using System.Threading.Tasks;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
-using UnityGLTF;
 
 #if PZERO_UNITY_GLTF
+using UnityGLTF;
 using UnityGLTF.Loader;
-using UnityGLTF.Plugins;
 #endif
 
 namespace PlayerZero.Runtime.Sdk
@@ -21,18 +19,12 @@ namespace PlayerZero.Runtime.Sdk
             importOpt.DataLoader = new UnityWebRequestLoader(directory);
             var query = uri.Query;
             var filename= System.IO.Path.GetFileName(uri.AbsolutePath);
-            Debug.Log($"Request to directory {directory} with filename {filename} with query {query}");
             var import = new GLTFSceneImporter($"{filename}{query}", importOpt);
             await import.LoadSceneAsync();
             return import.CreatedObject;
-            // var loader = new GLTFSceneImporter(
-            //     url, new FileLoader(url), null);
-            //
-            // var parent = new GameObject("UnityGLTFModel");
-            // await loader.LoadSceneAsync(-1, true);
-            // return parent;
-#endif
+#else
             return null;
+#endif
         }
     }
 }

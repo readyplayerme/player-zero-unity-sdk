@@ -11,7 +11,7 @@ public class GltFastLoader : IGltfLoader
     {
 #if PZERO_GLTFAST
         var gltfImport = new GltfImport();
-        bool success = await gltfImport.Load(url);
+        var success = await gltfImport.Load(url);
         
         if (!success)
         {
@@ -25,7 +25,8 @@ public class GltFastLoader : IGltfLoader
         playerZeroCharacter.transform.parent = null;
         Object.Destroy(playerZeroCharacterParent);
         return playerZeroCharacter;
-#endif
+#else
         return null;
+#endif
     }
 }

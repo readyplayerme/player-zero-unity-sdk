@@ -2,7 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
+
+#if PZERO_GLTFAST
+using GLTFast;
+#elif PZERO_UNITY_GLTF
 using UnityGLTF;
+#endif
 
 namespace PlayerZero
 {
@@ -107,7 +112,6 @@ namespace PlayerZero
                     }
                 }
             }
-            Debug.Log($"Added {sourceRenderers.Length} meshes to {targetArmature.name}");
 
             if (rootBone != null)
                 rootBone.SetAsLastSibling();
