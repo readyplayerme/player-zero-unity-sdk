@@ -16,10 +16,7 @@ namespace PlayerZero.Editor.UI.Views
 
         public void Render(Action onLogin)
         {
-            using (new GUILayout.VerticalScope(new GUIStyle()
-                   {
-                       margin = new RectOffset(9, 9, 9, 0),
-                   }))
+            using (new GUILayout.VerticalScope(new GUIStyle() { margin = new RectOffset(9, 9, 9, 0), }))
             {
                 EditorGUILayout.LabelField("Sign in with your Player Zero developer account to start.");
 
@@ -59,21 +56,6 @@ namespace PlayerZero.Editor.UI.Views
                     }
                 });
             } 
-            
-            if (!string.IsNullOrEmpty(_viewModel.Error))
-            {
-                GUILayout.Label(_viewModel.Error, new GUIStyle()
-                {
-                    normal = new GUIStyleState()
-                    {
-                        textColor = Color.red
-                    },
-                    margin = new RectOffset()
-                    {
-                        left = 12, 
-                    }
-                });
-            }
         }
     }
 }
