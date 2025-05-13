@@ -1,5 +1,7 @@
 using UnityEngine;
+#if PZERO_UNITY_GLTF
 using UnityGLTF;
+#endif
 
 public static class InstantiatedGLTFObjectExtensions
 {
