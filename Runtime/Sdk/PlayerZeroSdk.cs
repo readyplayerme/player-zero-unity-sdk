@@ -7,6 +7,7 @@ using PlayerZero.Api.V1.Contracts;
 using PlayerZero.Data;
 using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
@@ -208,7 +209,12 @@ namespace PlayerZero.Runtime.Sdk
             var playerZeroCharacter = playerZeroCharacterParent.transform.GetChild(0).gameObject;
             playerZeroCharacter.transform.parent = request.Parent;
 
-            GameObject.Destroy(playerZeroCharacterParent);
+            #if UNITY_EDITOR
+                Object.DestroyImmediate(playerZeroCharacterParent);
+            #else
+                 Object.Destroy(playerZeroCharacterParent);
+            #endif
+       
 
             playerZeroCharacter.transform.localPosition = Vector3.zero;
             playerZeroCharacter.transform.localEulerAngles = Vector3.zero;
