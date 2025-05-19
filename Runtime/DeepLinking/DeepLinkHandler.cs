@@ -83,11 +83,18 @@ namespace PlayerZero.Runtime.DeepLinking
                  {
                      if (arg.StartsWith(PZERO_LINK_NAME, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(EPIC_LINK_NAME, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(STEAM_LINK_NAME, StringComparison.OrdinalIgnoreCase))
                      {
-                         return arg;
+                         Debug.Log($"PZero Log: Detected desktop launch ARGS = {arg}");
+                         if (arg.Contains(PZERO_LINK_NAME))
+                         {
+                             return arg;
+                         }
+                         // Temp workaround to prevent OnDeepLinkActivated from skipping the URL
+                         return $"{arg}&{PZERO_LINK_NAME}";
                      }
                  }
 #endif
-            return string.Empty;
+            Debug.Log($"PZero Log: No desktop launch ARGS detected, using Application.absoluteURL {Application.absoluteURL}");
+            return Application.absoluteURL;
         }
     }
 }
