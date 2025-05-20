@@ -75,7 +75,7 @@ namespace PlayerZero.Runtime.DeepLinking
 
         public static string GetDesktopUrl()
         {
-#if UNITY_STANDALONE_WIN && UNITY_EDITOR
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
         // Read command-line args (deep link will be one of them if triggered via URI)
         var args = Environment.GetCommandLineArgs();
          

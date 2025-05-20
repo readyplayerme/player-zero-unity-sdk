@@ -1,6 +1,6 @@
 using UnityEngine;
 
-#if UNITY_STANDALONE_WIN  && UNITY_EDITOR
+#if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
 using System.Runtime.InteropServices;
 using PlayerZero.Data;
 #endif
