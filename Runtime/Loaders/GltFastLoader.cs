@@ -1,15 +1,15 @@
 using System.Threading.Tasks;
 using PlayerZero.Runtime.Sdk;
 using UnityEngine;
-#if PZERO_GLTFAST
+// #if PZERO_GLTFAST
 using GLTFast;
-#endif
+//#endif
 
 public class GltFastLoader : IGltfLoader
 {
     public async Task<GameObject> LoadModelAsync(string url)
     {
-#if PZERO_GLTFAST
+//#if PZERO_GLTFAST
         var gltfImport = new GltfImport();
         var success = await gltfImport.Load(url);
         
@@ -25,8 +25,8 @@ public class GltFastLoader : IGltfLoader
         playerZeroCharacter.transform.parent = null;
         Object.Destroy(playerZeroCharacterParent);
         return playerZeroCharacter;
-#else
-        return null;
-#endif
+// #else
+//         return null;
+// #endif
     }
 }

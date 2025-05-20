@@ -1,8 +1,8 @@
-#if PZERO_GLTFAST
+//#if PZERO_GLTFAST
 using GLTFast;
-#elif PZERO_UNITY_GLTF
-using UnityGLTF;
-#endif
+// #elif PZERO_UNITY_GLTF
+// using UnityGLTF;
+// #endif
 using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
