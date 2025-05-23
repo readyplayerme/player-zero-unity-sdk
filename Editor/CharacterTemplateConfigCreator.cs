@@ -52,14 +52,7 @@ namespace PlayerZero.Editor
             {
                 var template = new CharacterTemplate(blueprint.Name, blueprint.Id);
                 template.cacheBlueprintId = blueprint.Id ;
-                //TODO: similar logic for loading and storing .glb is in GlbCache.cs, need to revisit or refactor in future
-                var loadedAsset = await LoadBlueprintModel(blueprint);
-                if (loadedAsset == null)
-                {
-                    continue;
-                }
                 var blueprintPrefab = new BlueprintPrefab();
-                blueprintPrefab.Prefab = loadedAsset;
                 blueprintPrefab.Tags = new string[] {"Default"};
                 template.Prefabs = new[] { blueprintPrefab };
                 templates.Add(template);

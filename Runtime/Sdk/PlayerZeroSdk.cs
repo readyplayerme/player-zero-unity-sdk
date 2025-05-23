@@ -6,6 +6,7 @@ using PlayerZero.Api.V1.Contracts;
 using PlayerZero.Data;
 using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
@@ -92,6 +93,7 @@ namespace PlayerZero.Runtime.Sdk
 
         public static string GetHotLoadedAvatarId()
         {
+            Initialize();
             var queryParams = ZeroQueryParams.GetParams();
             queryParams.TryGetValue("avatarId", out var avatarId);
             if (!string.IsNullOrEmpty(avatarId))
@@ -103,7 +105,8 @@ namespace PlayerZero.Runtime.Sdk
                 // If no avatarId is found in the URL, check PlayerPrefs
                 avatarId = PlayerPrefs.GetString(CACHED_AVATAR_ID, string.Empty);
             }
-            return avatarId;
+            
+            return string.IsNullOrEmpty(avatarId) ? _settings.DefaultAvatarId : avatarId;
         }
 
         public static string StartEventSession<TEvent, TEventProperties>(
