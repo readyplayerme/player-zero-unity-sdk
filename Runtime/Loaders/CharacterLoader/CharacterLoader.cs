@@ -1,10 +1,15 @@
+#if PZERO_GLTFAST
 using GLTFast;
+#elif PZERO_UNITY_GLTF
+using UnityGLTF;
+#endif
 using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
 using PlayerZero.Api.V1;
 using System.Threading.Tasks;
 using PlayerZero.Api;
+using PlayerZero.Runtime.Sdk;
 using Object = UnityEngine.Object;
 
 namespace PlayerZero
@@ -108,17 +113,19 @@ namespace PlayerZero
             var query= QueryBuilder.BuildQueryString(config);
             var url = $"{modelUrl}?{query}&targetBlueprintId={blueprintId}";
 
-            var gltf = new GltfImport();
-            if (!await gltf.Load(url))
+            var playerZeroCharacter = await GltfLoader.LoadModelAsync(url);
+            
+            if (playerZeroCharacter == null)
             {
                 Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
                 return null;
             }
-            
             var characterObject = new GameObject(characterId);
-
-            await gltf.InstantiateSceneAsync(characterObject.transform);
-
+            playerZeroCharacter.transform.parent = characterObject.transform;
+            playerZeroCharacter.transform.localPosition = Vector3.zero;
+            playerZeroCharacter.transform.localEulerAngles = Vector3.zero;
+            playerZeroCharacter.transform.localScale = Vector3.one;
+            
             var animator = characterData.gameObject.GetComponent<Animator>();
             if( animator == null )
             {

@@ -3,6 +3,12 @@ using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
 
+#if PZERO_GLTFAST
+using GLTFast;
+#elif PZERO_UNITY_GLTF
+using UnityGLTF;
+#endif
+
 namespace PlayerZero
 {
     public class MeshTransfer
@@ -69,6 +75,14 @@ namespace PlayerZero
             Transform targetMeshParent = targetMeshRenderers.Length > 1
                 ? targetMeshRenderers[1].transform.parent
                 : targetMeshRenderers.FirstOrDefault()?.transform.parent ?? targetArmature;
+            
+#if PZERO_UNITY_GLTF
+            var gltfcomponent = sourceArmature.GetComponentInChildren<InstantiatedGLTFObject>();
+            if(gltfcomponent != null)
+            {
+                gltfcomponent.TransferComponent(targetArmature.gameObject);
+            }
+#endif
 
             foreach (Renderer renderer in sourceRenderers)
             {

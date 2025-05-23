@@ -1,4 +1,5 @@
 using UnityEngine;
+
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
 using System.Runtime.InteropServices;
 using PlayerZero.Data;
@@ -40,7 +41,7 @@ namespace PlayerZero.Runtime.DeepLinking
         var settings = Resources.Load<Settings>("PlayerZeroSettings");
         if (settings != null)
         {
-            TryRegisterCustomScheme(settings.GameId);
+            TryRegisterCustomScheme($"playerzero{settings.GameId}");
         }
         return;
 #endif
