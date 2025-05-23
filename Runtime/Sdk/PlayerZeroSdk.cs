@@ -202,14 +202,6 @@ namespace PlayerZero.Runtime.Sdk
             }
             
             playerZeroCharacter.transform.parent = request.Parent;
-
-            #if UNITY_EDITOR
-                Object.DestroyImmediate(playerZeroCharacterParent);
-            #else
-                 Object.Destroy(playerZeroCharacterParent);
-            #endif
-       
-
             playerZeroCharacter.transform.localPosition = Vector3.zero;
             playerZeroCharacter.transform.localEulerAngles = Vector3.zero;
 
