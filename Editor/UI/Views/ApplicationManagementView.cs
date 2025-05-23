@@ -121,6 +121,15 @@ namespace PlayerZero.Editor.UI.Views
                     }
                 });
             }
+            
+            GUILayout.Space(20);
+            
+            _viewModel.Settings.DefaultAvatarId =
+                EditorGUILayout.TextField("Default Avatar Id", _viewModel.Settings.DefaultAvatarId,
+                    new GUIStyle(GUI.skin.textField)
+                    {
+                        margin = new RectOffset(10, 10, 0, 0)
+                    });
 
             GUILayout.Space(20);
             
