@@ -454,6 +454,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1992296700}
+  offset: {x: 0, y: 0, z: -0.01}
+  lookAtTarget: 1
 --- !u!1 &1992296699
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,8 +479,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1992296699}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.343, z: 0}
+  m_LocalRotation: {x: -0, y: 4.5218664e-14, z: 1.0048587e-14, w: 1}
+  m_LocalPosition: {x: 0, y: 1.702, z: 0.207}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -837,9 +839,9 @@ GameObject:
   m_Component:
   - component: {fileID: 543450652034275026}
   - component: {fileID: 5866666020336880808}
-  - component: {fileID: 5866666020336880811}
   - component: {fileID: 5866666020336880810}
-  - component: {fileID: 5866666020336880809}
+  - component: {fileID: 5866666020336880814}
+  - component: {fileID: 5866666020336880813}
   - component: {fileID: 5866666020336880812}
   m_Layer: 3
   m_Name: PlayerZeroAvatar
@@ -2702,37 +2704,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5866666020336880809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132147506564200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 542263a6e38adb649a3e584a69b95539, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  input: {fileID: 5866666020336880811}
-  MoveSpeed: 2
-  SprintSpeed: 5.335
-  RotationSmoothTime: 0.12
-  SpeedChangeRate: 10
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.3
-  FallTimeout: 0.15
-  Grounded: 1
-  GroundedOffset: -0.14
-  GroundedRadius: 0.28
-  GroundLayers:
-    serializedVersion: 2
-    m_Bits: 1
-  CameraTarget: {fileID: 1992296699}
-  TopClamp: 70
-  BottomClamp: -30
-  CameraAngleOverride: 0
 --- !u!143 &5866666020336880810
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2751,20 +2722,6 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.93, z: 0}
---- !u!114 &5866666020336880811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132147506564200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9558849d0d8c07458ffb35ab513733c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Jump: 0
-  camera: {fileID: 1924059041}
 --- !u!114 &5866666020336880812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2780,6 +2737,50 @@ MonoBehaviour:
   avatarId: 67a1d5f31afad770c44e1542
   loadOnStart: 1
   checklistItem: {fileID: 0}
+--- !u!114 &5866666020336880813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132147506564200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf3e454763ea84e40b9238fd2bc2e795, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 5866666020336880814}
+  MoveSpeed: 4
+  SprintSpeed: 6
+  RotationSpeed: 1
+  SpeedChangeRate: 10
+  JumpHeight: 1.2
+  Gravity: -15
+  JumpTimeout: 0.1
+  FallTimeout: 0.15
+  Grounded: 1
+  GroundedOffset: -0.14
+  GroundedRadius: 0.5
+  GroundLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  cameraTarget: {fileID: 1992296699}
+  TopClamp: 89
+  BottomClamp: -89
+--- !u!114 &5866666020336880814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132147506564200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de0e5dd6d61f7d8429f7d43ed5e73248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Jump: 0
+  camera: {fileID: 1924059041}
 --- !u!1 &5951726378958832704
 GameObject:
   m_ObjectHideFlags: 0

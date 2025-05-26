@@ -4,7 +4,7 @@ namespace PlayerZero.Samples
 {
     public class ThirdPersonInput : MonoBehaviour
     {
-        public Vector3 DeltaMousePosition { get; private set; }
+        public Vector3 MouseLook { get; private set; }
         public Vector2 MoveInput { get; private set; }
         public bool Jump;
         public bool Sprint { get; private set; }
@@ -16,7 +16,7 @@ namespace PlayerZero.Samples
         
         private void Start()
         {
-
+            previousMousePosition = Input.mousePosition;
         }
         
         private void Update()
@@ -24,7 +24,7 @@ namespace PlayerZero.Samples
             if (isPaused) return;
             
             var mousePosition = Input.mousePosition;
-            DeltaMousePosition = mousePosition - previousMousePosition;
+            MouseLook = mousePosition - previousMousePosition;
             previousMousePosition = mousePosition;
             var inputX = Input.GetAxis("Horizontal");
             var inputY = Input.GetAxis("Vertical");

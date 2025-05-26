@@ -53,8 +53,8 @@ namespace PlayerZero.Samples
             [Tooltip("What layers the character uses as ground")]
             public LayerMask GroundLayers;
 
-            [Header("Cinemachine")]
-            [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
+            [Header("Camera")]
+            [Tooltip("The follow target set in the ThirdPersonCamera component that the camera will follow")]
             public GameObject CameraTarget;
 
             [Tooltip("How far in degrees can you move the camera up")]
@@ -65,12 +65,9 @@ namespace PlayerZero.Samples
 
             [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
             public float CameraAngleOverride = 0.0f;
-
-            [Tooltip("For locking the camera position on all axis")]
-            public bool LockCameraPosition = false;
             
-            private float cinemachineTargetYaw;
-            private float cinemachineTargetPitch;
+            private float cameraTargetYaw;
+            private float cameraTargetPitch;
             
             private float speed;
             private float animationBlend;
@@ -95,7 +92,7 @@ namespace PlayerZero.Samples
 
             private const float threshold = 0.01f;
 
-            private bool _hasAnimator;
+            private bool hasAnimator;
 
 
             private void Awake()
@@ -103,15 +100,15 @@ namespace PlayerZero.Samples
                 // get a reference to our main camera
                 if (mainCamera == null)
                 {
-                    mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+                    mainCamera = Camera.main.gameObject;
                 }
             }
 
             private void Start()
             {
-                cinemachineTargetYaw = CameraTarget.transform.rotation.eulerAngles.y;
+                cameraTargetYaw = CameraTarget.transform.rotation.eulerAngles.y;
 
-                _hasAnimator = TryGetComponent(out animator);
+                hasAnimator = TryGetComponent(out animator);
                 controller = GetComponent<CharacterController>();
                 AssignAnimationIDs();
 
@@ -122,7 +119,7 @@ namespace PlayerZero.Samples
 
             private void Update()
             {
-                _hasAnimator = TryGetComponent(out animator);
+                hasAnimator = TryGetComponent(out animator);
 
                 JumpAndGravity();
                 GroundedCheck();
@@ -152,7 +149,7 @@ namespace PlayerZero.Samples
                     QueryTriggerInteraction.Ignore);
 
                 // update animator if using character
-                if (_hasAnimator)
+                if (hasAnimator)
                 {
                     animator.SetBool(animIDGrounded, Grounded);
                 }
@@ -161,22 +158,19 @@ namespace PlayerZero.Samples
             private void CameraRotation()
             {
                 // if there is an input and camera position is not 
-                // TODO fix to use old input system
-                if (input.DeltaMousePosition.sqrMagnitude >= threshold && !LockCameraPosition)
+                if (input.MouseLook.sqrMagnitude >= threshold)
                 {
-                
-                    cinemachineTargetYaw += input.DeltaMousePosition.x;
-                    cinemachineTargetPitch += -input.DeltaMousePosition.x;
+                    cameraTargetYaw += input.MouseLook.x;
+                    cameraTargetPitch += -input.MouseLook.y;
                 }
 
                 // clamp our rotations so our values are limited 360 degrees
-                cinemachineTargetYaw = ClampAngle(cinemachineTargetYaw, float.MinValue, float.MaxValue);
-                cinemachineTargetPitch = ClampAngle(cinemachineTargetPitch, BottomClamp, TopClamp);
-
-                // Cinemachine will follow this target
+                cameraTargetYaw = ClampAngle(cameraTargetYaw, float.MinValue, float.MaxValue);
+                cameraTargetPitch = ClampAngle(cameraTargetPitch, BottomClamp, TopClamp);
+                
                 CameraTarget.transform.rotation = Quaternion.Euler(
-                    cinemachineTargetPitch + CameraAngleOverride,
-                    cinemachineTargetYaw, 0.0f);
+                    cameraTargetPitch + CameraAngleOverride,
+                    cameraTargetYaw, 0.0f);
             }
 
             private void Move()
@@ -188,7 +182,6 @@ namespace PlayerZero.Samples
 
                 // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
                 // if there is no input, set the target speed to 0
-                // TODO fix to use old input system
                 if (input.MoveInput == Vector2.zero) targetSpeed = 0.0f;
 
                 // a reference to the players current horizontal velocity
@@ -241,10 +234,9 @@ namespace PlayerZero.Samples
                                  new Vector3(0.0f, verticalVelocity, 0.0f) * Time.deltaTime);
 
                 // update animator if using character
-                if (_hasAnimator)
+                if (hasAnimator)
                 {
                     animator.SetFloat(animIDSpeed, animationBlend);
-                    // TODO fix to use old input system
                     animator.SetFloat(animIDMotionSpeed, inputMagnitude);
                 }
             }
@@ -257,7 +249,7 @@ namespace PlayerZero.Samples
                     fallTimeoutDelta = FallTimeout;
 
                     // update animator if using character
-                    if (_hasAnimator)
+                    if (hasAnimator)
                     {
                         animator.SetBool(animIDJump, false);
                         animator.SetBool(animIDFreeFall, false);
@@ -276,7 +268,7 @@ namespace PlayerZero.Samples
                         verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     
                         // update animator if using character
-                        if (_hasAnimator)
+                        if (hasAnimator)
                         {
                             animator.SetBool(animIDJump, true);
                         }
@@ -301,7 +293,7 @@ namespace PlayerZero.Samples
                     else
                     {
                         // update animator if using character
-                        if (_hasAnimator)
+                        if (hasAnimator)
                         {
                             animator.SetBool(animIDFreeFall, true);
                         }
