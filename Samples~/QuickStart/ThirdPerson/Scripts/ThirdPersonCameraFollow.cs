@@ -7,7 +7,7 @@ namespace PlayerZero.Samples
     {
         [SerializeField] private Transform target;
         [SerializeField]
-        private Vector3 offset = new Vector3(0, 0, 0);
+        private Vector3 offset = new Vector3(0, 0, -3);
         [SerializeField]
         private bool lookAtTarget = true;
         
