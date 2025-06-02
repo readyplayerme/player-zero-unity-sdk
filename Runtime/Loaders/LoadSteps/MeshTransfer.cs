@@ -3,9 +3,7 @@ using System.Linq;
 using UnityEngine;
 using PlayerZero.Data;
 
-#if PZERO_GLTFAST
-using GLTFast;
-#elif PZERO_UNITY_GLTF
+#if PZERO_UNITY_GLTF
 using UnityGLTF;
 #endif
 

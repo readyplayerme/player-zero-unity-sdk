@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-#if PZERO_GLTFAST
-using GLTFast;
-#elif PZERO_UNITY_GLTF
+#if PZERO_UNITY_GLTF
 using UnityGLTF;
+#else 
+using GLTFast;
 #endif
 
 namespace PlayerZero.Runtime.Sdk
@@ -15,10 +15,10 @@ namespace PlayerZero.Runtime.Sdk
         
         static GltfLoader() 
         {
-#if PZERO_GLTFAST
-            Loader = new GltFastLoader();
-#elif PZERO_UNITY_GLTF
+#if PZERO_UNITY_GLTF
             Loader = new UnityGltfLoader();
+#else
+            Loader = new GltFastLoader();
 #endif
         }
         public static async Task<GameObject> LoadModelAsync(string url)
