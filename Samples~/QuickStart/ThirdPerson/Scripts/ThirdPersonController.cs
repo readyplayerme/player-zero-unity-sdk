@@ -15,56 +15,57 @@ namespace PlayerZero.Samples
             [SerializeField]
             private ThirdPersonInput input;
             
-            [Header("Player")] [Tooltip("Move speed of the character in m/s")]
-            public float MoveSpeed = 2.0f;
+            [Header("Player")] 
+            [SerializeField][Tooltip("Move speed of the character in m/s")]
+            private float moveSpeed = 2.0f;
 
-            [Tooltip("Sprint speed of the character in m/s")]
-            public float SprintSpeed = 5.335f;
+            [SerializeField][Tooltip("Sprint speed of the character in m/s")]
+            private float sprintSpeed = 5.335f;
 
-            [Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 0.3f)]
-            public float RotationSmoothTime = 0.12f;
+            [SerializeField][Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 0.3f)]
+            private float rotationSmoothTime = 0.12f;
 
-            [Tooltip("Acceleration and deceleration")]
-            public float SpeedChangeRate = 10.0f;
+            [SerializeField][Tooltip("Acceleration and deceleration")]
+            private float speedChangeRate = 10.0f;
             
-            [Space(10)] [Tooltip("The height the player can jump")]
-            public float JumpHeight = 1.2f;
+            [SerializeField][Space(10)] [Tooltip("The height the player can jump")]
+            private float jumpHeight = 1.2f;
 
-            [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-            public float Gravity = -15.0f;
+            [SerializeField][Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
+            private float gravity = -15.0f;
 
             [Space(10)]
-            [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-            public float JumpTimeout = 0.50f;
+            [SerializeField][Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
+            private float jumpTimeout = 0.50f;
 
-            [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-            public float FallTimeout = 0.15f;
+            [SerializeField][Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
+            private float fallTimeout = 0.15f;
 
             [Header("Player Grounded")]
             [Tooltip(
                 "If the character is grounded or not. Not part of the CharacterController built in grounded check")]
             public bool Grounded = true;
 
-            [Tooltip("Useful for rough ground")] public float GroundedOffset = -0.14f;
+            [SerializeField][Tooltip("Useful for rough ground")] private float GroundedOffset = -0.14f;
 
-            [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
-            public float GroundedRadius = 0.28f;
+            [SerializeField][Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
+            private float groundedRadius = 0.28f;
 
-            [Tooltip("What layers the character uses as ground")]
-            public LayerMask GroundLayers;
+            [SerializeField][Tooltip("What layers the character uses as ground")]
+            private LayerMask groundLayers;
 
             [Header("Camera")]
-            [Tooltip("The follow target set in the ThirdPersonCamera component that the camera will follow")]
-            public GameObject CameraTarget;
+            [SerializeField][Tooltip("The follow target set in the ThirdPersonCamera component that the camera will follow")]
+            private GameObject cameraTarget;
 
-            [Tooltip("How far in degrees can you move the camera up")]
-            public float TopClamp = 70.0f;
+            [SerializeField][Tooltip("How far in degrees can you move the camera up")]
+            private float topClamp = 70.0f;
 
-            [Tooltip("How far in degrees can you move the camera down")]
-            public float BottomClamp = -30.0f;
+            [SerializeField][Tooltip("How far in degrees can you move the camera down")]
+            private float bottomClamp = -30.0f;
 
-            [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
-            public float CameraAngleOverride = 0.0f;
+            [SerializeField][Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
+            private float cameraAngleOverride = 0.0f;
             
             private float cameraTargetYaw;
             private float cameraTargetPitch;
@@ -106,15 +107,15 @@ namespace PlayerZero.Samples
 
             private void Start()
             {
-                cameraTargetYaw = CameraTarget.transform.rotation.eulerAngles.y;
+                cameraTargetYaw = cameraTarget.transform.rotation.eulerAngles.y;
 
                 hasAnimator = TryGetComponent(out animator);
                 controller = GetComponent<CharacterController>();
                 AssignAnimationIDs();
 
                 // reset our timeouts on start
-                jumpTimeoutDelta = JumpTimeout;
-                fallTimeoutDelta = FallTimeout;
+                jumpTimeoutDelta = jumpTimeout;
+                fallTimeoutDelta = fallTimeout;
             }
 
             private void Update()
@@ -143,9 +144,9 @@ namespace PlayerZero.Samples
             private void GroundedCheck()
             {
                 // set sphere position, with offset
-                Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+                var spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                     transform.position.z);
-                Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
+                Grounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers,
                     QueryTriggerInteraction.Ignore);
 
                 // update animator if using character
@@ -166,17 +167,17 @@ namespace PlayerZero.Samples
 
                 // clamp our rotations so our values are limited 360 degrees
                 cameraTargetYaw = ClampAngle(cameraTargetYaw, float.MinValue, float.MaxValue);
-                cameraTargetPitch = ClampAngle(cameraTargetPitch, BottomClamp, TopClamp);
+                cameraTargetPitch = ClampAngle(cameraTargetPitch, bottomClamp, topClamp);
                 
-                CameraTarget.transform.rotation = Quaternion.Euler(
-                    cameraTargetPitch + CameraAngleOverride,
+                cameraTarget.transform.rotation = Quaternion.Euler(
+                    cameraTargetPitch + cameraAngleOverride,
                     cameraTargetYaw, 0.0f);
             }
 
             private void Move()
             {
                 // set target speed based on move speed, sprint speed and if sprint is pressed
-                var targetSpeed = input.Sprint ? SprintSpeed : MoveSpeed;
+                var targetSpeed = input.Sprint ? sprintSpeed : moveSpeed;
 
                 // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -197,7 +198,7 @@ namespace PlayerZero.Samples
                     // creates curved result rather than a linear one giving a more organic speed change
                     // note T in Lerp is clamped, so we don't need to clamp our speed
                     speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                        Time.deltaTime * SpeedChangeRate);
+                        Time.deltaTime * speedChangeRate);
                 
                     // round speed to 3 decimal places
                     speed = Mathf.Round(speed * 1000f) / 1000f;
@@ -207,7 +208,7 @@ namespace PlayerZero.Samples
                     speed = targetSpeed;
                 }
                 
-                animationBlend = Mathf.Lerp(animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+                animationBlend = Mathf.Lerp(animationBlend, targetSpeed, Time.deltaTime * speedChangeRate);
                 if (animationBlend < 0.01f) animationBlend = 0f;
                 
                 // normalise input direction
@@ -220,14 +221,14 @@ namespace PlayerZero.Samples
                     targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                       mainCamera.transform.eulerAngles.y;
                     float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
-                        RotationSmoothTime);
+                        rotationSmoothTime);
                 
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                 }
 
 
-                Vector3 targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
+                var targetDirection = Quaternion.Euler(0.0f, targetRotation, 0.0f) * Vector3.forward;
 
                 // move the player
                 controller.Move(targetDirection.normalized * (speed * Time.deltaTime) +
@@ -246,7 +247,7 @@ namespace PlayerZero.Samples
                 if (Grounded)
                 {
                     // reset the fall timeout timer
-                    fallTimeoutDelta = FallTimeout;
+                    fallTimeoutDelta = fallTimeout;
 
                     // update animator if using character
                     if (hasAnimator)
@@ -265,7 +266,7 @@ namespace PlayerZero.Samples
                     if (input.Jump && jumpTimeoutDelta <= 0.0f)
                     {
                         // the square root of H * -2 * G = how much velocity needed to reach desired height
-                        verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                        verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
                     
                         // update animator if using character
                         if (hasAnimator)
@@ -283,7 +284,7 @@ namespace PlayerZero.Samples
                 else
                 {
                     // reset the jump timeout timer
-                    jumpTimeoutDelta = JumpTimeout;
+                    jumpTimeoutDelta = jumpTimeout;
 
                     // fall timeout
                     if (fallTimeoutDelta >= 0.0f)
@@ -306,7 +307,7 @@ namespace PlayerZero.Samples
                 // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
                 if (verticalVelocity < terminalVelocity)
                 {
-                    verticalVelocity += Gravity * Time.deltaTime;
+                    verticalVelocity += gravity * Time.deltaTime;
                 }
             }
 
@@ -319,8 +320,8 @@ namespace PlayerZero.Samples
 
             private void OnDrawGizmosSelected()
             {
-                Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-                Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+                var transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
+                var transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
                 if (Grounded) Gizmos.color = transparentGreen;
                 else Gizmos.color = transparentRed;
@@ -328,7 +329,7 @@ namespace PlayerZero.Samples
                 // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
                 Gizmos.DrawSphere(
                     new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
-                    GroundedRadius);
+                    groundedRadius);
             }
         }
     }

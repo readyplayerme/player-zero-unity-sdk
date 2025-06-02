@@ -1391,24 +1391,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 8586050925963460341}
-  MoveSpeed: 2
-  SprintSpeed: 5.335
-  RotationSmoothTime: 0.12
-  SpeedChangeRate: 10
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.3
-  FallTimeout: 0.15
+  moveSpeed: 4
+  sprintSpeed: 8
+  rotationSmoothTime: 0.12
+  speedChangeRate: 10
+  jumpHeight: 1.2
+  gravity: -15
+  jumpTimeout: 0.5
+  fallTimeout: 0.15
   Grounded: 1
   GroundedOffset: -0.14
-  GroundedRadius: 0.28
-  GroundLayers:
+  groundedRadius: 0.28
+  groundLayers:
     serializedVersion: 2
     m_Bits: 1
-  CameraTarget: {fileID: 2759952832227441317}
-  TopClamp: 70
-  BottomClamp: -30
-  CameraAngleOverride: 0
+  cameraTarget: {fileID: 2759952832227441317}
+  topClamp: 70
+  bottomClamp: -30
+  cameraAngleOverride: 0
 --- !u!114 &4734709450463910406
 MonoBehaviour:
   m_ObjectHideFlags: 0
