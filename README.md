@@ -9,6 +9,7 @@ Integrate Player Zero avatars and analytics into your Unity game with just a few
 ## 🎥 Quick Start Video
 
 Prefer watching? Here's a [short video walkthrough](https://www.youtube.com/watch?v=04-SCWpN3K0&embeds_referring_euri=https%3A%2F%2Fcdn.iframe.ly%2F&source_ve_path=MjM4NTE) to get started in under 5 minutes.
+Want to dive deeper? Check out this [video on analytics integration](https://www.youtube.com/watch?v=ukpULD5lWww).
 
 ## 🚀 Prerequisites
 
