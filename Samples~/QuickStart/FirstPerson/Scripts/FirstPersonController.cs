@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using PlayerZero.Samples;
+using UnityEngine;
 
-namespace StarterAssets
+namespace PlayerZero.Samples
 {
 	[RequireComponent(typeof(CharacterController))]
 	public class FirstPersonController : MonoBehaviour
 	{
-		[SerializeField] private FirstPersonInput input;
+		[SerializeField] private SamplePlayerInput input;
 		
 		[Header("Player")]
 		[SerializeField][Tooltip("Move speed of the character in m/s")]

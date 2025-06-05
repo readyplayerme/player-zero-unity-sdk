@@ -1582,7 +1582,7 @@ GameObject:
   - component: {fileID: 3486770058087948696}
   - component: {fileID: 7386838181551881186}
   - component: {fileID: 7386838181551881184}
-  - component: {fileID: 7386838181551881188}
+  - component: {fileID: 8752144062230238302}
   - component: {fileID: 7386838181551881191}
   - component: {fileID: 4413810588018494929}
   m_Layer: 3
@@ -1649,7 +1649,7 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.93, z: 0}
---- !u!114 &7386838181551881188
+--- !u!114 &8752144062230238302
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1658,7 +1658,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4262848673705933602}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de0e5dd6d61f7d8429f7d43ed5e73248, type: 3}
+  m_Script: {fileID: 11500000, guid: e9558849d0d8c07458ffb35ab513733c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Jump: 0
@@ -1675,24 +1675,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3e454763ea84e40b9238fd2bc2e795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  input: {fileID: 7386838181551881188}
-  MoveSpeed: 4
-  SprintSpeed: 6
-  RotationSpeed: 1
-  SpeedChangeRate: 10
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.1
-  FallTimeout: 0.15
+  input: {fileID: 8752144062230238302}
+  moveSpeed: 4
+  sprintSpeed: 6
+  speedChangeRate: 10
+  jumpHeight: 1.2
+  gravity: -15
+  jumpTimeout: 0.1
+  fallTimeout: 0.15
   Grounded: 1
-  GroundedOffset: -0.14
-  GroundedRadius: 0.5
-  GroundLayers:
+  groundedOffset: -0.14
+  groundedRadius: 0.5
+  groundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 0
   cameraTarget: {fileID: 4028970803893239729}
-  TopClamp: 89
-  BottomClamp: -89
+  topClamp: 70
+  bottomClamp: -70
+  lookSensitivity: 1
+  lookSmoothTime: 0.01
 --- !u!114 &4413810588018494929
 MonoBehaviour:
   m_ObjectHideFlags: 0

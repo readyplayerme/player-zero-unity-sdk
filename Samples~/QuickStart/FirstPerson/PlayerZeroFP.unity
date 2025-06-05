@@ -919,5 +919,9 @@ PrefabInstance:
       propertyPath: groundLayers.m_Bits
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8752144062230238302, guid: e90590827df72484098b478c03b6bbea, type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 1924059041}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e90590827df72484098b478c03b6bbea, type: 3}

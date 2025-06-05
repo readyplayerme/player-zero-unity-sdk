@@ -2,10 +2,11 @@ using UnityEngine;
 
 namespace PlayerZero.Samples
 {
-    public class ThirdPersonInput : MonoBehaviour
+    public class SamplePlayerInput : MonoBehaviour
     {
         public Vector3 MouseLook { get; private set; }
         public Vector2 MoveInput { get; private set; }
+        [HideInInspector]
         public bool Jump;
         public bool Sprint { get; private set; }
         
