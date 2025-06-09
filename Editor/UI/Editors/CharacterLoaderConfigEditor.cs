@@ -12,9 +12,14 @@ namespace PlayerZero.Editor
     [CustomEditor(typeof(CharacterLoaderConfig))]
     public class CharacterLoaderConfigEditor : UnityEditor.Editor
     {
+        private const string DIALOG_TITLE = "Read Player Me";
+        private const string DIALOG_MESSAGE = "Do you want to install {0} Unity Package: {1} ?";
+        private const string DIALOG_OK = "Ok";
+        private const string DIALOG_CANCEL = "Cancel";
         private const string ADD_MORPH_TARGET = "Add Morph Target";
         private const string DELETE_MORPH_TARGET = "Delete Morph Target";
         private const string REMOVE_BUTTON_TEXT = "X";
+        private const string MESH_OPT_PACKAGE_NAME = "com.unity.meshopt.decompress";
         
         [SerializeField] private VisualTreeAsset visualTreeAsset;
         
@@ -25,6 +30,9 @@ namespace PlayerZero.Editor
 
         private VisualElement selectedMorphTargets;
         private VisualElement selectedMorphTargetGroups;
+        
+        private EditableList editableMorphTargetList;
+        private EditableList editableMorphTargetGroupList;
 
         private VisualElement root;
         private Action textureChannelChanged;
@@ -44,7 +52,8 @@ namespace PlayerZero.Editor
             SetupTextureAtlas();
             SetupTextureChannel();
             SetupMorphTargets();
-
+            SetupMorphTargetGroups();
+            SetupCompressionPackages();
             return root;
         }
         
@@ -110,75 +119,195 @@ namespace PlayerZero.Editor
             root.Add(container);
         }
         
+        private void SetupCompressionPackages()
+        {
+            var optimizationFoldout = new Foldout
+            {
+                text = "Optimization Packages",
+                value = false
+            };
+            optimizationFoldout.style.marginTop = 4;
+            optimizationFoldout.style.marginLeft = 4;
+            optimizationFoldout.style.marginRight = 4;
+            optimizationFoldout.style.flexShrink = 0;
+
+            // Create the "Use Draco Compression" toggle
+            var dracoToggle = new Toggle("Use Draco Compression");
+            dracoToggle.name = "UseDracoCompression";
+            dracoToggle.style.marginLeft = 3;
+            dracoToggle.style.marginTop = 3;
+            dracoToggle.style.flexDirection = FlexDirection.Row;
+            dracoToggle.style.alignItems = Align.Center;
+            dracoToggle.style.justifyContent = Justify.FlexStart;
+
+            // Create the "Use Mesh Opt Compression" toggle
+            var meshOptToggle = new Toggle("Use Mesh Opt Compression");
+            meshOptToggle.name = "UseMeshOptCompression";
+            meshOptToggle.style.marginLeft = 3;
+            meshOptToggle.style.marginTop = 3;
+            meshOptToggle.style.flexDirection = FlexDirection.Row;
+            meshOptToggle.style.alignItems = Align.Center;
+            meshOptToggle.style.flexGrow = 0;
+            meshOptToggle.style.flexShrink = 0;
+            meshOptToggle.style.flexWrap = Wrap.NoWrap;
+            meshOptToggle.style.position = Position.Relative;
+            meshOptToggle.style.overflow = Overflow.Hidden;
+            meshOptToggle.style.opacity = 1;
+
+            // Add toggles to the foldout
+            optimizationFoldout.Add(dracoToggle);
+            optimizationFoldout.Add(meshOptToggle);
+
+            // Add the foldout to the root or desired parent
+            root.Add(optimizationFoldout);
+            
+            optimizationFoldout.RegisterValueChangedCallback(x =>
+            {
+                dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseDracoCompression);
+                meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseMeshOptCompression);
+            });
+
+            dracoToggle.RegisterValueChangedCallback(x =>
+                {
+                    if (characterLoaderConfigTarget.UseDracoCompression == x.newValue) return;
+                    characterLoaderConfigTarget.UseDracoCompression = x.newValue;
+                    if (!PackageManagerHelper.IsPackageInstalled(PackageList.DracoCompression.name))
+                    {
+                        if (EditorUtility.DisplayDialog(
+                                DIALOG_TITLE,
+                                string.Format(DIALOG_MESSAGE, "Draco compression", PackageList.DracoCompression.name),
+                                DIALOG_OK,
+                                DIALOG_CANCEL))
+                        {
+                            PackageManagerHelper.AddPackage(PackageList.DracoCompression.Identifier);
+                        }
+                        else
+                        {
+                            characterLoaderConfigTarget.UseDracoCompression = false;
+                        }
+                    }
+                    dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseDracoCompression);
+                    if (characterLoaderConfigTarget.UseDracoCompression && characterLoaderConfigTarget.UseMeshOptCompression)
+                    {
+                        Debug.LogWarning("Draco compression is not compatible with Mesh Optimization compression. Mesh Optimization compression will be disabled.");
+                        characterLoaderConfigTarget.UseMeshOptCompression = false;
+                        dracoToggle.SetValueWithoutNotify(false);
+                    }
+                    Save();
+                }
+            );
+
+            meshOptToggle.RegisterValueChangedCallback(x =>
+                {
+                    if (characterLoaderConfigTarget.UseMeshOptCompression == x.newValue) return;
+                    characterLoaderConfigTarget.UseMeshOptCompression = x.newValue;
+                    if (!PackageManagerHelper.IsPackageInstalled(MESH_OPT_PACKAGE_NAME))
+                    {
+                        if (EditorUtility.DisplayDialog(
+                                DIALOG_TITLE,
+                                string.Format(DIALOG_MESSAGE, "Mesh opt compression", MESH_OPT_PACKAGE_NAME),
+                                DIALOG_OK,
+                                DIALOG_CANCEL))
+                        {
+                            PackageManagerHelper.AddPackage(MESH_OPT_PACKAGE_NAME);
+                        }
+                        else
+                        {
+                            characterLoaderConfigTarget.UseMeshOptCompression = false;
+                        }
+                    }
+                    meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseMeshOptCompression);
+                    if (characterLoaderConfigTarget.UseMeshOptCompression && characterLoaderConfigTarget.UseDracoCompression)
+                    {
+                        Debug.LogWarning("Mesh Optimization compression is not compatible with Draco compression. Draco compression will be disabled.");
+                        characterLoaderConfigTarget.UseDracoCompression = false;
+                        meshOptToggle.SetValueWithoutNotify(false);
+                    }
+                    Save();
+                }
+            );
+        }
+        
         private void SetupMorphTargets()
         {
+            editableMorphTargetList = new EditableList(AvatarMorphTargets.MorphTargetNames);
             // Main container
             var morphFoldout = new Foldout { text = "Morph Targets" };
             root.Add(morphFoldout);
-
-            // VisualElement to hold all selected morph target rows
-            selectedMorphTargets = new VisualElement();
+            
+            selectedMorphTargets = editableMorphTargetList.GetRoot();
             morphFoldout.Add(selectedMorphTargets);
-
-            morphTargetLabels = AvatarMorphTargets.MorphTargetNames.Select(x => new Label(x)).ToList();
-            morphTargetsParentVisualElement = new Dictionary<VisualElement, string>();
-
+            
             for (var i = 0; i < characterLoaderConfigTarget.MorphTargets.Count; i++)
             {
-                var defaultIndex = AvatarMorphTargets.MorphTargetNames.IndexOf(characterLoaderConfigTarget.MorphTargets[i]);
-                CreateNewElement(defaultIndex);
+                
+                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetNames,characterLoaderConfigTarget.MorphTargets[i]);
+                var newElement = editableMorphTargetList.CreateNewElement(defaultIndex,
+                    label =>
+                    {
+                        characterLoaderConfigTarget.MorphTargets[GetIndex(label.text)] = label.text;
+                        return null;
+                    }, 
+                    removedElement =>
+                    {
+                        Undo.RecordObject(characterLoaderConfigTarget, DELETE_MORPH_TARGET);
+                        characterLoaderConfigTarget.MorphTargets.RemoveAt(GetIndex(removedElement));
+                        EditorUtility.SetDirty(characterLoaderConfigTarget);
+                    });
             }
 
             // Add button
-            var addButton = new Button(OnAddButtonClicked) { text = "Add" };
+            var addButton = new Button(OnAddMorphTargetButtonClicked) { text = "Add" };
             morphFoldout.Add(addButton);
         }
         
-        private void CreateNewElement(int popFieldDefaultIndex)
+        private void SetupMorphTargetGroups()
         {
-            var parent = new VisualElement();
-            parent.style.flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row);
-            parent.style.justifyContent = new StyleEnum<Justify>(Justify.SpaceBetween);
-            Debug.Log($" Creating new morph target element with default index: {popFieldDefaultIndex}");
-            morphTargetsParentVisualElement.Add(parent, AvatarMorphTargets.MorphTargetNames[popFieldDefaultIndex]);
-            parent.Add(CreatePopupField(popFieldDefaultIndex, parent));
-            parent.Add(CreateRemoveButton(parent));
-            selectedMorphTargets.Add(parent);
-        }
+            editableMorphTargetGroupList = new EditableList(AvatarMorphTargets.MorphTargetGroupNames);
+            // Main container
+            var morphFoldout = new Foldout { text = "Morph Target Groups" };
+            root.Add(morphFoldout);
 
-        private PopupField<Label> CreatePopupField(int defaultIndex, VisualElement parent)
-        {
-            return new PopupField<Label>(string.Empty,
-                morphTargetLabels,
-                defaultIndex,
-                x =>
-                {
-                    characterLoaderConfigTarget.MorphTargets[GetIndex(morphTargetsParentVisualElement[parent])] = x.text;
-                    morphTargetsParentVisualElement[parent] = x.text;
-                    return x.text;
-                },
-                x => x.text);
-        }
+            // VisualElement to hold all selected morph target rows
+            selectedMorphTargetGroups = editableMorphTargetGroupList.GetRoot();
+            morphFoldout.Add(selectedMorphTargetGroups);
 
-        private VisualElement CreateRemoveButton(VisualElement parent)
-        {
-            var removeButton = new Button(() =>
+            for (var i = 0; i < characterLoaderConfigTarget.MorphTargetsGroup.Count; i++)
             {
-                Undo.RecordObject(characterLoaderConfigTarget, DELETE_MORPH_TARGET);
-                characterLoaderConfigTarget.MorphTargets.RemoveAt(GetIndex(morphTargetsParentVisualElement[parent]));
-                selectedMorphTargets.Remove(parent);
-                EditorUtility.SetDirty(characterLoaderConfigTarget);
-            });
-            removeButton.text = REMOVE_BUTTON_TEXT;
-            return removeButton;
-        }
+                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetGroupNames,characterLoaderConfigTarget.MorphTargetsGroup[i]);
+                var newElement = editableMorphTargetGroupList.CreateNewElement(defaultIndex,
+                    label =>
+                    {
+                        characterLoaderConfigTarget.MorphTargetsGroup[GetIndex(label.text)] = label.text;
+                        return null;
+                    }, 
+                    removedElement =>
+                    {
+                        Undo.RecordObject(characterLoaderConfigTarget, DELETE_MORPH_TARGET);
+                        characterLoaderConfigTarget.MorphTargetsGroup.RemoveAt(GetIndex(removedElement));
+                        EditorUtility.SetDirty(characterLoaderConfigTarget);
+                    });
+            }
 
-        private void OnAddButtonClicked()
+            // Add button
+            var addButton = new Button(OnAddMorphTargetGroupButtonClicked) { text = "Add" };
+            morphFoldout.Add(addButton);
+        }
+        
+        private void OnAddMorphTargetButtonClicked()
         {
             Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
             characterLoaderConfigTarget.MorphTargets.Add(AvatarMorphTargets.MorphTargetNames[0]);
             EditorUtility.SetDirty(characterLoaderConfigTarget);
-            CreateNewElement(0);
+            editableMorphTargetList.CreateNewElement(0);
+        }
+
+        private void OnAddMorphTargetGroupButtonClicked()
+        {
+            Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
+            characterLoaderConfigTarget.MorphTargetsGroup.Add(AvatarMorphTargets.MorphTargetGroupNames[0]);
+            EditorUtility.SetDirty(characterLoaderConfigTarget);
+            editableMorphTargetGroupList.CreateNewElement(0);
         }
 
         private int GetIndex(string morphTarget)

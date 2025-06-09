@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PlayerZero.Data
 {
@@ -95,9 +94,7 @@ namespace PlayerZero.Data
             "tongueOut"
         };
         
-        public static readonly List<string> MorphTargetGroupNames = morphTargetGroupNames.ToList();
-        public static readonly List<string> MorphTargetNames = morphTargetNames.ToList();
-
-        public static readonly List<string> MorphTargetAvatarAPI = morphTargetGroupNames.Concat(morphTargetNames).ToList();
+        public static readonly string[] MorphTargetGroupNames = morphTargetGroupNames.ToArray();
+        public static readonly string[] MorphTargetNames = morphTargetNames.ToArray();
     }
 }

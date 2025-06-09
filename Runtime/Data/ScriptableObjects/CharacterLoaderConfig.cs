@@ -32,5 +32,8 @@ namespace PlayerZero.Data
         };
 
         public List<string> MorphTargetsGroup = new List<string>();
+        
+        public bool UseDracoCompression = true;
+        public bool UseMeshOptCompression = true;
     }
 }
