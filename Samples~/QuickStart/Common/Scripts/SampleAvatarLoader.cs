@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using PlayerZero;
+using PlayerZero.Data;
 using PlayerZero.Runtime.Sdk;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class SampleAvatarLoader : MonoBehaviour
     private string avatarId = "67a1d5f31afad770c44e1542";
     [SerializeField]
     private bool loadOnStart = true;
+    [SerializeField]
+    private CharacterLoaderConfig characterLoaderConfig;
     
     private MeshTransfer meshTransfer = new MeshTransfer();
     
@@ -29,7 +32,8 @@ public class SampleAvatarLoader : MonoBehaviour
         {
             AvatarId = avatarId,
             BlueprintId = response.BlueprintId,
-            Parent = playerZeroCharacterParent.transform
+            Parent = playerZeroCharacterParent.transform,
+            CharacterConfig = characterLoaderConfig
         };
 
         var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(characterRequestConfig);
