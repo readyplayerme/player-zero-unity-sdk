@@ -23,6 +23,7 @@ namespace PlayerZero.Editor
 
         private const string TOOLTIP_MESH_LOD = "Mesh LOD is used to determine the level of detail for the mesh. LOD0 is the most detailed.";
         private const string TOOLTIP_TEXTURE_ATLAS = "If set to NONE the mesh, materials and textures will not be combined into 1. (or 2 if an assets texture contains transparency)";
+        private const string TOOLTIP_TEXTURE_SIZE_LIMIT = "Texture Size Limit is used to determine the maximum size of the textures. 256px, 512px or 1024px.";
         private const string TOOLTIP_TEXTURE_QUALITY = "Texture Quality is used to determine the quality of the textures. High quality textures will be larger in size.";
         private const string TOOLTIP_TEXTURE_CHANNEL = "Choose which textures the avatar will include.";
         private const string TOOLTIP_OPTIMIZATION = "Enable or disable optimization for the avatar model.";
@@ -61,7 +62,7 @@ namespace PlayerZero.Editor
             MeshLod();
             TextureAtlas();
             TextureQuality();
-            TextireSizeLimit();
+            TextureSizeLimit();
             TextureChannels();
             MorphTargets();
             MorphTargetGroups();
@@ -152,10 +153,10 @@ namespace PlayerZero.Editor
             root.Add(textureQualityField);
         }
         
-        private void TextireSizeLimit()
+        private void TextureSizeLimit()
         {
             var sizeLimitField = new EnumField("Texture Size Limit", characterLoaderConfigTarget.TextureSizeLimit);
-            sizeLimitField.tooltip = "The maximum size of the texture in pixels.";
+            sizeLimitField.tooltip = TOOLTIP_TEXTURE_SIZE_LIMIT;
             sizeLimitField.RegisterValueChangedCallback(x =>
             {
                 characterLoaderConfigTarget.TextureSizeLimit = (TextureSizeLimit)x.newValue;
