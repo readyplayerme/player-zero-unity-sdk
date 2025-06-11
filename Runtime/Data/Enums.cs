@@ -49,10 +49,10 @@ namespace PlayerZero.Data
     
     public enum TextureChannel
     {
-        BaseColor,
-        Normal,
-        MetallicRoughness,
-        Emissive,
-        Occlusion
+        baseColor,
+        normal,
+        metallicRoughness,
+        emissive,
+        occlusion
     }
 }

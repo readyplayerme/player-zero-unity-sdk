@@ -7,8 +7,21 @@ namespace PlayerZero
     {
         public static string GetQueryParams(this CharacterLoaderConfig config)
         {
-            var queryParams = $"lod={config.MeshLOD.ToString().ToLower()}&textureAtlas={config.TextureAtlas.ToString().ToLower()}&textureQuality={config.TextureQuality.ToString().ToLower()}";
-
+            var queryParams = $"textureQuality={config.TextureQuality.ToString().ToLower()}";
+            
+            queryParams += config.MeshLOD switch
+            {
+                MeshLod.Medium => "&meshLOD=1",
+                MeshLod.Low => "&meshLOD=2",
+                _ => "&meshLOD=0"
+            };
+            queryParams += config.TextureAtlas switch
+            {
+                TextureAtlas.High => "&textureAtlas=1024",
+                TextureAtlas.Medium => "&textureAtlas=512",
+                TextureAtlas.Low => "&textureAtlas=256",
+                _ => "&textureAtlas=none"
+            };
             queryParams += config.TextureSizeLimit switch
             {
                 TextureSizeLimit.Size256 => "&textureSizeLimit=256",
@@ -18,12 +31,12 @@ namespace PlayerZero
             
             if (config.TextureChannel != null && config.TextureChannel.Length > 0)
             {
-                var textureChannelvalue = $"&textureChannel={config.TextureChannel[0].ToString().ToLower()}";
+                var textureChannelvalue = $"&textureChannels={config.TextureChannel[0].ToString()}";
 
                 for (int i = 1; i < config.TextureChannel.Length; i++)
                 {
                     var channel = config.TextureChannel[i];
-                    textureChannelvalue += $",{channel.ToString().ToLower()}";
+                    textureChannelvalue += $",{channel.ToString()}";
                 }
                 queryParams += textureChannelvalue;
             }

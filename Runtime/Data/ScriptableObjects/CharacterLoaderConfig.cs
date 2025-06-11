@@ -16,11 +16,11 @@ namespace PlayerZero.Data
         
         public TextureChannel[] TextureChannel =
         {
-            PlayerZero.Data.TextureChannel.BaseColor,
-            PlayerZero.Data.TextureChannel.Normal,
-            PlayerZero.Data.TextureChannel.MetallicRoughness,
-            PlayerZero.Data.TextureChannel.Emissive,
-            PlayerZero.Data.TextureChannel.Occlusion
+            PlayerZero.Data.TextureChannel.baseColor,
+            PlayerZero.Data.TextureChannel.normal,
+            PlayerZero.Data.TextureChannel.metallicRoughness,
+            PlayerZero.Data.TextureChannel.emissive,
+            PlayerZero.Data.TextureChannel.occlusion
         };
 
         public List<string> MorphTargets = new();
