@@ -42,8 +42,8 @@ namespace PlayerZero.Editor
         private VisualElement selectedMorphTargets;
         private VisualElement selectedMorphTargetGroups;
         
-        private EditableList editableMorphTargetList;
-        private EditableList editableMorphTargetGroupList;
+        private EditableListElement editableMorphTargetList;
+        private EditableListElement editableMorphTargetGroupList;
 
         private VisualElement root;
         private Action textureChannelChanged;
@@ -292,8 +292,7 @@ namespace PlayerZero.Editor
         
         private void MorphTargets()
         {
-            editableMorphTargetList = new EditableList(AvatarMorphTargets.MorphTargetNames);
-            characterLoaderConfigTarget.MorphTargets ??= new List<string>();
+            editableMorphTargetList = new EditableListElement(AvatarMorphTargets.MorphTargetNames);
             var morphFoldout = new Foldout
             {
                 text = "Morph Targets", 
@@ -301,49 +300,21 @@ namespace PlayerZero.Editor
             };
             
             root.Add(morphFoldout);
-            
-            selectedMorphTargets = editableMorphTargetList.GetRoot();
-            morphFoldout.Add(selectedMorphTargets);
 
-            for (int i = 0; i < characterLoaderConfigTarget.MorphTargets.Count; i++)
+            var morphList = new EditableListElement(AvatarMorphTargets.MorphTargetNames);
+            morphFoldout.Add(morphList);
+            morphList.SetInitialItems(characterLoaderConfigTarget.MorphTargets);
+            morphList.OnUpdated += () =>
             {
-                var morphTarget = characterLoaderConfigTarget.MorphTargets[i];
-                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetNames, morphTarget);
-
-                var newElement = editableMorphTargetList.CreateNewElement(defaultIndex,
-                    label =>
-                    {
-                        var index = GetIndex(characterLoaderConfigTarget.MorphTargets, label.text);
-                        if (index >= 0)
-                        {
-                            characterLoaderConfigTarget.MorphTargets[index] = label.text;
-                        }
-                        return null;
-                    },
-                    removedElement =>
-                    {
-                        Undo.RecordObject(characterLoaderConfigTarget, DELETE_MORPH_TARGET);
-                        var index = GetIndex(characterLoaderConfigTarget.MorphTargets, removedElement);
-                        if (index >= 0)
-                        {
-                            characterLoaderConfigTarget.MorphTargets.RemoveAt(index);
-                        }
-                        EditorUtility.SetDirty(characterLoaderConfigTarget);
-                    });
-            }
-
-            // Add button
-            var addButton = new Button(OnAddMorphTargetButtonClicked)
-            {
-                text = "Add"
+                characterLoaderConfigTarget.MorphTargets = morphList.Items.ToList();
+                EditorUtility.SetDirty(characterLoaderConfigTarget);
+                serializedObject.ApplyModifiedProperties(); 
             };
-            morphFoldout.Add(addButton);
         }
         
         private void MorphTargetGroups()
         {
-            editableMorphTargetGroupList = new EditableList(AvatarMorphTargets.MorphTargetGroupNames);
-            characterLoaderConfigTarget.MorphTargetsGroup ??= new List<string>();
+            editableMorphTargetGroupList = new EditableListElement(AvatarMorphTargets.MorphTargetGroupNames);
 
             var morphFoldout = new Foldout
             {
@@ -352,58 +323,32 @@ namespace PlayerZero.Editor
             };
             root.Add(morphFoldout);
 
-            // VisualElement to hold all selected morph target rows
-            selectedMorphTargetGroups = editableMorphTargetGroupList.GetRoot();
-            morphFoldout.Add(selectedMorphTargetGroups);
-
-            for (int i = 0; i < characterLoaderConfigTarget.MorphTargetsGroup.Count; i++)
+            var morphList = new EditableListElement(AvatarMorphTargets.MorphTargetGroupNames);
+            morphFoldout.Add(morphList);
+            morphList.SetInitialItems(characterLoaderConfigTarget.MorphTargetsGroup);
+            morphList.OnUpdated += () =>
             {
-                var morphTargetGroup = characterLoaderConfigTarget.MorphTargetsGroup[i];
-                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetGroupNames, morphTargetGroup);
-
-                var newElement = editableMorphTargetGroupList.CreateNewElement(defaultIndex,
-                    label =>
-                    {
-                        var index = GetIndex(characterLoaderConfigTarget.MorphTargetsGroup, label.text);
-                        if (index >= 0)
-                        {
-                            characterLoaderConfigTarget.MorphTargetsGroup[index] = label.text;
-                        }
-                        return null;
-                    },
-                    removedElement =>
-                    {
-                        Undo.RecordObject(characterLoaderConfigTarget, DELETE_MORPH_TARGET);
-                        
-                        int index = GetIndex(characterLoaderConfigTarget.MorphTargetsGroup, removedElement);
-                        if (index >= 0)
-                        {
-                            characterLoaderConfigTarget.MorphTargetsGroup.RemoveAt(index);
-                        }
-                        EditorUtility.SetDirty(characterLoaderConfigTarget);
-                    });
-            }
-
-            // Add button
-            var addButton = new Button(OnAddMorphTargetGroupButtonClicked) { text = "Add" };
-            morphFoldout.Add(addButton);
+                characterLoaderConfigTarget.MorphTargetsGroup = morphList.Items.ToList();
+                EditorUtility.SetDirty(characterLoaderConfigTarget);
+                serializedObject.ApplyModifiedProperties(); 
+            };
         }
         
-        private void OnAddMorphTargetButtonClicked()
-        {
-            Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
-            characterLoaderConfigTarget.MorphTargets.Add(AvatarMorphTargets.MorphTargetNames[0]);
-            EditorUtility.SetDirty(characterLoaderConfigTarget);
-            editableMorphTargetList.CreateNewElement(0);
-        }
-
-        private void OnAddMorphTargetGroupButtonClicked()
-        {
-            Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
-            characterLoaderConfigTarget.MorphTargetsGroup.Add(AvatarMorphTargets.MorphTargetGroupNames[0]);
-            EditorUtility.SetDirty(characterLoaderConfigTarget);
-            editableMorphTargetGroupList.CreateNewElement(0);
-        }
+        // private void OnAddMorphTargetButtonClicked()
+        // {
+        //     Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
+        //     characterLoaderConfigTarget.MorphTargets.Add(AvatarMorphTargets.MorphTargetNames[0]);
+        //     EditorUtility.SetDirty(characterLoaderConfigTarget);
+        //     editableMorphTargetList.CreateNewElement(0);
+        // }
+        //
+        // private void OnAddMorphTargetGroupButtonClicked()
+        // {
+        //     Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
+        //     characterLoaderConfigTarget.MorphTargetsGroup.Add(AvatarMorphTargets.MorphTargetGroupNames[0]);
+        //     EditorUtility.SetDirty(characterLoaderConfigTarget);
+        //     editableMorphTargetGroupList.CreateNewElement(0);
+        // }
 
         private int GetIndex(string morphTarget)
         {
