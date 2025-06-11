@@ -7,7 +7,7 @@ namespace PlayerZero
     {
         public static string GetQueryParams(this CharacterLoaderConfig config)
         {
-            var queryParams = $"lod={config.MeshLod.ToString().ToLower()}&textureAtlas={config.TextureAtlas.ToString().ToLower()}&textureQuality={config.TextureQuality.ToString().ToLower()}&textureSizeLimit={config.TextureSizeLimit}";
+            var queryParams = $"lod={config.MeshLOD.ToString().ToLower()}&textureAtlas={config.TextureAtlas.ToString().ToLower()}&textureQuality={config.TextureQuality.ToString().ToLower()}&textureSizeLimit={config.TextureSizeLimit}";
 
 
             if (config.TextureChannel != null && config.TextureChannel.Length > 0)

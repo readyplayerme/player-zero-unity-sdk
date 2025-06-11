@@ -20,6 +20,16 @@ namespace PlayerZero.Editor
         private const string DELETE_MORPH_TARGET = "Delete Morph Target";
         private const string REMOVE_BUTTON_TEXT = "X";
         private const string MESH_OPT_PACKAGE_NAME = "com.unity.meshopt.decompress";
+
+        private const string TOOLTIP_MESH_LOD = "Mesh LOD is used to determine the level of detail for the mesh. LOD0 is the most detailed.";
+        private const string TOOLTIP_TEXTURE_ATLAS = "If set to NONE the mesh, materials and textures will not be combined into 1. (or 2 if an assets texture contains transparency)";
+        private const string TOOLTIP_TEXTURE_QUALITY = "Texture Quality is used to determine the quality of the textures. High quality textures will be larger in size.";
+        private const string TOOLTIP_TEXTURE_CHANNEL = "Choose which textures the avatar will include.";
+        private const string TOOLTIP_OPTIMIZATION = "Enable or disable optimization for the avatar model.";
+        private const string TOOLTIP_DRACO = "If true, the mesh will be compressed using Draco compression.";
+        private const string TOOLTIP_MESH_OPT = "If true, the mesh will be compressed using meshoptimizer compression. (Experimental)";
+        private const string TOOLTIP_MORPH_TARGETS = "Add morph targets are used to create facial expressions and other deformations. Otherwise, set to None.";
+        private const string TOOLTIP_MORPH_TARGET_GROUPS = "Add morph target groups to include a set of morph targets.";
         
         [SerializeField] private VisualTreeAsset visualTreeAsset;
         
@@ -48,12 +58,14 @@ namespace PlayerZero.Editor
 
             characterLoaderConfigTarget = (CharacterLoaderConfig)target;
 
-            SetupLod();
-            SetupTextureAtlas();
-            SetupTextureChannel();
-            SetupMorphTargets();
-            SetupMorphTargetGroups();
-            SetupCompressionPackages();
+            MeshLod();
+            TextureAtlas();
+            TextureQuality();
+            TextireSizeLimit();
+            TextureChannels();
+            MorphTargets();
+            MorphTargetGroups();
+            CompressionPackages();
             return root;
         }
         
@@ -63,20 +75,22 @@ namespace PlayerZero.Editor
             EditorUtility.SetDirty(serializedObject.targetObject);
         }
         
-        private void SetupLod()
+        private void MeshLod()
         {
-            var lodField = new EnumField("Mesh LOD", characterLoaderConfigTarget.MeshLod);
+            var lodField = new EnumField("Mesh LOD", characterLoaderConfigTarget.MeshLOD);
+            lodField.tooltip = TOOLTIP_MESH_LOD;
             lodField.RegisterValueChangedCallback(x =>
             {
-                characterLoaderConfigTarget.MeshLod = (MeshLod)x.newValue;
+                characterLoaderConfigTarget.MeshLOD = (MeshLod)x.newValue;
                 Save();
             });
             root.Add(lodField);
         }
         
-        private void SetupTextureAtlas()
+        private void TextureAtlas()
         {
             var field = new EnumField("Texture Atlas", characterLoaderConfigTarget.TextureAtlas);
+            field.tooltip =TOOLTIP_TEXTURE_ATLAS;
             field.RegisterValueChangedCallback(x =>
             {
                 characterLoaderConfigTarget.TextureAtlas = (TextureAtlas)x.newValue;
@@ -85,11 +99,18 @@ namespace PlayerZero.Editor
             root.Add(field);
         }
         
-        private void SetupTextureChannel()
+        private void TextureChannels()
         {
             var items = Enum.GetNames(typeof(TextureChannel)).ToList();
-            var container = new Foldout { text = "Texture Channels" };
-            container.style.marginTop = 5;
+            var container = new Foldout
+            {
+                text = "Texture Channels", 
+                tooltip = TOOLTIP_TEXTURE_CHANNEL,
+                style =
+                {
+                    marginTop = 5
+                }
+            };
 
             for (var i = 0; i < items.Count; i++)
             {
@@ -119,40 +140,83 @@ namespace PlayerZero.Editor
             root.Add(container);
         }
         
-        private void SetupCompressionPackages()
+        private void TextureQuality()
+        {
+            var textureQualityField = new EnumField("Texture Quality", characterLoaderConfigTarget.TextureQuality);
+            textureQualityField.tooltip = TOOLTIP_TEXTURE_QUALITY;
+            textureQualityField.RegisterValueChangedCallback(x =>
+            {
+                characterLoaderConfigTarget.TextureQuality = (TextureQuality)x.newValue;
+                Save();
+            });
+            root.Add(textureQualityField);
+        }
+        
+        private void TextireSizeLimit()
+        {
+            var sizeLimitField = new IntegerField("Texture Size Limit", 1024)
+            {
+                value = characterLoaderConfigTarget.TextureSizeLimit,
+                tooltip = "The maximum size of the texture in pixels."
+            };
+            sizeLimitField.RegisterValueChangedCallback(x =>
+            {
+                characterLoaderConfigTarget.TextureSizeLimit = x.newValue;
+                Save();
+            });
+            root.Add(sizeLimitField);
+        }
+        
+        private void CompressionPackages()
         {
             var optimizationFoldout = new Foldout
             {
                 text = "Optimization Packages",
-                value = false
+                value = false,
+                tooltip = TOOLTIP_OPTIMIZATION,
+                style =
+                {
+                    marginTop = 4,
+                    marginLeft = 4,
+                    marginRight = 4,
+                    flexShrink = 0
+                }
             };
-            optimizationFoldout.style.marginTop = 4;
-            optimizationFoldout.style.marginLeft = 4;
-            optimizationFoldout.style.marginRight = 4;
-            optimizationFoldout.style.flexShrink = 0;
 
             // Create the "Use Draco Compression" toggle
-            var dracoToggle = new Toggle("Use Draco Compression");
-            dracoToggle.name = "UseDracoCompression";
-            dracoToggle.style.marginLeft = 3;
-            dracoToggle.style.marginTop = 3;
-            dracoToggle.style.flexDirection = FlexDirection.Row;
-            dracoToggle.style.alignItems = Align.Center;
-            dracoToggle.style.justifyContent = Justify.FlexStart;
+            var dracoToggle = new Toggle("Draco Compression")
+            {
+                tooltip = TOOLTIP_DRACO,
+                name = "Draco Compression",
+                style =
+                {
+                    marginLeft = 3,
+                    marginTop = 3,
+                    flexDirection = FlexDirection.Row,
+                    alignItems = Align.Center,
+                    justifyContent = Justify.FlexStart
+                }
+            };
 
             // Create the "Use Mesh Opt Compression" toggle
-            var meshOptToggle = new Toggle("Use Mesh Opt Compression");
-            meshOptToggle.name = "UseMeshOptCompression";
-            meshOptToggle.style.marginLeft = 3;
-            meshOptToggle.style.marginTop = 3;
-            meshOptToggle.style.flexDirection = FlexDirection.Row;
-            meshOptToggle.style.alignItems = Align.Center;
-            meshOptToggle.style.flexGrow = 0;
-            meshOptToggle.style.flexShrink = 0;
-            meshOptToggle.style.flexWrap = Wrap.NoWrap;
-            meshOptToggle.style.position = Position.Relative;
-            meshOptToggle.style.overflow = Overflow.Hidden;
-            meshOptToggle.style.opacity = 1;
+            var meshOptToggle = new Toggle("Mesh Compression (Experimental)")
+            {
+                tooltip = TOOLTIP_MESH_OPT,
+                name = "Mesh Compression",
+                style =
+                {
+                    marginLeft = 3,
+                    marginTop = 3,
+                    flexDirection = FlexDirection.Row,
+                    alignItems = Align.Center,
+                    flexGrow = 0,
+                    flexShrink = 0,
+                    flexWrap = Wrap.NoWrap,
+                    position = Position.Relative,
+                    overflow = Overflow.Hidden,
+                    opacity = 1
+                }
+            };
 
             // Add toggles to the foldout
             optimizationFoldout.Add(dracoToggle);
@@ -163,14 +227,14 @@ namespace PlayerZero.Editor
             
             optimizationFoldout.RegisterValueChangedCallback(x =>
             {
-                dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseDracoCompression);
-                meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseMeshOptCompression);
+                dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.DracoCompression);
+                meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.MeshCompression);
             });
 
             dracoToggle.RegisterValueChangedCallback(x =>
                 {
-                    if (characterLoaderConfigTarget.UseDracoCompression == x.newValue) return;
-                    characterLoaderConfigTarget.UseDracoCompression = x.newValue;
+                    if (characterLoaderConfigTarget.DracoCompression == x.newValue) return;
+                    characterLoaderConfigTarget.DracoCompression = x.newValue;
                     if (!PackageManagerHelper.IsPackageInstalled(PackageList.DracoCompression.name))
                     {
                         if (EditorUtility.DisplayDialog(
@@ -183,14 +247,14 @@ namespace PlayerZero.Editor
                         }
                         else
                         {
-                            characterLoaderConfigTarget.UseDracoCompression = false;
+                            characterLoaderConfigTarget.DracoCompression = false;
                         }
                     }
-                    dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseDracoCompression);
-                    if (characterLoaderConfigTarget.UseDracoCompression && characterLoaderConfigTarget.UseMeshOptCompression)
+                    dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.DracoCompression);
+                    if (characterLoaderConfigTarget.DracoCompression && characterLoaderConfigTarget.MeshCompression)
                     {
                         Debug.LogWarning("Draco compression is not compatible with Mesh Optimization compression. Mesh Optimization compression will be disabled.");
-                        characterLoaderConfigTarget.UseMeshOptCompression = false;
+                        characterLoaderConfigTarget.MeshCompression = false;
                         dracoToggle.SetValueWithoutNotify(false);
                     }
                     Save();
@@ -199,8 +263,8 @@ namespace PlayerZero.Editor
 
             meshOptToggle.RegisterValueChangedCallback(x =>
                 {
-                    if (characterLoaderConfigTarget.UseMeshOptCompression == x.newValue) return;
-                    characterLoaderConfigTarget.UseMeshOptCompression = x.newValue;
+                    if (characterLoaderConfigTarget.MeshCompression == x.newValue) return;
+                    characterLoaderConfigTarget.MeshCompression = x.newValue;
                     if (!PackageManagerHelper.IsPackageInstalled(MESH_OPT_PACKAGE_NAME))
                     {
                         if (EditorUtility.DisplayDialog(
@@ -213,14 +277,14 @@ namespace PlayerZero.Editor
                         }
                         else
                         {
-                            characterLoaderConfigTarget.UseMeshOptCompression = false;
+                            characterLoaderConfigTarget.MeshCompression = false;
                         }
                     }
-                    meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.UseMeshOptCompression);
-                    if (characterLoaderConfigTarget.UseMeshOptCompression && characterLoaderConfigTarget.UseDracoCompression)
+                    meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.MeshCompression);
+                    if (characterLoaderConfigTarget.MeshCompression && characterLoaderConfigTarget.DracoCompression)
                     {
                         Debug.LogWarning("Mesh Optimization compression is not compatible with Draco compression. Draco compression will be disabled.");
-                        characterLoaderConfigTarget.UseDracoCompression = false;
+                        characterLoaderConfigTarget.DracoCompression = false;
                         meshOptToggle.SetValueWithoutNotify(false);
                     }
                     Save();
@@ -228,11 +292,15 @@ namespace PlayerZero.Editor
             );
         }
         
-        private void SetupMorphTargets()
+        private void MorphTargets()
         {
             editableMorphTargetList = new EditableList(AvatarMorphTargets.MorphTargetNames);
-            // Main container
-            var morphFoldout = new Foldout { text = "Morph Targets" };
+            var morphFoldout = new Foldout
+            {
+                text = "Morph Targets", 
+                tooltip = TOOLTIP_MORPH_TARGETS
+            };
+            
             root.Add(morphFoldout);
             
             selectedMorphTargets = editableMorphTargetList.GetRoot();
@@ -257,15 +325,22 @@ namespace PlayerZero.Editor
             }
 
             // Add button
-            var addButton = new Button(OnAddMorphTargetButtonClicked) { text = "Add" };
+            var addButton = new Button(OnAddMorphTargetButtonClicked)
+            {
+                text = "Add"
+            };
             morphFoldout.Add(addButton);
         }
         
-        private void SetupMorphTargetGroups()
+        private void MorphTargetGroups()
         {
             editableMorphTargetGroupList = new EditableList(AvatarMorphTargets.MorphTargetGroupNames);
             // Main container
-            var morphFoldout = new Foldout { text = "Morph Target Groups" };
+            var morphFoldout = new Foldout
+            {
+                text = "Morph Target Groups", 
+                tooltip = TOOLTIP_MORPH_TARGET_GROUPS
+            };
             root.Add(morphFoldout);
 
             // VisualElement to hold all selected morph target rows
