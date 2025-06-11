@@ -7,9 +7,8 @@ namespace PlayerZero.Data
         /// <summary>
         /// A static list of morph targets (AKA blendshapes) and group names.
         /// </summary>
-        private static readonly List<string> morphTargetGroupNames = new List<string>
+        private static readonly List<string> morphTargetGroupNames = new()
         {
-            "none",
             "Oculus Visemes",
             "ARKit"
         };
@@ -17,9 +16,8 @@ namespace PlayerZero.Data
         /// <summary>
         /// A static list of morph targets (AKA blendshapes).
         /// </summary>
-        private static readonly List<string> morphTargetNames = new List<string>
+        private static readonly List<string> morphTargetNames = new()
         {
-            "none",
             "viseme_aa",
             "viseme_E",
             "viseme_I",

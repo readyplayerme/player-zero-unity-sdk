@@ -42,7 +42,6 @@ namespace PlayerZero.Editor
             var newElement = new VisualElement();
             newElement.style.flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row);
             newElement.style.justifyContent = new StyleEnum<Justify>(Justify.SpaceBetween);
-            Debug.Log($" Creating new morph target element with default index: {popFieldDefaultIndex}");
             elementToValueMap.Add(newElement, AvatarMorphTargets.MorphTargetNames[popFieldDefaultIndex]);
             newElement.Add(CreatePopupField(popFieldDefaultIndex, newElement, formatSelectedValueCallback));
             newElement.Add(CreateRemoveButton(newElement, onItemRemoved));

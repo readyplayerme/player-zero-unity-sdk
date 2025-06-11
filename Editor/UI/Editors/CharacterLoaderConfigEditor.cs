@@ -154,14 +154,11 @@ namespace PlayerZero.Editor
         
         private void TextireSizeLimit()
         {
-            var sizeLimitField = new IntegerField("Texture Size Limit", 1024)
-            {
-                value = characterLoaderConfigTarget.TextureSizeLimit,
-                tooltip = "The maximum size of the texture in pixels."
-            };
+            var sizeLimitField = new EnumField("Texture Size Limit", characterLoaderConfigTarget.TextureSizeLimit);
+            sizeLimitField.tooltip = "The maximum size of the texture in pixels.";
             sizeLimitField.RegisterValueChangedCallback(x =>
             {
-                characterLoaderConfigTarget.TextureSizeLimit = x.newValue;
+                characterLoaderConfigTarget.TextureSizeLimit = (TextureSizeLimit)x.newValue;
                 Save();
             });
             root.Add(sizeLimitField);
@@ -295,6 +292,7 @@ namespace PlayerZero.Editor
         private void MorphTargets()
         {
             editableMorphTargetList = new EditableList(AvatarMorphTargets.MorphTargetNames);
+            characterLoaderConfigTarget.MorphTargets ??= new List<string>();
             var morphFoldout = new Foldout
             {
                 text = "Morph Targets", 
@@ -305,21 +303,30 @@ namespace PlayerZero.Editor
             
             selectedMorphTargets = editableMorphTargetList.GetRoot();
             morphFoldout.Add(selectedMorphTargets);
-            
-            for (var i = 0; i < characterLoaderConfigTarget.MorphTargets.Count; i++)
+
+            for (int i = 0; i < characterLoaderConfigTarget.MorphTargets.Count; i++)
             {
-                
-                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetNames,characterLoaderConfigTarget.MorphTargets[i]);
+                var morphTarget = characterLoaderConfigTarget.MorphTargets[i];
+                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetNames, morphTarget);
+
                 var newElement = editableMorphTargetList.CreateNewElement(defaultIndex,
                     label =>
                     {
-                        characterLoaderConfigTarget.MorphTargets[GetIndex(label.text)] = label.text;
+                        var index = GetIndex(characterLoaderConfigTarget.MorphTargets, label.text);
+                        if (index >= 0)
+                        {
+                            characterLoaderConfigTarget.MorphTargets[index] = label.text;
+                        }
                         return null;
-                    }, 
+                    },
                     removedElement =>
                     {
                         Undo.RecordObject(characterLoaderConfigTarget, DELETE_MORPH_TARGET);
-                        characterLoaderConfigTarget.MorphTargets.RemoveAt(GetIndex(removedElement));
+                        var index = GetIndex(characterLoaderConfigTarget.MorphTargets, removedElement);
+                        if (index >= 0)
+                        {
+                            characterLoaderConfigTarget.MorphTargets.RemoveAt(index);
+                        }
                         EditorUtility.SetDirty(characterLoaderConfigTarget);
                     });
             }
@@ -335,7 +342,8 @@ namespace PlayerZero.Editor
         private void MorphTargetGroups()
         {
             editableMorphTargetGroupList = new EditableList(AvatarMorphTargets.MorphTargetGroupNames);
-            // Main container
+            characterLoaderConfigTarget.MorphTargetsGroup ??= new List<string>();
+
             var morphFoldout = new Foldout
             {
                 text = "Morph Target Groups", 
@@ -347,19 +355,30 @@ namespace PlayerZero.Editor
             selectedMorphTargetGroups = editableMorphTargetGroupList.GetRoot();
             morphFoldout.Add(selectedMorphTargetGroups);
 
-            for (var i = 0; i < characterLoaderConfigTarget.MorphTargetsGroup.Count; i++)
+            for (int i = 0; i < characterLoaderConfigTarget.MorphTargetsGroup.Count; i++)
             {
-                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetGroupNames,characterLoaderConfigTarget.MorphTargetsGroup[i]);
+                var morphTargetGroup = characterLoaderConfigTarget.MorphTargetsGroup[i];
+                var defaultIndex = Array.IndexOf(AvatarMorphTargets.MorphTargetGroupNames, morphTargetGroup);
+
                 var newElement = editableMorphTargetGroupList.CreateNewElement(defaultIndex,
                     label =>
                     {
-                        characterLoaderConfigTarget.MorphTargetsGroup[GetIndex(label.text)] = label.text;
+                        var index = GetIndex(characterLoaderConfigTarget.MorphTargetsGroup, label.text);
+                        if (index >= 0)
+                        {
+                            characterLoaderConfigTarget.MorphTargetsGroup[index] = label.text;
+                        }
                         return null;
-                    }, 
+                    },
                     removedElement =>
                     {
                         Undo.RecordObject(characterLoaderConfigTarget, DELETE_MORPH_TARGET);
-                        characterLoaderConfigTarget.MorphTargetsGroup.RemoveAt(GetIndex(removedElement));
+                        
+                        int index = GetIndex(characterLoaderConfigTarget.MorphTargetsGroup, removedElement);
+                        if (index >= 0)
+                        {
+                            characterLoaderConfigTarget.MorphTargetsGroup.RemoveAt(index);
+                        }
                         EditorUtility.SetDirty(characterLoaderConfigTarget);
                     });
             }
@@ -388,6 +407,11 @@ namespace PlayerZero.Editor
         private int GetIndex(string morphTarget)
         {
             return characterLoaderConfigTarget.MorphTargets.FindIndex(x => x == morphTarget);
+        }
+        
+        private int GetIndex(List<string> list, string value)
+        {
+            return list.FindIndex(x => x == value);
         }
 
         private void UpdateMorphTargetListFromUI()

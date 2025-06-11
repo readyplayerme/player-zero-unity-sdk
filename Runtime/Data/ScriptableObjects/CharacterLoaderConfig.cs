@@ -8,9 +8,11 @@ namespace PlayerZero.Data
     {
         public MeshLod MeshLOD;
         
-        public TextureAtlas TextureAtlas;
+        public TextureAtlas TextureAtlas = TextureAtlas.None;
         
-        public TextureQuality TextureQuality;
+        public TextureQuality TextureQuality = TextureQuality.High;
+        
+        public TextureSizeLimit TextureSizeLimit = TextureSizeLimit.Size1024;
         
         public TextureChannel[] TextureChannel =
         {
@@ -21,16 +23,12 @@ namespace PlayerZero.Data
             PlayerZero.Data.TextureChannel.Occlusion
         };
 
-        public int TextureSizeLimit = 1024;
+        public List<string> MorphTargets = new();
 
-        public List<string> MorphTargets = new List<string>
-        {
-            "none",
-        };
-
-        public List<string> MorphTargetsGroup = new List<string>();
+        public List<string> MorphTargetsGroup = new();
         
         public bool DracoCompression;
+        
         public bool MeshCompression;
     }
 }

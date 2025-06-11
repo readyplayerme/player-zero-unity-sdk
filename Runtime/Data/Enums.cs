@@ -24,6 +24,16 @@ namespace PlayerZero.Data
         Low
     }
     
+    public enum TextureSizeLimit
+    {
+        [InspectorName("256px")]
+        Size256 = 256,
+        [InspectorName("512px")]
+        Size512 = 512,
+        [InspectorName("1024px")]
+        Size1024 = 1024
+    }
+    
     /// <summary>
     ///     This enumeration describes the avatar mesh LOD (Level of Detail) options.
     /// </summary>
