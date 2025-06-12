@@ -165,7 +165,7 @@ namespace PlayerZero.Runtime.Sdk
         public static async Task<GameObject> InstantiateAvatarAsync(CharacterRequestConfig request)
         {
             if (request.CharacterConfig == null)
-                request.CharacterConfig = new CharacterLoaderConfig();
+                request.CharacterConfig = ScriptableObject.CreateInstance<CharacterLoaderConfig>();
 
             if (string.IsNullOrEmpty(request.AvatarId) && string.IsNullOrEmpty(request.AvatarUrl))
                 Debug.LogError("One of either AvatarId or AvatarUrl must be provided.");
@@ -177,8 +177,8 @@ namespace PlayerZero.Runtime.Sdk
 
             string url;
 
-            var query = QueryBuilder.BuildQueryString(request.CharacterConfig);
-
+            var query =  request.CharacterConfig.GetQueryParams();
+            
             if (!string.IsNullOrEmpty(request.AvatarUrl))
             {
                 url = string.IsNullOrEmpty(request.BlueprintId)
