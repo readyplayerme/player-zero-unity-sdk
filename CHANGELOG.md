@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Shader variants updated to fix transparency issues
 - CharacterLoaderConfig class changed to scriptable object
 - CharacterLoaderConfig now supports more avatar API options
+- Upgraded gltFast dependency to version 6.4.0 to fix issues with Draco compression
 
 ## Added
 - Quick start sample added with First and third person character controllers
