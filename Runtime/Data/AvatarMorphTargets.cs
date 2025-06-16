@@ -14,7 +14,7 @@ namespace PlayerZero.Data
             "Oculus Visemes",
             "ARKit",
             "Eyes Extra",
-            "Basic Expressions"
+            "Basic expressions"
         };
 
         /// <summary>
