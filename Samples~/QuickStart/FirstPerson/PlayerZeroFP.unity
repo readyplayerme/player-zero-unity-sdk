@@ -898,7 +898,7 @@ PrefabInstance:
     - target: {fileID: 7386838181551881186, guid: e90590827df72484098b478c03b6bbea, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 2c88eb6e37764e14cba6cc16efde556f, type: 2}
+      objectReference: {fileID: 9100000, guid: 36f49adf77eea3c4e909416afa8c5ce2, type: 2}
     - target: {fileID: 7386838181551881188, guid: e90590827df72484098b478c03b6bbea, type: 3}
       propertyPath: camera
       value: 
@@ -908,8 +908,16 @@ PrefabInstance:
       value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 7386838181551881191, guid: e90590827df72484098b478c03b6bbea, type: 3}
+      propertyPath: topClamp
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7386838181551881191, guid: e90590827df72484098b478c03b6bbea, type: 3}
       propertyPath: BottomClamp
       value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7386838181551881191, guid: e90590827df72484098b478c03b6bbea, type: 3}
+      propertyPath: bottomClamp
+      value: -70
       objectReference: {fileID: 0}
     - target: {fileID: 7386838181551881191, guid: e90590827df72484098b478c03b6bbea, type: 3}
       propertyPath: sprintSpeed
