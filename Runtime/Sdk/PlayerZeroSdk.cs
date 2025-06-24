@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using PlayerZero.Api;
 using PlayerZero.Api.V1;
+using PlayerZero.Api.V3;
 using PlayerZero.Api.V1.Contracts;
 using PlayerZero.Data;
 using PlayerZero.Runtime.DeepLinking;
@@ -31,11 +32,13 @@ namespace PlayerZero.Runtime.Sdk
         private static CharacterApi _characterApi;
         private static GameEventApi _gameEventApi;
         private static FileApi _fileApi;
+        private static AvatarCodeApi _avatarCodeApi;
         private static Settings _settings;
 
         public static Action<string> OnHotLoadedAvatarIdChanged;
-        
+
         private const string CACHED_AVATAR_ID = "PO_HotloadedAvatarId";
+        private const string SHORT_CODE_AVATAR_ID = "PO_ShortCodeAvatarId";
         
         private static bool _isInitialized;
         private static float startTime;
@@ -69,6 +72,10 @@ namespace PlayerZero.Runtime.Sdk
             if (_fileApi == null)
             {
                 _fileApi = new FileApi();
+            }
+            if (_avatarCodeApi == null)
+            {
+                _avatarCodeApi = new AvatarCodeApi();
             }
             DeepLinkHandler.CheckForDeepLink();
             _isInitialized = true;
@@ -159,6 +166,25 @@ namespace PlayerZero.Runtime.Sdk
             return response.Data;
         }
 
+        public static async Task<string> GetAvatarIdFromCodeAsync(string code)
+        {
+            Initialize();
+
+            var response = await _avatarCodeApi.GetAvatarIdAsync(new AvatarCodeRequest
+            {
+                Code = code
+            });
+
+            if (!response.IsSuccess || response.Data == null)
+            {
+                Debug.LogError($"Failed to load avatar id for code {code}");
+                return null;
+            }
+
+            PlayerPrefs.SetString(SHORT_CODE_AVATAR_ID, response.Data.AvatarId);
+            return response.Data.AvatarId;
+        }
+
         public static async Task<GameObject> InstantiateAvatarAsync(CharacterRequestConfig request)
         {
             if (request.CharacterConfig == null)
@@ -226,6 +252,7 @@ namespace PlayerZero.Runtime.Sdk
         public static void ClearCachedAvatarId()
         {
             PlayerPrefs.DeleteKey(CACHED_AVATAR_ID);
+            PlayerPrefs.DeleteKey(SHORT_CODE_AVATAR_ID);
         }
         
         public static void Shutdown()
