@@ -44,6 +44,7 @@ namespace PlayerZero
             }
             var query = PlayerZero.Api.QueryBuilder.BuildQueryString(parameters);
             var url = $"https://avatars.readyplayer.me/{avatarId}.png{query}";
+            Debug.LogError($"Dicks {url}");
             var texture = await _fileApi.DownloadImageAsync(url);
             if (texture == null)
             {
