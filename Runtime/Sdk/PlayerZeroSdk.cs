@@ -76,11 +76,16 @@ namespace PlayerZero.Runtime.Sdk
 
         public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
         {
+            return await GetIconAsync(avatarId, new AvatarImageParameters { size = size });
+        }
+
+        public static async Task<Sprite> GetIconAsync(string avatarId, AvatarImageParameters parameters)
+        {
             Initialize();
 
-            var fileApi = new FileApi();
-            var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?size={size}";
-            var texture = await fileApi.DownloadImageAsync(iconUrl);
+            var query = QueryBuilder.BuildQueryString(parameters);
+            var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png{query}";
+            var texture = await new FileApi().DownloadImageAsync(iconUrl);
 
             return Sprite.Create(
                 texture,

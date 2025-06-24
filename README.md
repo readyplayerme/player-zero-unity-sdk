@@ -56,6 +56,19 @@ var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(new CharacterRequestConf
 });
 ```
 
+### Load 2D Avatar Image
+
+Use `AvatarImageLoader` or `PlayerZeroSdk.GetIconAsync` to display a 2D render of an avatar:
+
+```csharp
+var options = new AvatarImageParameters { size = 512 };
+var sprite = await PlayerZeroSdk.GetIconAsync("AVATAR_ID_HERE", options);
+image.sprite = sprite;
+```
+
+Attach `AvatarImageLoader` to any UI `Image`, configure the parameters in the inspector and set the avatar id to load automatically.
+
+
 ## 🎭 Mesh Transfer
 
 Seamlessly apply a Player Zero avatar's visuals to an existing prefab:
