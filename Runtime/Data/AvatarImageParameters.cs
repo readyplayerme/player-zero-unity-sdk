@@ -7,7 +7,6 @@ namespace PlayerZero
     public class AvatarImageParameters
     {
         public Dictionary<string, float> blendShapes = new Dictionary<string, float>();
-        public bool? cacheControl;
         public int size = 512;
         public string quality = "high";
         public string camera = "portrait";
