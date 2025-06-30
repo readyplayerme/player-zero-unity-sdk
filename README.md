@@ -61,7 +61,7 @@ var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(new CharacterRequestConf
 Use `AvatarImageLoader` or `PlayerZeroSdk.GetIconAsync` to display a 2D render of an avatar:
 
 ```csharp
-var options = new AvatarImageParameters { size = 512 };
+AvatarImageConfig options = ScriptableObject.CreateInstance<AvatarImageConfig>();
 var sprite = await PlayerZeroSdk.GetIconAsync("AVATAR_ID_HERE", options);
 image.sprite = sprite;
 ```
