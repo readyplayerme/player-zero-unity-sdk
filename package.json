@@ -23,5 +23,12 @@
     "name": "Ready Player Me",
     "email": "info@readyplayer.me",
     "url": "https://readyplayer.me"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "QuickStart",
+      "description": "The quick start samples demonstrates how to load an avatar with a third person or first person controller setup.",
+      "path": "Samples~/QuickStart"
+    }
+  ]
 }
