@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.5.0] - 2025.06.16
+## [2.5.0] - 2025.06.30
 
 ## Updated
 - DefaultAvatarId added to Settings scriptable object
