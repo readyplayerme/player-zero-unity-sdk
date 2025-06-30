@@ -75,17 +75,17 @@ namespace PlayerZero.Runtime.Sdk
             _isInitialized = true;
         }
 
-        public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
+        public static async Task<Sprite> GetIconAsync(string avatarId, RenderSizeLimitType size = RenderSizeLimitType.Size64)
         {
-            return await GetIconAsync(avatarId, new AvatarImageParameters { size = size });
+            return await GetIconAsync(avatarId, new AvatarImageConfig { size = size });
         }
 
-        public static async Task<Sprite> GetIconAsync(string avatarId, AvatarImageParameters parameters)
+        public static async Task<Sprite> GetIconAsync(string avatarId, AvatarImageConfig config)
         {
             Initialize();
-
-            var query = QueryBuilder.BuildQueryString(parameters);
-            var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png{query}";
+            var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?{config.GetParams()}";
+            
+            Debug.Log($"DICKS avatar icon from URL: {iconUrl}");
             var texture = await new FileApi().DownloadImageAsync(iconUrl);
 
             return Sprite.Create(
