@@ -1,24 +1,34 @@
-using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace PlayerZero
+namespace PlayerZero.Data
 {
-    [Serializable]
-    public class CharacterLoaderConfig 
+    [CreateAssetMenu(fileName = "Character Loader Config", menuName = "Player Zero/Character Loader Config", order = 2)]
+    public class CharacterLoaderConfig  : ScriptableObject
     {
-        public int meshLod = 0;
-
-        public string textureAtlas = "none";
+        public MeshLod MeshLOD;
         
-        public string textureQuality = "high";
-
-        public int textureSizeLimit = 1024;
-
-        public List<string> morphTargets = new List<string>
+        public TextureAtlas TextureAtlas = TextureAtlas.None;
+        
+        public TextureQuality TextureQuality = TextureQuality.High;
+        
+        public TextureSizeLimit TextureSizeLimit = TextureSizeLimit.Size1024;
+        
+        public TextureChannel[] TextureChannel =
         {
-            "none",
+            PlayerZero.Data.TextureChannel.baseColor,
+            PlayerZero.Data.TextureChannel.normal,
+            PlayerZero.Data.TextureChannel.metallicRoughness,
+            PlayerZero.Data.TextureChannel.emissive,
+            PlayerZero.Data.TextureChannel.occlusion
         };
 
-        public List<string> morphTargetsGroup = new List<string>();
+        public List<string> MorphTargets = new();
+
+        public List<string> MorphTargetsGroup = new();
+        
+        public bool DracoCompression;
+        
+        public bool MeshCompression;
     }
 }

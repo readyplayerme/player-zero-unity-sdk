@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using PlayerZero.Data;
 using System.Threading.Tasks;
 using PlayerZero.Editor.UI.Components;
 using PlayerZero.Editor.UI.ViewModels;
@@ -103,7 +102,7 @@ namespace PlayerZero.Editor.UI.Views
                     EditorUtility.SetDirty(_viewModel.Settings);
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
-
+                
                     await characterBlueprintsView.InitAsync();
                 });
             }
@@ -122,6 +121,15 @@ namespace PlayerZero.Editor.UI.Views
                     }
                 });
             }
+            
+            GUILayout.Space(20);
+            
+            _viewModel.Settings.DefaultAvatarId =
+                EditorGUILayout.TextField("Default Avatar Id", _viewModel.Settings.DefaultAvatarId,
+                    new GUIStyle(GUI.skin.textField)
+                    {
+                        margin = new RectOffset(10, 10, 0, 0)
+                    });
 
             GUILayout.Space(20);
             
@@ -193,6 +201,7 @@ namespace PlayerZero.Editor.UI.Views
             }
 
             GUILayout.Space(20);
+            scrollViewScope.Dispose();
         }
     }
 }

@@ -6,6 +6,7 @@ using PlayerZero.Api.V1.Contracts;
 using PlayerZero.Data;
 using PlayerZero.Runtime.DeepLinking;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
@@ -92,6 +93,7 @@ namespace PlayerZero.Runtime.Sdk
 
         public static string GetHotLoadedAvatarId()
         {
+            Initialize();
             var queryParams = ZeroQueryParams.GetParams();
             queryParams.TryGetValue("avatarId", out var avatarId);
             if (!string.IsNullOrEmpty(avatarId))
@@ -103,7 +105,8 @@ namespace PlayerZero.Runtime.Sdk
                 // If no avatarId is found in the URL, check PlayerPrefs
                 avatarId = PlayerPrefs.GetString(CACHED_AVATAR_ID, string.Empty);
             }
-            return avatarId;
+            
+            return string.IsNullOrEmpty(avatarId) ? _settings.DefaultAvatarId : avatarId;
         }
 
         public static string StartEventSession<TEvent, TEventProperties>(
@@ -162,7 +165,7 @@ namespace PlayerZero.Runtime.Sdk
         public static async Task<GameObject> InstantiateAvatarAsync(CharacterRequestConfig request)
         {
             if (request.CharacterConfig == null)
-                request.CharacterConfig = new CharacterLoaderConfig();
+                request.CharacterConfig = ScriptableObject.CreateInstance<CharacterLoaderConfig>();
 
             if (string.IsNullOrEmpty(request.AvatarId) && string.IsNullOrEmpty(request.AvatarUrl))
                 Debug.LogError("One of either AvatarId or AvatarUrl must be provided.");
@@ -174,8 +177,8 @@ namespace PlayerZero.Runtime.Sdk
 
             string url;
 
-            var query = QueryBuilder.BuildQueryString(request.CharacterConfig);
-
+            var query =  request.CharacterConfig.GetQueryParams();
+            
             if (!string.IsNullOrEmpty(request.AvatarUrl))
             {
                 url = string.IsNullOrEmpty(request.BlueprintId)
