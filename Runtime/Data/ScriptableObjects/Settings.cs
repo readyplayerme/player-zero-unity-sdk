@@ -29,7 +29,7 @@ namespace PlayerZero.Data
         public string DefaultAvatarId = "68304bfa19a6664919431f4e";
         public string ApiBaseUrl => string.IsNullOrEmpty(ApiProxyUrl) ? _apiBaseUrl : ApiProxyUrl;
         
-        private string version = "2.1.0";
+        private string version = "2.5.0";
         public string Version => version;
 
 #if UNITY_EDITOR
