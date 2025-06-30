@@ -85,7 +85,6 @@ namespace PlayerZero.Runtime.Sdk
             Initialize();
             var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?{config.GetParams()}";
             
-            Debug.Log($"DICKS avatar icon from URL: {iconUrl}");
             var texture = await new FileApi().DownloadImageAsync(iconUrl);
 
             return Sprite.Create(
