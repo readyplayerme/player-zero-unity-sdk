@@ -1,11 +1,14 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using PlayerZero.Runtime.Sdk;
 
 public class AvatarCodeLoaderSample : MonoBehaviour
 {
-    public InputField codeInput;
-    public Transform avatarParent;
+    [SerializeField]
+    private InputField codeInput;
+    [SerializeField]
+    private Transform avatarParent;
 
     public async void LoadAvatar()
     {
