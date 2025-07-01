@@ -1,3 +1,4 @@
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 
 namespace PlayerZero.Data
@@ -40,7 +41,7 @@ namespace PlayerZero.Data
 
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssets();
-            Debug.Log($"Updated package version to {version}");
+            PZeroLogger.Log($"Updated package version to {version}");
 
         }
 #endif

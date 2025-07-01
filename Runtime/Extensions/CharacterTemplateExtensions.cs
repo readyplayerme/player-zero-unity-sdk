@@ -1,5 +1,6 @@
 using System.Linq;
 using PlayerZero.Data;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 
 namespace PlayerZero
@@ -42,7 +43,7 @@ namespace PlayerZero
         {
             if (template?.Prefabs == null || template.Prefabs.Length == 0)
             {
-                Debug.LogWarning("BlueprintTemplate or its prefab list is null/empty.");
+                PZeroLogger.LogWarning("BlueprintTemplate or its prefab list is null/empty.");
                 return null;
             }
 
@@ -54,7 +55,7 @@ namespace PlayerZero
             if (matchingPrefab != null) return matchingPrefab;
             if (tag != "")
             {
-                Debug.LogWarning($"No prefab found with tag '{tag}', defaulting to the first prefab.");
+                PZeroLogger.LogWarning($"No prefab found with tag '{tag}', defaulting to the first prefab.");
             }
             matchingPrefab = template.Prefabs[0].Prefab;
 

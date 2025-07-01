@@ -1,5 +1,6 @@
 using System.Linq;
 using PlayerZero.Data;
+using PlayerZeroSDK.Runtime;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace PlayerZero.Editor
             var template = characterTemplateConfig.Templates.FirstOrDefault(p => p.BlueprintId == templateId);
             if (template == null)
             {
-                Debug.LogWarning($"Template with ID {templateId} not found.");
+                PZeroLogger.LogWarning($"Template with ID {templateId} not found.");
                 return null;
             }
             var prefab = template.GetPrefabByTag("");

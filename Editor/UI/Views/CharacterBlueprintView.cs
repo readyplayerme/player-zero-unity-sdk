@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using PlayerZero.Api.V1;
 using PlayerZero.Editor.UI.Components;
 using PlayerZero.Editor.UI.ViewModels;
+using PlayerZeroSDK.Runtime;
 using UnityEditor;
 using UnityEngine;
 
@@ -83,17 +84,17 @@ namespace PlayerZero.Editor.UI.Views
         {
             if (newDefaultTemplatePrefab == null)
             {
-                Debug.LogWarning("No template prefab provided.");
+                PZeroLogger.LogWarning("No template prefab provided.");
                 return;
             }
             
-            Debug.Log($"Template prefab changed to {newDefaultTemplatePrefab.name}");
+            PZeroLogger.Log($"Template prefab changed to {newDefaultTemplatePrefab.name}");
             
             // Get the template from the _characterTemplateConfig
             var template = _characterTemplateConfig.GetTemplate(characterBlueprintId);
             if (template == null)
             {
-                Debug.LogWarning($"Template with ID {characterBlueprintId} not found.");
+                PZeroLogger.LogWarning($"Template with ID {characterBlueprintId} not found.");
                 return;
             }
 
@@ -112,7 +113,7 @@ namespace PlayerZero.Editor.UI.Views
                 if (existingPrefabIndex > 0)
                 {
                     // Case 2: The prefab exists but is not in the first position
-                    Debug.Log($"Prefab exists at index {existingPrefabIndex}, moving to the front.");
+                    PZeroLogger.Log($"Prefab exists at index {existingPrefabIndex}, moving to the front.");
                     // Remove it from its current position
                     var prefabToMove = prefabList[existingPrefabIndex];
                     prefabList.RemoveAt(existingPrefabIndex);
@@ -122,7 +123,7 @@ namespace PlayerZero.Editor.UI.Views
                 else
                 {
                     // Case 3: The prefab does not exist in the list, so add it at the front
-                    Debug.Log("Prefab does not exist in the list, adding as the first element.");
+                    PZeroLogger.Log("Prefab does not exist in the list, adding as the first element.");
                     prefabList.Insert(0, new BlueprintPrefab()
                     {
                         Prefab = newDefaultTemplatePrefab,

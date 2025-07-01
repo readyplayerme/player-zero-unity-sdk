@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PlayerZero.Data;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -63,7 +64,7 @@ namespace PlayerZero.Api
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    Debug.LogWarning($"Request cancelled: {data.Url}");
+                    PZeroLogger.LogWarning($"Request cancelled: {data.Url}");
                     request.Abort();
                     cancellationToken.ThrowIfCancellationRequested();
                 }
@@ -77,7 +78,7 @@ namespace PlayerZero.Api
                 return JsonConvert.DeserializeObject<TResponse>(request.downloadHandler.text);
 
             if (LogWarnings)
-                Debug.LogWarning($"Request failed - {request.error} - {request.url}\n{request.downloadHandler.text}");
+                PZeroLogger.LogWarning($"Request failed - {request.error} - {request.url}\n{request.downloadHandler.text}");
 
             return new TResponse()
             {

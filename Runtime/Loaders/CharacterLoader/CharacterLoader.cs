@@ -5,6 +5,7 @@ using PlayerZero.Api.V1;
 using System.Threading.Tasks;
 using PlayerZero.Api;
 using PlayerZero.Runtime.Sdk;
+using PlayerZeroSDK.Runtime;
 using Object = UnityEngine.Object;
 
 namespace PlayerZero
@@ -89,7 +90,7 @@ namespace PlayerZero
             
             if (templatePrefab == null)
             {
-                Debug.LogError( $"Failed to load character template for character with ID {characterId}." );
+                PZeroLogger.LogError( $"Failed to load character template for character with ID {characterId}." );
                 return null;
             }
             var templateInstance = Object.Instantiate(templatePrefab);
@@ -112,7 +113,7 @@ namespace PlayerZero
             
             if (playerZeroCharacter == null)
             {
-                Debug.LogError( $"Failed to load character model for character with ID {characterId}." );
+                PZeroLogger.LogError( $"Failed to load character model for character with ID {characterId}." );
                 return null;
             }
             var characterObject = new GameObject(characterId);
@@ -156,7 +157,7 @@ namespace PlayerZero
             }
             if (templateConfig == null)
             {
-                Debug.LogError("Character template config not found.");
+                PZeroLogger.LogError("Character template config not found.");
                 return null;
             }
             var blueprintTemplate = templateConfig.Templates.ToList().FirstOrDefault(p => p.BlueprintId == blueprintId) ?? templateConfig.Templates[0];

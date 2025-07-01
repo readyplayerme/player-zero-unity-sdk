@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using PlayerZeroSDK.Runtime;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
@@ -27,11 +28,11 @@ namespace PlayerZero.Editor
 
             if (Time.realtimeSinceStartup - startTime >= TIMEOUT_FOR_MODULE_INSTALLATION)
             {
-                Debug.LogError($"Package installation timed out for {identifier}. Please try again.");
+                PZeroLogger.LogError($"Package installation timed out for {identifier}. Please try again.");
             }
             if (addRequest.Error != null)
             {
-                Debug.LogError("Error: " + addRequest.Error.message);
+                PZeroLogger.LogError("Error: " + addRequest.Error.message);
             }
         }
 
@@ -57,7 +58,7 @@ namespace PlayerZero.Editor
 
             if (listRequest.Error != null)
             {
-                Debug.LogWarning($"Error: {listRequest.Error.message}");
+                PZeroLogger.LogWarning($"Error: {listRequest.Error.message}");
                 return Array.Empty<PackageInfo>();
             }
 

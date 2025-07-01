@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 
 #if PZERO_UNITY_GLTF
@@ -24,7 +25,7 @@ namespace PlayerZero.Runtime.Sdk
         public static async Task<GameObject> LoadModelAsync(string url)
         {
             if (Loader != null) return await Loader.LoadModelAsync(url);
-            Debug.LogError("GltfLoader is not initialized. Please ensure the appropriate loader is set.");
+            PZeroLogger.LogError("GltfLoader is not initialized. Please ensure the appropriate loader is set.");
             return null;
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 
 namespace PlayerZero.Runtime.DeepLinking
@@ -33,7 +34,7 @@ namespace PlayerZero.Runtime.DeepLinking
                 }
                 else
                 {
-                    Debug.LogWarning($"Query parameter '{key}' not found in URL.");
+                    PZeroLogger.LogWarning($"Query parameter '{key}' not found in URL.");
                 }
             }
 

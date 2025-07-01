@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using PlayerZero.Data;
 using PlayerZero.Editor.Cache;
+using PlayerZeroSDK.Runtime;
 using UnityEditor.PackageManager;
 
 namespace PlayerZero.Editor
@@ -27,7 +28,7 @@ namespace PlayerZero.Editor
         private static void OnPackagesChanged(PackageRegistrationEventArgs args)
         {
             if (!PackageUpdated(args)) return;
-            Debug.Log($"Detected update to {PackageName}. Syncing version number...");
+            PZeroLogger.Log($"Detected update to {PackageName}. Syncing version number...");
             EnsureVersionIsUpdated();
         }
 

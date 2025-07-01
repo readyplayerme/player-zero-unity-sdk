@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using System.Globalization;
 using PlayerZero.Api.V1;
 using PlayerZero.Data;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -22,7 +22,7 @@ namespace PlayerZero.Runtime.Sdk
 
         private Coroutine _heartbeatTimer;
 
-        public bool debugMode;
+        public bool logEvents;
         private static DeviceContext _deviceContext;
         
         private long lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -33,7 +33,7 @@ namespace PlayerZero.Runtime.Sdk
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
             if (_settings == null || string.IsNullOrEmpty(_settings.GameId))
             {
-                Debug.LogError("Player Zero Game ID is required. Please set it in tools -> Player Zero.");
+                PZeroLogger.LogError("Player Zero Game ID is required. Please set it in tools -> Player Zero.");
                 return;
             }
             
@@ -51,8 +51,8 @@ namespace PlayerZero.Runtime.Sdk
 
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()))
                 {
-                    if (debugMode)
-                        Debug.Log("Sending game session started event to Player Zero.");
+                    if (logEvents)
+                        PZeroLogger.Log("Sending game session started event to Player Zero.");
 
                     var sessionId =
                         PlayerZeroSdk.StartEventSession<GameSessionStartedEvent, GameSessionStartedProperties>(
@@ -65,8 +65,8 @@ namespace PlayerZero.Runtime.Sdk
                             }
                         );
 
-                    if (debugMode)
-                        Debug.Log("Sending avatar session started event to Player Zero.");
+                    if (logEvents)
+                        PZeroLogger.Log("Sending avatar session started event to Player Zero.");
 
                     var avatarSessionId =
                         PlayerZeroSdk.StartEventSession<AvatarSessionStartedEvent, AvatarSessionStartedProperties>(
@@ -92,7 +92,7 @@ namespace PlayerZero.Runtime.Sdk
             }
             else
             {
-                Debug.LogWarning("Removing duplicate Player Zero analytics component.");
+                PZeroLogger.LogWarning("Removing duplicate Player Zero analytics component.");
                 Destroy(this);
             }
         }
@@ -132,11 +132,11 @@ namespace PlayerZero.Runtime.Sdk
 #endif  
         
 #if ENABLE_INPUT_SYSTEM
-    private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
-    {
-        // Any input event from any device
-        lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-    }
+        private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
+        {
+            // Any input event from any device
+            lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        }
 #endif
 
         private IEnumerator Heartbeat()
@@ -148,8 +148,8 @@ namespace PlayerZero.Runtime.Sdk
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()) &&
                     PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
                 {
-                    if (debugMode)
-                        Debug.Log("Sending avatar heartbeat event to Player Zero.");
+                    if (logEvents)
+                        PZeroLogger.Log("Sending avatar heartbeat event to Player Zero.");
 
                     PlayerZeroSdk.SendEvent<AvatarSessionHeartbeatEvent, AvatarSessionHeartbeatProperties>(
                         new AvatarSessionHeartbeatEvent()
@@ -179,8 +179,8 @@ namespace PlayerZero.Runtime.Sdk
 
             if (PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
             {
-                if (debugMode)
-                    Debug.Log("Sending avatar session ended event to Player Zero.");
+                if (logEvents)
+                    PZeroLogger.Log("Sending avatar session ended event to Player Zero.");
                 
                 PlayerZeroSdk.SendEvent<AvatarSessionEndedEvent, AvatarSessionEndedProperties>(
                     new AvatarSessionEndedEvent()
@@ -197,8 +197,8 @@ namespace PlayerZero.Runtime.Sdk
 
             if (PlayerPrefs.HasKey(PZ_SESSION_ID))
             {
-                if (debugMode)
-                    Debug.Log("Sending game session ended event to Player Zero.");
+                if (logEvents)
+                    PZeroLogger.Log("Sending game session ended event to Player Zero.");
                 
                 PlayerZeroSdk.SendEvent<GameSessionEndedEvent, GameSessionEndedProperties>(
                     new GameSessionEndedEvent()

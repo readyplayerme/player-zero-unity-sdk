@@ -1,4 +1,5 @@
 using System;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 
 
@@ -39,7 +40,7 @@ namespace PlayerZero.Runtime.DeepLinking
         {
             if (DeeplinkURL == url)
             {
-                Debug.LogWarning($"Deeplink URL already processed: {url}");
+                PZeroLogger.LogWarning($"Deeplink URL already processed: {url}");
                 return;
             }
             DeeplinkURL = url;
@@ -50,18 +51,18 @@ namespace PlayerZero.Runtime.DeepLinking
                 if (parameters.TryGetValue(AVATAR_ID_KEY, out var avatarId))
                 {
                     data.AvatarId = avatarId;
-                    Debug.Log($"DeepLink Avatar Id: {data.AvatarId}");
+                    PZeroLogger.Log($"DeepLink Avatar Id: {data.AvatarId}");
                 }
                 if (parameters.TryGetValue(USER_NAME_KEY, out var userName))
                 {
                     data.UserName = userName;
-                    Debug.Log($"DeepLink User Name: {data.UserName}");
+                    PZeroLogger.Log($"DeepLink User Name: {data.UserName}");
                 }
                 
                 OnDeepLinkDataReceived.Invoke(data);
                 return;
             }
-            Debug.LogWarning($"No Deeplink data found at URL: {url}");
+            PZeroLogger.LogWarning($"No Deeplink data found at URL: {url}");
         }
         
         public static void CheckForDeepLink()
@@ -83,7 +84,7 @@ namespace PlayerZero.Runtime.DeepLinking
                  {
                      if (arg.StartsWith(PZERO_LINK_NAME, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(EPIC_LINK_NAME, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(STEAM_LINK_NAME, StringComparison.OrdinalIgnoreCase))
                      {
-                         Debug.Log($"PZero Log: Detected desktop launch ARGS = {arg}");
+                         PZeroLogger.Log($"PZero Log: Detected desktop launch ARGS = {arg}");
                          if (arg.Contains(PZERO_LINK_NAME))
                          {
                              return arg;
@@ -93,7 +94,7 @@ namespace PlayerZero.Runtime.DeepLinking
                      }
                  }
 #endif
-            Debug.Log($"PZero Log: No desktop launch ARGS detected, using Application.absoluteURL {Application.absoluteURL}");
+            PZeroLogger.Log($"PZero Log: No desktop launch ARGS detected, using Application.absoluteURL {Application.absoluteURL}");
             return Application.absoluteURL;
         }
     }

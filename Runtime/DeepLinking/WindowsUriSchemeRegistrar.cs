@@ -1,3 +1,4 @@
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 
 #if UNITY_STANDALONE_WIN  && !UNITY_EDITOR
@@ -23,14 +24,14 @@ namespace PlayerZero.Runtime.DeepLinking
 
             if (result == 0)
             {
-                Debug.Log($"URI scheme '{scheme}' registered successfully.");
+                PZeroLogger.Log($"URI scheme '{scheme}' registered successfully.");
                 return;
             }
-            Debug.LogError($"Failed to register URI scheme '{scheme}'. Error code: {result}");
+            PZeroLogger.LogError($"Failed to register URI scheme '{scheme}'. Error code: {result}");
         }
         else
         {
-            Debug.LogError($"Failed to register URI scheme '{scheme}'.");
+            PZeroLogger.LogError($"Failed to register URI scheme '{scheme}'.");
         }
     }
 #endif
@@ -45,7 +46,7 @@ namespace PlayerZero.Runtime.DeepLinking
         }
         return;
 #endif
-            Debug.LogWarning("RegisterUriScheme is only supported on Windows Standalone builds.");
+            PZeroLogger.LogWarning("RegisterUriScheme is only supported on Windows Standalone builds.");
         }
 
     }

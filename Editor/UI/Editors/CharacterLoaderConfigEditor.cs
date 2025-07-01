@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PlayerZero.Data;
+using PlayerZeroSDK.Runtime;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -243,7 +244,7 @@ namespace PlayerZero.Editor
                     dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.DracoCompression);
                     if (characterLoaderConfigTarget.DracoCompression && characterLoaderConfigTarget.MeshCompression)
                     {
-                        Debug.LogWarning("Draco compression is not compatible with Mesh Optimization compression. Mesh Optimization compression will be disabled.");
+                        PZeroLogger.LogWarning("Draco compression is not compatible with Mesh Optimization compression. Mesh Optimization compression will be disabled.");
                         characterLoaderConfigTarget.MeshCompression = false;
                         dracoToggle.SetValueWithoutNotify(false);
                     }
@@ -273,7 +274,7 @@ namespace PlayerZero.Editor
                     meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.MeshCompression);
                     if (characterLoaderConfigTarget.MeshCompression && characterLoaderConfigTarget.DracoCompression)
                     {
-                        Debug.LogWarning("Mesh Optimization compression is not compatible with Draco compression. Draco compression will be disabled.");
+                        PZeroLogger.LogWarning("Mesh Optimization compression is not compatible with Draco compression. Draco compression will be disabled.");
                         characterLoaderConfigTarget.DracoCompression = false;
                         meshOptToggle.SetValueWithoutNotify(false);
                     }

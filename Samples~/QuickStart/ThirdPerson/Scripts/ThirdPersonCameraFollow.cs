@@ -15,7 +15,7 @@ namespace PlayerZero.Samples
         {
             if(target == null)
             {
-                Debug.LogWarning("Target is not set for ThirdPersonCamera.");
+                PZeroLogger.LogWarning("Target is not set for ThirdPersonCamera.");
                 return;
             }
         }

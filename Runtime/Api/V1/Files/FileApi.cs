@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -20,7 +21,7 @@ namespace PlayerZero.Api.V1
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    Debug.LogWarning($"Request cancelled: {url}");
+                    PZeroLogger.LogWarning($"Request cancelled: {url}");
                     request.Abort();
                     cancellationToken.ThrowIfCancellationRequested();
                 }
@@ -56,7 +57,7 @@ namespace PlayerZero.Api.V1
                 {
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        Debug.LogWarning($"Request cancelled: {asset.IconUrl}");
+                        PZeroLogger.LogWarning($"Request cancelled: {asset.IconUrl}");
                         iconRequest.Abort();
                         cancellationToken.ThrowIfCancellationRequested();
                     }
@@ -96,7 +97,7 @@ namespace PlayerZero.Api.V1
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    Debug.LogWarning($"Request cancelled: {url}");
+                    PZeroLogger.LogWarning($"Request cancelled: {url}");
                     request.Abort();
                     cancellationToken.ThrowIfCancellationRequested();
                 }
@@ -112,7 +113,7 @@ namespace PlayerZero.Api.V1
                 return request.downloadHandler.data;
             }
 
-            Debug.LogError($"Failed to download file from url: {url} \n Error: {request.error}");
+            PZeroLogger.LogError($"Failed to download file from url: {url} \n Error: {request.error}");
             return null;
         }
 

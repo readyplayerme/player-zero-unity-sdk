@@ -1,4 +1,5 @@
 using System.IO;
+using PlayerZeroSDK.Runtime;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -19,14 +20,14 @@ namespace PlayerZero.Editor
             
             if (!PlayerSettings.stripEngineCode && PlayerSettings.GetManagedStrippingLevel(targetGroup) == ManagedStrippingLevel.Disabled)
             {
-                UnityEngine.Debug.LogWarning(
+                PZeroLogger.LogWarning(
                     "[LinkXmlAutoGenerator] Managed Stripping Level is set to Disabled. link.xml is not required.");
                 return;
             }
 
             if (!Directory.Exists(FolderPath))
             {
-                UnityEngine.Debug.Log($"Creating folder: {FolderPath}");
+                PZeroLogger.Log($"Creating folder: {FolderPath}");
                 Directory.CreateDirectory(FolderPath);
             }
 
@@ -34,7 +35,7 @@ namespace PlayerZero.Editor
             
             if (File.Exists(linkXmlPath))
             {
-                UnityEngine.Debug.Log($"[LinkXmlAutoGenerator] link.xml already exists at: {linkXmlPath}. Be sure to preserve PlayerZero.Api* types.");
+                PZeroLogger.Log($"[LinkXmlAutoGenerator] link.xml already exists at: {linkXmlPath}. Be sure to preserve PlayerZero.Api* types.");
                 return;
             }
 
@@ -45,7 +46,7 @@ namespace PlayerZero.Editor
 </linker>";
 
             File.WriteAllText(linkXmlPath, xmlContent);
-            UnityEngine.Debug.Log($"[LinkXmlAutoGenerator] Created link.xml to preserve PlayerZero.Api* types:\n{linkXmlPath}");
+            PZeroLogger.Log($"[LinkXmlAutoGenerator] Created link.xml to preserve PlayerZero.Api* types:\n{linkXmlPath}");
             AssetDatabase.Refresh();
         }
     }

@@ -6,6 +6,7 @@ using PlayerZero.Data;
 using PlayerZero.Editor.Api.V1.Analytics;
 using PlayerZero.Editor.Api.V1.Analytics.Models;
 using PlayerZero.Editor.Cache;
+using PlayerZeroSDK.Runtime;
 using UnityEditor;
 using UnityEngine;
 
@@ -62,7 +63,7 @@ namespace PlayerZero.Editor.UI.ViewModels
 
         public void SaveCharacterBlueprintTemplate(CharacterTemplate characterTemplate)
         {
-            Debug.Log($"SaveCharacterBlueprintTemplate: {characterTemplate.Name}");
+            PZeroLogger.Log($"SaveCharacterBlueprintTemplate: {characterTemplate.Name}");
         }
     }
 }

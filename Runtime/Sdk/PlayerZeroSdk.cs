@@ -5,6 +5,7 @@ using PlayerZero.Api.V1;
 using PlayerZero.Api.V1.Contracts;
 using PlayerZero.Data;
 using PlayerZero.Runtime.DeepLinking;
+using PlayerZeroSDK.Runtime;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -123,7 +124,7 @@ namespace PlayerZero.Runtime.Sdk
                 {
                     if (eventResponse.Status != TaskStatus.RanToCompletion)
                     {
-                        Debug.LogWarning("A Player Zero event failed to send.");
+                        PZeroLogger.LogWarning("A Player Zero event failed to send.");
                     }
                 });
 
@@ -143,7 +144,7 @@ namespace PlayerZero.Runtime.Sdk
                 {
                     if (eventResponse.Status != TaskStatus.RanToCompletion)
                     {
-                        Debug.LogWarning("A Player Zero event failed to send.");
+                        PZeroLogger.LogWarning("A Player Zero event failed to send.");
                     }
                 });
 
@@ -168,10 +169,10 @@ namespace PlayerZero.Runtime.Sdk
                 request.CharacterConfig = ScriptableObject.CreateInstance<CharacterLoaderConfig>();
 
             if (string.IsNullOrEmpty(request.AvatarId) && string.IsNullOrEmpty(request.AvatarUrl))
-                Debug.LogError("One of either AvatarId or AvatarUrl must be provided.");
+                PZeroLogger.LogError("PZERO: One of either AvatarId or AvatarUrl must be provided.");
 
             if (!string.IsNullOrEmpty(request.AvatarId) && !string.IsNullOrEmpty(request.AvatarUrl))
-                Debug.LogError("Only one of either AvatarId or AvatarUrl must be provided.");
+                PZeroLogger.LogError("PZERO: Only one of either AvatarId or AvatarUrl must be provided.");
 
             Initialize();
 
@@ -200,7 +201,7 @@ namespace PlayerZero.Runtime.Sdk
             var playerZeroCharacter = await GltfLoader.LoadModelAsync(url);
             if (playerZeroCharacter == null)
             {
-                Debug.LogError($"Failed to load Player Zero Character");
+                PZeroLogger.LogError($"Failed to load Player Zero Character");
             }
             
             playerZeroCharacter.transform.parent = request.Parent;
@@ -218,7 +219,7 @@ namespace PlayerZero.Runtime.Sdk
                 : data.AvatarId;
             if(string.IsNullOrEmpty(avatarId))
             {
-                Debug.LogWarning("No AvatarId found in the deep link data or PlayerPrefs.");
+                PZeroLogger.LogWarning("No AvatarId found in the deep link data or PlayerPrefs.");
                 return;
             }
 

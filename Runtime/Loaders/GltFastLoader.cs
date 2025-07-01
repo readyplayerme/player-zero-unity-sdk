@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using GLTFast;
+using PlayerZeroSDK.Runtime;
 
 namespace PlayerZero.Runtime.Sdk
 {
@@ -13,7 +14,7 @@ namespace PlayerZero.Runtime.Sdk
 
             if (!success)
             {
-                Debug.LogError($"glTFast failed to load: {url}");
+                PZeroLogger.LogError($"glTFast failed to load: {url}");
                 return null;
             }
 
@@ -22,7 +23,7 @@ namespace PlayerZero.Runtime.Sdk
             var playerZeroCharacter = playerZeroCharacterParent.transform.GetChild(0).gameObject;
             if (!playerZeroCharacter)
             {
-                Debug.LogError("No child found in PlayerZeroImportContainer. Import may have failed.");
+                PZeroLogger.LogError("No child found in PlayerZeroImportContainer. Import may have failed.");
                 Object.Destroy(playerZeroCharacterParent);
                 return null;
             }

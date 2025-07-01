@@ -84,7 +84,7 @@ namespace PlayerZero
             {
                 return Marshal.PtrToStringUTF8(ptr);
             }
-            Debug.LogError("WebGL Browser Data is NULL!");
+            PZeroLogger.LogError("WebGL Browser Data is NULL!");
             return "Unknown";
 #else
             return ""; 
