@@ -10,11 +10,10 @@ namespace PlayerZero.Data
         private static readonly List<string> morphTargetGroupNames = new()
         {
             "Default",
-            "Default + Oculus Visemes + eyeBlink",
             "Oculus Visemes",
             "ARKit",
             "Eyes Extra",
-            "Basic Expressions"
+            "Basic expressions"
         };
 
         /// <summary>

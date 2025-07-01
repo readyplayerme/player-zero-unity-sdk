@@ -9,8 +9,6 @@ namespace PlayerZero.Samples
         [HideInInspector]
         public bool Jump;
         public bool Sprint { get; private set; }
-        
-        [SerializeField] private Camera camera;
 
         private Vector3 previousMousePosition;
         private bool isPaused;
