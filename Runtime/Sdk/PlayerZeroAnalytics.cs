@@ -143,8 +143,6 @@ namespace PlayerZero.Runtime.Sdk
         {
             while (true)
             {
-                yield return new WaitForSecondsRealtime(HEARTBEAT_INTERVAL_IN_SECONDS);
-
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()) &&
                     PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
                 {
@@ -161,6 +159,7 @@ namespace PlayerZero.Runtime.Sdk
                             }
                         });
                 }
+                yield return new WaitForSecondsRealtime(HEARTBEAT_INTERVAL_IN_SECONDS);
             }
         }
 
