@@ -38,7 +38,6 @@ namespace PlayerZero.Runtime.Sdk
         public static Action<string> OnHotLoadedAvatarIdChanged;
 
         private const string CACHED_AVATAR_ID = "PO_HotloadedAvatarId";
-        private const string SHORT_CODE_AVATAR_ID = "PO_ShortCodeAvatarId";
         
         private static bool _isInitialized;
         private static float startTime;
@@ -181,7 +180,7 @@ namespace PlayerZero.Runtime.Sdk
                 return null;
             }
 
-            PlayerPrefs.SetString(SHORT_CODE_AVATAR_ID, response.Data.AvatarId);
+            PlayerPrefs.SetString(CACHED_AVATAR_ID, response.Data.AvatarId);
             return response.Data.AvatarId;
         }
 
@@ -252,7 +251,6 @@ namespace PlayerZero.Runtime.Sdk
         public static void ClearCachedAvatarId()
         {
             PlayerPrefs.DeleteKey(CACHED_AVATAR_ID);
-            PlayerPrefs.DeleteKey(SHORT_CODE_AVATAR_ID);
         }
         
         public static void Shutdown()
