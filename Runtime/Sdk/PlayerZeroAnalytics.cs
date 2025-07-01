@@ -22,7 +22,7 @@ namespace PlayerZero.Runtime.Sdk
 
         private Coroutine _heartbeatTimer;
 
-        public bool logEvents;
+        public bool disableEventLogging;
         private static DeviceContext _deviceContext;
         
         private long lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -51,7 +51,7 @@ namespace PlayerZero.Runtime.Sdk
 
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()))
                 {
-                    if (logEvents)
+                    if (!disableEventLogging)
                         PZeroLogger.Log("Sending game session started event to Player Zero.");
 
                     var sessionId =
@@ -65,7 +65,7 @@ namespace PlayerZero.Runtime.Sdk
                             }
                         );
 
-                    if (logEvents)
+                    if (!disableEventLogging)
                         PZeroLogger.Log("Sending avatar session started event to Player Zero.");
 
                     var avatarSessionId =
@@ -148,7 +148,7 @@ namespace PlayerZero.Runtime.Sdk
                 if (!string.IsNullOrEmpty(PlayerZeroSdk.GetHotLoadedAvatarId()) &&
                     PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
                 {
-                    if (logEvents)
+                    if (!disableEventLogging)
                         PZeroLogger.Log("Sending avatar heartbeat event to Player Zero.");
 
                     PlayerZeroSdk.SendEvent<AvatarSessionHeartbeatEvent, AvatarSessionHeartbeatProperties>(
@@ -179,7 +179,7 @@ namespace PlayerZero.Runtime.Sdk
 
             if (PlayerPrefs.HasKey(PZ_AVATAR_SESSION_ID))
             {
-                if (logEvents)
+                if (!disableEventLogging)
                     PZeroLogger.Log("Sending avatar session ended event to Player Zero.");
                 
                 PlayerZeroSdk.SendEvent<AvatarSessionEndedEvent, AvatarSessionEndedProperties>(
@@ -197,7 +197,7 @@ namespace PlayerZero.Runtime.Sdk
 
             if (PlayerPrefs.HasKey(PZ_SESSION_ID))
             {
-                if (logEvents)
+                if (!disableEventLogging)
                     PZeroLogger.Log("Sending game session ended event to Player Zero.");
                 
                 PlayerZeroSdk.SendEvent<GameSessionEndedEvent, GameSessionEndedProperties>(
