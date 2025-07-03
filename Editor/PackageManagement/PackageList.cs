@@ -15,10 +15,10 @@ namespace PlayerZero.Editor
         /// </summary>
         public static GitPackageInfo DracoCompression = new GitPackageInfo
         {
-            name = "com.atteneder.draco",
-            gitUrl = "https://github.com/atteneder/DracoUnity.git",
+            name = "com.unity.cloud.draco",
+            gitUrl = "",
             branch = "",
-            version = "4.1.0"
+            version = "5.0.0"
         };
         
         
@@ -30,7 +30,7 @@ namespace PlayerZero.Editor
             name = "com.unity.meshopt.decompress",
             gitUrl = "",
             branch = "",
-            version = "4.1.0"
+            version = "0.1.0"
         };
         
         

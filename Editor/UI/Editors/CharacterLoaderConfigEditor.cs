@@ -16,11 +16,6 @@ namespace PlayerZero.Editor
         private const string DIALOG_MESSAGE = "Do you want to install {0} Unity Package: {1} ?";
         private const string DIALOG_OK = "Ok";
         private const string DIALOG_CANCEL = "Cancel";
-        private const string ADD_MORPH_TARGET = "Add Morph Target";
-        private const string DELETE_MORPH_TARGET = "Delete Morph Target";
-        private const string REMOVE_BUTTON_TEXT = "X";
-        private const string MESH_OPT_PACKAGE_NAME = "com.unity.meshopt.decompress";
-
         private const string TOOLTIP_MESH_LOD = "Mesh LOD is used to determine the level of detail for the mesh. LOD0 is the most detailed.";
         private const string TOOLTIP_TEXTURE_ATLAS = "If set to NONE the mesh, materials and textures will not be combined into 1. (or 2 if an assets texture contains transparency)";
         private const string TOOLTIP_TEXTURE_SIZE_LIMIT = "Texture Size Limit is used to determine the maximum size of the textures. 256px, 512px or 1024px.";
@@ -41,9 +36,6 @@ namespace PlayerZero.Editor
 
         private VisualElement selectedMorphTargets;
         private VisualElement selectedMorphTargetGroups;
-        
-        private EditableListElement editableMorphTargetList;
-        private EditableListElement editableMorphTargetGroupList;
 
         private VisualElement root;
         private Action textureChannelChanged;
@@ -241,7 +233,7 @@ namespace PlayerZero.Editor
                                 DIALOG_OK,
                                 DIALOG_CANCEL))
                         {
-                            PackageManagerHelper.AddPackage(PackageList.DracoCompression.Identifier);
+                            PackageManagerHelper.AddPackage(PackageList.DracoCompression.name);
                         }
                         else
                         {
@@ -263,15 +255,15 @@ namespace PlayerZero.Editor
                 {
                     if (characterLoaderConfigTarget.MeshCompression == x.newValue) return;
                     characterLoaderConfigTarget.MeshCompression = x.newValue;
-                    if (!PackageManagerHelper.IsPackageInstalled(MESH_OPT_PACKAGE_NAME))
+                    if (!PackageManagerHelper.IsPackageInstalled(PackageList.MeshOptCompression.name))
                     {
                         if (EditorUtility.DisplayDialog(
                                 DIALOG_TITLE,
-                                string.Format(DIALOG_MESSAGE, "Mesh opt compression", MESH_OPT_PACKAGE_NAME),
+                                string.Format(DIALOG_MESSAGE, "Mesh opt compression", PackageList.MeshOptCompression.name),
                                 DIALOG_OK,
                                 DIALOG_CANCEL))
                         {
-                            PackageManagerHelper.AddPackage(MESH_OPT_PACKAGE_NAME);
+                            PackageManagerHelper.AddPackage(PackageList.MeshOptCompression.name);
                         }
                         else
                         {
@@ -292,7 +284,6 @@ namespace PlayerZero.Editor
         
         private void MorphTargets()
         {
-            editableMorphTargetList = new EditableListElement(AvatarMorphTargets.MorphTargetNames);
             var morphFoldout = new Foldout
             {
                 text = "Morph Targets", 
@@ -314,8 +305,6 @@ namespace PlayerZero.Editor
         
         private void MorphTargetGroups()
         {
-            editableMorphTargetGroupList = new EditableListElement(AvatarMorphTargets.MorphTargetGroupNames);
-
             var morphFoldout = new Foldout
             {
                 text = "Morph Target Groups", 
@@ -333,22 +322,6 @@ namespace PlayerZero.Editor
                 serializedObject.ApplyModifiedProperties(); 
             };
         }
-        
-        // private void OnAddMorphTargetButtonClicked()
-        // {
-        //     Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
-        //     characterLoaderConfigTarget.MorphTargets.Add(AvatarMorphTargets.MorphTargetNames[0]);
-        //     EditorUtility.SetDirty(characterLoaderConfigTarget);
-        //     editableMorphTargetList.CreateNewElement(0);
-        // }
-        //
-        // private void OnAddMorphTargetGroupButtonClicked()
-        // {
-        //     Undo.RecordObject(characterLoaderConfigTarget, ADD_MORPH_TARGET);
-        //     characterLoaderConfigTarget.MorphTargetsGroup.Add(AvatarMorphTargets.MorphTargetGroupNames[0]);
-        //     EditorUtility.SetDirty(characterLoaderConfigTarget);
-        //     editableMorphTargetGroupList.CreateNewElement(0);
-        // }
 
         private int GetIndex(string morphTarget)
         {

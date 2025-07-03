@@ -3,10 +3,21 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.0] - 2025.06.30
+
+## Updated
+- DefaultAvatarId added to Settings scriptable object
+- Shader variants updated to fix transparency issues
+- CharacterLoaderConfig class changed to scriptable object
+- CharacterLoaderConfig now supports more avatar API options
+- Upgraded gltFast dependency to version 6.4.0 to fix issues with Draco compression
+
+## Added
+- Quick start sample added with First and third person character controllers
+
 ## [2.4.0] - 2025.04.30
 
 ## Updated
-
 - MeshTransfer class now supports meshes with varying bone counts
 - General improvements to MeshTransfer class
 - DeepLinkHandler class now supports steam and epic games store deeplinks

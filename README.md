@@ -56,6 +56,18 @@ var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(new CharacterRequestConf
 });
 ```
 
+### Load From Short Code
+
+```csharp
+// Assume `inputField` is a Unity UI InputField containing the code
+var code = inputField.text;
+var avatarId = await PlayerZeroSdk.GetAvatarIdFromCodeAsync(code);
+var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(new CharacterRequestConfig {
+    AvatarId = avatarId,
+    BlueprintId = "BLUEPRINT_ID_HERE"
+});
+```
+
 ### Load 2D Avatar Image
 
 Use `AvatarImageLoader` or `PlayerZeroSdk.GetIconAsync` to display a 2D render of an avatar:
