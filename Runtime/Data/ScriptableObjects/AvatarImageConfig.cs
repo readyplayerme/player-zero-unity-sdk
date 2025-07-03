@@ -2,66 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PlayerZero
+namespace PlayerZero.Data
 {
-    public enum AvatarQuality
-    {
-        Low,
-        Medium,
-        High,
-    }
-    
-    public enum CameraType
-    {
-        Portrait,
-        Fullbody,
-        Fit,
-    }
-
-    public enum ExpressionType
-    {
-        None,
-        Scared,
-        Happy,
-        Lol,
-        Rage,
-        Sad,
-    }
-    
-    public enum RenderSizeLimitType
-    {
-        [InspectorName("64px")]
-        Size64 = 64,
-        [InspectorName("128px")]
-        Size128 = 128,
-        [InspectorName("256px")]
-        Size256 = 256,
-        [InspectorName("512px")]
-        Size512 = 512,
-        [InspectorName("1024px")]
-        Size1024 = 1024
-    }
-    
-    public enum SceneType {
-        Fullbody,
-        Portrait,
-        Custom,
-    }
-    
-    public enum PoseType
-    {
-        Default,
-        Dancing,
-        Athlete,
-        Defending,
-        Fighting,
-        Shrugging,
-        Standing,
-        Standing2,
-        Standing3,
-        Sitting
-    }
-
     [Serializable, CreateAssetMenu(fileName = "Avatar Image Config", menuName = "Player Zero/Avatar Image Config", order = 2)]
     public class AvatarImageConfig : ScriptableObject
     {
