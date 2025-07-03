@@ -83,7 +83,7 @@ namespace PlayerZero.Runtime.Sdk
 
         public static async Task<Sprite> GetIconAsync(string avatarId, RenderSizeLimitType size = RenderSizeLimitType.Size64)
         {
-            return await GetIconAsync(avatarId, new AvatarImageConfig { size = size });
+            return await GetIconAsync(avatarId, new AvatarImageConfig { Size = size });
         }
 
         public static async Task<Sprite> GetIconAsync(string avatarId, AvatarImageConfig config)

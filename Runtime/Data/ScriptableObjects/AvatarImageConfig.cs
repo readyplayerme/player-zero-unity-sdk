@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.Search;
 using UnityEngine;
 
 namespace PlayerZero
@@ -66,44 +65,42 @@ namespace PlayerZero
     [Serializable, CreateAssetMenu(fileName = "Avatar Image Config", menuName = "Player Zero/Avatar Image Config", order = 2)]
     public class AvatarImageConfig : ScriptableObject
     {
-        public RenderSizeLimitType size = RenderSizeLimitType.Size64;
+        public RenderSizeLimitType Size = RenderSizeLimitType.Size64;
         [Tooltip("Choose image quality: Low, Medium, or High")]
-        public AvatarQuality quality;
+        public AvatarQuality Quality;
         
         [Tooltip("Background color, opacity needs to be set to 1 for it to be visible")]
-        public Color background = Color.clear;
+        public Color Background = Color.clear;
         
         [Tooltip("Expression type: Scared, Happy, Lol, Rage, or Sad")]
-        public ExpressionType expression;
-        public PoseType pose;
-        public SceneType scene;
+        public ExpressionType Expression;
+        public PoseType Pose;
+        public SceneType Scene;
         [Tooltip("Contact Player Zero support if you want to use a custom scene")]
-        public string customScene;
+        public string CustomScene;
         
         public string GetParams()
         {
             var parameters = new List<string>();
-            parameters.Add($"size={(int) size}");
-            parameters.Add($"quality={quality.ToString().ToLower()}");
-            parameters.Add($"pose={pose.ToString().ToLower()}");
-            parameters.Add($"scene={((scene != SceneType.Custom) ? FriendlySceneToString(scene) : customScene)}");
+            parameters.Add($"size={(int) Size}");
+            parameters.Add($"quality={Quality.ToString().ToLower()}");
+            parameters.Add($"pose={Pose.ToString().ToLower()}");
+            parameters.Add($"scene={((Scene != SceneType.Custom) ? FriendlySceneToString(Scene) : CustomScene)}");
             
-            if (background.a >= 1)
+            if (Background.a >= 1)
             {
-                parameters.Add($"background={GetColorString(background)}");    
+                parameters.Add($"background={GetColorString(Background)}");    
             }
        
-            if (expression != ExpressionType.None)
-                parameters.Add($"expression={expression.ToString().ToLower()}");
+            if (Expression != ExpressionType.None)
+                parameters.Add($"expression={Expression.ToString().ToLower()}");
 
             return string.Join("&", parameters);
         }
         
         private string GetColorString(Color color)
         {
-            return $"{Math.Round(color.r * 255)},"
-                   + $"{Math.Round(color.g * 255)},"
-                   + $"{Math.Round(color.b * 255)}";
+            return $"{Math.Round(color.r * 255)},{Math.Round(color.g * 255)},{Math.Round(color.b * 255)}";
         }
 
         private string FriendlySceneToString(SceneType sceneType)

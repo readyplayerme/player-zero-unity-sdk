@@ -17,11 +17,21 @@ namespace PlayerZero.Editor
         
         public override VisualElement CreateInspectorGUI()
         {
-            root = new VisualElement();
+            root = new VisualElement
+            {
+                style =
+                {
+                    paddingTop = 5,
+                    paddingBottom = 5,
+                    paddingLeft = 5,
+                    paddingRight = 5
+
+                }
+            };
             avatarImageConfig = (AvatarImageConfig)target;
             
             GenerateFields(FetchFields());
-            if (avatarImageConfig.scene == SceneType.Custom)
+            if (avatarImageConfig.Scene == SceneType.Custom)
             {
                 CustomScene();
             }
@@ -47,7 +57,7 @@ namespace PlayerZero.Editor
                     {
                         property.SetValue(avatarImageConfig, evt.newValue);
                         Save();
-                        reloadOnSaveIfNeeded(property.Name);
+                        ReloadOnSave(property.Name);
                     });
                     root.Add(sizeField);
                 }
@@ -58,7 +68,7 @@ namespace PlayerZero.Editor
                     {
                         property.SetValue(avatarImageConfig, evt.newValue);
                         Save();
-                        reloadOnSaveIfNeeded(property.Name);
+                        ReloadOnSave(property.Name);
                     });
                     root.Add(qualityField);
                 }
@@ -72,7 +82,7 @@ namespace PlayerZero.Editor
                     {
                         property.SetValue(avatarImageConfig, evt.newValue);
                         Save();
-                        reloadOnSaveIfNeeded(property.Name);
+                        ReloadOnSave(property.Name);
                     });
                     root.Add(colorField);
                 }
@@ -83,7 +93,7 @@ namespace PlayerZero.Editor
                     {
                         property.SetValue(avatarImageConfig, evt.newValue);
                         Save();
-                        reloadOnSaveIfNeeded(property.Name);
+                        ReloadOnSave(property.Name);
                     });
                     root.Add(enumField);
                 }
@@ -97,7 +107,7 @@ namespace PlayerZero.Editor
                     {
                         property.SetValue(avatarImageConfig, evt.newValue);
                         Save();
-                        reloadOnSaveIfNeeded(property.Name);
+                        ReloadOnSave(property.Name);
                     });
                     root.Add(textField);
                 }
@@ -111,7 +121,7 @@ namespace PlayerZero.Editor
                     {
                         property.SetValue(avatarImageConfig, evt.newValue);
                         Save();
-                        reloadOnSaveIfNeeded(property.Name);
+                        ReloadOnSave(property.Name);
                     });
                     root.Add(intField);
                 }
@@ -119,14 +129,14 @@ namespace PlayerZero.Editor
             }
         }
         
-        private void reloadOnSaveIfNeeded(string name)
+        private void ReloadOnSave(string name)
         {
             if (name == "scene")
             {
                 root.Clear();
                 GenerateFields(FetchFields());
 
-                if (avatarImageConfig.scene == SceneType.Custom)
+                if (avatarImageConfig.Scene == SceneType.Custom)
                 {
                     CustomScene();
                 }
@@ -138,7 +148,7 @@ namespace PlayerZero.Editor
             var customScene = new TextField("Custom Scene");
             customScene.RegisterValueChangedCallback(x =>
             {
-                avatarImageConfig.customScene = x.newValue;
+                avatarImageConfig.CustomScene = x.newValue;
                 Save();
             });
             root.Add(customScene);
