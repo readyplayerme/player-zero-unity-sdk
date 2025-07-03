@@ -81,13 +81,17 @@ namespace PlayerZero.Runtime.Sdk
             _isInitialized = true;
         }
 
-        public static async Task<Sprite> GetIconAsync(string avatarId, int size = 64)
+        public static async Task<Sprite> GetIconAsync(string avatarId, RenderSizeLimitType size = RenderSizeLimitType.Size64)
+        {
+            return await GetIconAsync(avatarId, new AvatarImageConfig { size = size });
+        }
+
+        public static async Task<Sprite> GetIconAsync(string avatarId, AvatarImageConfig config)
         {
             Initialize();
-
-            var fileApi = new FileApi();
-            var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?size={size}";
-            var texture = await fileApi.DownloadImageAsync(iconUrl);
+            var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?{config.GetParams()}";
+            
+            var texture = await new FileApi().DownloadImageAsync(iconUrl);
 
             return Sprite.Create(
                 texture,
