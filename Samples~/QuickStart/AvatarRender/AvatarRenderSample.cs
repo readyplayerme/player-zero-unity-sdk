@@ -1,4 +1,3 @@
-
 using PlayerZero.Data;
 using PlayerZero.Runtime.Sdk;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace PlayerZero.Samples
     {
         [SerializeField] private string avatarId;
         [SerializeField] private Image targetImage;
-        [SerializeField] private AvatarImageConfig config;
+        [SerializeField] private AvatarRenderConfig config;
 
         private async void Start()
         {

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace PlayerZero.Data
 {
-    [Serializable, CreateAssetMenu(fileName = "Avatar Image Config", menuName = "Player Zero/Avatar Image Config", order = 2)]
-    public class AvatarImageConfig : ScriptableObject
+    [Serializable, CreateAssetMenu(fileName = "Avatar Render Config", menuName = "Player Zero/Avatar Render Config", order = 2)]
+    public class AvatarRenderConfig : ScriptableObject
     {
         public RenderSizeLimitType Size = RenderSizeLimitType.Size64;
         [Tooltip("Choose image quality: Low, Medium, or High")]
@@ -50,7 +50,7 @@ namespace PlayerZero.Data
             return sceneType switch
             {
                 SceneType.Fullbody => "default-Nova-render-scene-fullbody",
-                SceneType.Portrait => "default-Nova-render-scene-portrait",
+                SceneType.Portrait => "default-Nova-render-scene-portrait-closeup",
                 _ => throw new ArgumentOutOfRangeException(nameof(sceneType), sceneType, null)
             };
         }
