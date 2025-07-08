@@ -20,15 +20,12 @@ namespace PlayerZero.Editor.UI.Views
         public async Task InitAsync()
         {
             await blueprintListViewModel.Init();
-            var applicationId = Resources.Load<Settings>( "PlayerZeroSettings" )?.ApplicationId;
-            var characterTemplateList = Resources.Load<CharacterTemplateConfig>(applicationId);
   
-            _characterBlueprintViews = await Task.WhenAll(blueprintListViewModel.CharacterBlueprints.Select(async blueprint =>
+            _characterBlueprintViews = await Task.WhenAll(blueprintListViewModel.CharacterBlueprints.Select(blueprint =>
             {
                 var blueprintViewModel = new CharacterBlueprintViewModel(blueprintListViewModel.AnalyticsApi);
                 var blueprintView = new CharacterBlueprintView(blueprintViewModel);
-                await blueprintView.Init(blueprint, characterTemplateList);
-                return blueprintView;
+                return Task.FromResult(blueprintView);
             }));
         }
 

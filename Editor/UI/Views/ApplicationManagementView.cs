@@ -43,7 +43,6 @@ namespace PlayerZero.Editor.UI.Views
             );
             _textInput.Init(_viewModel.Settings.ApiKey);
             applicationId = _viewModel.Settings.ApplicationId;
-            await CharacterTemplateConfigCreator.LoadAndCreateTemplateList(applicationId);
             await characterBlueprintsView.InitAsync();
         }
 

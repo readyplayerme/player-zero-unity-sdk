@@ -59,10 +59,5 @@ namespace PlayerZero.Editor.UI.ViewModels
                 }
             });
         }
-
-        public void SaveCharacterBlueprintTemplate(CharacterTemplate characterTemplate)
-        {
-            Debug.Log($"SaveCharacterBlueprintTemplate: {characterTemplate.Name}");
-        }
     }
 }
