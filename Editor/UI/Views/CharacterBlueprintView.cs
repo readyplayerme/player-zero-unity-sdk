@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using PlayerZero.Data;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using PlayerZero.Api.V1;
-using PlayerZero.Editor.UI.Components;
 using PlayerZero.Editor.UI.ViewModels;
 using UnityEditor;
 using UnityEngine;
@@ -65,9 +62,8 @@ namespace PlayerZero.Editor.UI.Views
 
                 using (new EditorGUILayout.VerticalScope())
                 {
-                    EditorGUILayout.LabelField("ID: " + _viewModel.CharacterBlueprint.Id, EditorStyles.label);
+                    EditorGUILayout.LabelField($"ID: {_viewModel.CharacterBlueprint.Id}", EditorStyles.boldLabel);
                     GUILayout.Space(3); 
-                    EditorGUILayout.LabelField("Default Template Prefab", EditorStyles.boldLabel);
                 }
             }
         }
