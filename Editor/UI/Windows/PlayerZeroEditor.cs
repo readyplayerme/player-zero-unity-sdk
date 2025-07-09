@@ -14,8 +14,8 @@ namespace PlayerZero.Editor.UI.Windows
 {
     public class PlayerZeroEditor : EditorWindow
     {
-        private DeveloperLoginView _developerLoginView;
-        private ApplicationManagementView _applicationManagementView;
+        private DeveloperLoginView developerLoginView;
+        private ApplicationManagementView applicationManagementView;
         
         [MenuItem("Tools/Player Zero", false, 0)]
         public static void Generate()
@@ -35,7 +35,7 @@ namespace PlayerZero.Editor.UI.Windows
             var settings = settingsCache.Init("PlayerZeroSettings");
 
             var developerLoginViewModel = new DeveloperLoginViewModel(developerAuthApi, analyticsApi);
-            _developerLoginView = new DeveloperLoginView(developerLoginViewModel);
+            developerLoginView = new DeveloperLoginView(developerLoginViewModel);
 
             var projectDetailsViewModel = new ApplicationManagementViewModel(
                 analyticsApi,
@@ -44,16 +44,16 @@ namespace PlayerZero.Editor.UI.Windows
                 settings
             );
 
-            _applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
+            applicationManagementView = new ApplicationManagementView(projectDetailsViewModel);
             if (DeveloperAuthCache.Exists())
-                await _applicationManagementView.Init();
+                await applicationManagementView.Init();
         }
 
         private void OnGUI()
         {
             if (!DeveloperAuthCache.Exists())
             {
-                _developerLoginView.Render(async () => { await _applicationManagementView.Init(); });
+                developerLoginView.Render(async () => { await applicationManagementView.Init(); });
                 return;
             }
 
@@ -84,7 +84,7 @@ namespace PlayerZero.Editor.UI.Windows
                 }
             }
 
-            _applicationManagementView.Render();
+            applicationManagementView.Render();
         }
     }
 }

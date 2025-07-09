@@ -6,15 +6,15 @@ namespace PlayerZero.Editor.Cache
 {
     public abstract class Cache
     {
-        private const string BaseDirectory = "Assets/PlayerZero/Resources/";
+        private const string BASE_DIRECTORY = "Assets/PlayerZero/Resources/";
 
-        private readonly string _name;
+        private readonly string name;
 
-        protected string CacheDirectory => BaseDirectory + _name;
+        protected string CacheDirectory => $"{BASE_DIRECTORY}{name}";
 
         protected Cache(string name)
         {
-            _name = name;
+            this.name = name;
 
             EnsureFoldersExist();
         }
@@ -33,10 +33,10 @@ namespace PlayerZero.Editor.Cache
                     "Assets/PlayerZero/Resources"
                 );
 
-            if (string.IsNullOrEmpty(_name)) return;
-            if (!AssetDatabase.IsValidFolder($"Assets/PlayerZero/Resources/{_name}"))
+            if (string.IsNullOrEmpty(name)) return;
+            if (!AssetDatabase.IsValidFolder($"Assets/PlayerZero/Resources/{name}"))
             {
-                AssetDatabase.CreateFolder("Assets/PlayerZero/Resources", _name);
+                AssetDatabase.CreateFolder("Assets/PlayerZero/Resources", name);
             }
 
             AssetDatabase.Refresh();
@@ -45,18 +45,6 @@ namespace PlayerZero.Editor.Cache
         private static void CreateTextAsset(string name, string content, string directory)
         {
             File.WriteAllText($"{directory}/{name}", content);
-        }
-
-        public static string FindAssetGuid(Object asset)
-        {
-            if (asset == null)
-                return string.Empty;
-
-            var assetPath = AssetDatabase.GetAssetPath(asset);
-
-            return string.IsNullOrEmpty(assetPath)
-                ? string.Empty
-                : AssetDatabase.AssetPathToGUID(assetPath);
         }
     }
 }

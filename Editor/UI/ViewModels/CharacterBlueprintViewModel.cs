@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using PlayerZero.Api.V1;
@@ -17,36 +18,48 @@ namespace PlayerZero.Editor.UI.ViewModels
         public CharacterBlueprint CharacterBlueprint { get; private set; }
 
         public Texture2D Image { get; private set; }
-
-        private GlbCache _characterBlueprintCache;
         
-        private readonly AnalyticsApi _analyticsApi;
-        private readonly FileApi _fileApi;
+        private readonly AnalyticsApi analyticsApi;
+        private readonly FileApi fileApi;
         
         public CharacterBlueprintViewModel(AnalyticsApi analyticsApi)
         {
-            _fileApi = new FileApi();
-            _analyticsApi = analyticsApi;
+            fileApi = new FileApi();
+            this.analyticsApi = analyticsApi;
         }
 
         public async Task Init(CharacterBlueprint characterBlueprint)
         {
-            _characterBlueprintCache = new GlbCache("Character Blueprints");
-
             CharacterBlueprint = characterBlueprint;
-            Image = await _fileApi.DownloadImageAsync(CharacterBlueprint.CharacterModel.IconUrl);
+            Image = await fileApi.DownloadImageAsync(CharacterBlueprint.CharacterModel.IconUrl);
         }
 
         public async Task LoadBlueprintAsync()
         {
-            var bytes = await _fileApi.DownloadFileIntoMemoryAsync(CharacterBlueprint.CharacterModel.ModelUrl);
+            var bytes = await fileApi.DownloadFileIntoMemoryAsync(CharacterBlueprint.CharacterModel.ModelUrl);
+            
+            var path = $"Assets/PlayerZero/Blueprints/{CharacterBlueprint.CharacterModel.Id}.glb";
+            
+            if (!AssetDatabase.IsValidFolder("Assets/PlayerZero"))
+                AssetDatabase.CreateFolder("Assets", "PlayerZero");
 
-            await _characterBlueprintCache.Save(bytes, CharacterBlueprint.Id);
+            if (!AssetDatabase.IsValidFolder("Assets/PlayerZero/Blueprints"))
+                AssetDatabase.CreateFolder("Assets/PlayerZero", "Blueprints");
+            
+#if UNITY_2020_1_OR_NEWER
+            await File.WriteAllBytesAsync(path, bytes);
+#else
+            await Task.Run(() => File.WriteAllBytes(path, bytes));
+#endif
+                
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
 
-            var character = _characterBlueprintCache.Load(CharacterBlueprint.Id);
+            var character = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             var instance = PrefabUtility.InstantiatePrefab(character) as GameObject;
             
-            _analyticsApi.SendEvent(new AnalyticsEventRequest()
+            analyticsApi.SendEvent(new AnalyticsEventRequest()
             {
                 Payload = new AnalyticsEventRequestBody()
                 {

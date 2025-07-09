@@ -9,29 +9,29 @@ namespace PlayerZero.Editor.UI.Views
 {
     public class ApplicationManagementView
     {
-        private readonly ApplicationManagementViewModel _viewModel;
-        private readonly SelectInput _selectInput;
-        private readonly TextInput _textInput;
+        private readonly ApplicationManagementViewModel viewModel;
+        private readonly SelectInput selectInput;
+        private readonly TextInput textInput;
         private readonly CharacterBlueprintsView characterBlueprintsView;
-        private Vector2 _scrollPosition = Vector2.zero;
+        private Vector2 scrollPosition = Vector2.zero;
         private string applicationId;
         
         public ApplicationManagementView(ApplicationManagementViewModel viewModel)
         {
-            _viewModel = viewModel;
-            _selectInput = new SelectInput();
-            _textInput = new TextInput();
+            this.viewModel = viewModel;
+            selectInput = new SelectInput();
+            textInput = new TextInput();
 
-            var characterBlueprintsViewModel = new CharacterBlueprintListViewModel(viewModel.BlueprintApi, viewModel.Settings, _viewModel.AnalyticsApi);
+            var characterBlueprintsViewModel = new CharacterBlueprintListViewModel(viewModel.BlueprintApi, viewModel.Settings, this.viewModel.AnalyticsApi);
             characterBlueprintsView = new CharacterBlueprintsView(characterBlueprintsViewModel);
         }
 
         public async Task Init()
         {
-            await _viewModel.Init();
+            await viewModel.Init();
             
-            _selectInput.Init(
-                _viewModel.Applications
+            selectInput.Init(
+                viewModel.Applications
                     .ToList()
                     .Select(app => new Option()
                     {
@@ -39,21 +39,21 @@ namespace PlayerZero.Editor.UI.Views
                         Value = app.Id,
                     })
                     .ToArray(),
-                _viewModel.Settings.ApplicationId
+                viewModel.Settings.ApplicationId
             );
-            _textInput.Init(_viewModel.Settings.ApiKey);
-            applicationId = _viewModel.Settings.ApplicationId;
+            textInput.Init(viewModel.Settings.ApiKey);
+            applicationId = viewModel.Settings.ApplicationId;
             await characterBlueprintsView.InitAsync();
         }
 
         public void Render()
         {
-            var scrollViewScope = new GUILayout.ScrollViewScope(_scrollPosition, false, false);
-            _scrollPosition = scrollViewScope.scrollPosition;
+            var scrollViewScope = new GUILayout.ScrollViewScope(scrollPosition, false, false);
+            scrollPosition = scrollViewScope.scrollPosition;
 
             GUILayout.Space(15);
 
-            if (_viewModel.Loading)
+            if (viewModel.Loading)
             {
                 using (new GUILayout.HorizontalScope())
                 {
@@ -95,10 +95,10 @@ namespace PlayerZero.Editor.UI.Views
                        margin = new RectOffset(7, 7, 5, 0)
                    }))
             {
-                _selectInput.Render(  async (applicationId) =>
+                selectInput.Render(  async (applicationId) =>
                 {
-                    _viewModel.Settings.ApplicationId = applicationId;
-                    EditorUtility.SetDirty(_viewModel.Settings);
+                    viewModel.Settings.ApplicationId = applicationId;
+                    EditorUtility.SetDirty(viewModel.Settings);
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                 
@@ -106,9 +106,9 @@ namespace PlayerZero.Editor.UI.Views
                 });
             }
 
-            if (!string.IsNullOrEmpty(_viewModel.Error))
+            if (!string.IsNullOrEmpty(viewModel.Error))
             {
-                GUILayout.Label(_viewModel.Error, new GUIStyle()
+                GUILayout.Label(viewModel.Error, new GUIStyle()
                 {
                     normal = new GUIStyleState()
                     {
@@ -123,8 +123,8 @@ namespace PlayerZero.Editor.UI.Views
             
             GUILayout.Space(20);
             
-            _viewModel.Settings.DefaultAvatarId =
-                EditorGUILayout.TextField("Default Avatar Id", _viewModel.Settings.DefaultAvatarId,
+            viewModel.Settings.DefaultAvatarId =
+                EditorGUILayout.TextField("Default Avatar Id", viewModel.Settings.DefaultAvatarId,
                     new GUIStyle(GUI.skin.textField)
                     {
                         margin = new RectOffset(10, 10, 0, 0)
@@ -149,8 +149,8 @@ namespace PlayerZero.Editor.UI.Views
                     margin = new RectOffset(9, 10, 0, 0)
                 });
             
-            _viewModel.Settings.GameId =
-                EditorGUILayout.TextField("Game ID", _viewModel.Settings.GameId,
+            viewModel.Settings.GameId =
+                EditorGUILayout.TextField("Game ID", viewModel.Settings.GameId,
                     new GUIStyle(GUI.skin.textField)
                     {
                         margin = new RectOffset(10, 10, 0, 0)
@@ -178,15 +178,15 @@ namespace PlayerZero.Editor.UI.Views
                        margin = new RectOffset(7, 7, 5, 0)
                    }))
             {
-                _viewModel.Settings.ApiProxyUrl =
-                    EditorGUILayout.TextField("Proxy Api Url", _viewModel.Settings.ApiProxyUrl);
+                viewModel.Settings.ApiProxyUrl =
+                    EditorGUILayout.TextField("Proxy Api Url", viewModel.Settings.ApiProxyUrl);
 
                 GUILayout.Space(5);
 
-                _textInput.Render("Api Key", (value) =>
+                textInput.Render("Api Key", (value) =>
                 {
-                    _viewModel.Settings.ApiKey = value;
-                    EditorUtility.SetDirty(_viewModel.Settings);
+                    viewModel.Settings.ApiKey = value;
+                    EditorUtility.SetDirty(viewModel.Settings);
                     AssetDatabase.SaveAssets();
                     AssetDatabase.Refresh();
                 });

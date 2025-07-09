@@ -8,16 +8,16 @@ namespace PlayerZero.Editor.UI.Views
 {
     public class CharacterBlueprintView
     {
-        private readonly CharacterBlueprintViewModel _viewModel;
+        private readonly CharacterBlueprintViewModel viewModel;
         private string characterBlueprintId;
         public CharacterBlueprintView(CharacterBlueprintViewModel viewModel)
         {
-            _viewModel = viewModel;
+            this.viewModel = viewModel;
         }
 
         public async Task Init(CharacterBlueprint characterBlueprint)
         {
-            await _viewModel.Init(characterBlueprint);
+            await viewModel.Init(characterBlueprint);
             characterBlueprintId = characterBlueprint.Id;
         }
 
@@ -40,7 +40,7 @@ namespace PlayerZero.Editor.UI.Views
                            }))
                     {
                         GUILayout.FlexibleSpace();
-                        GUILayout.Label(_viewModel.Image,
+                        GUILayout.Label(viewModel.Image,
                             new GUIStyle()
                             {
                                 stretchWidth = true,
@@ -55,14 +55,14 @@ namespace PlayerZero.Editor.UI.Views
                     if (GUILayout.Button("Load Blueprint"))
                     {
 #pragma warning disable CS4014
-                        _viewModel.LoadBlueprintAsync();
+                        viewModel.LoadBlueprintAsync();
 #pragma warning restore CS4014
                     }
                 }
 
                 using (new EditorGUILayout.VerticalScope())
                 {
-                    EditorGUILayout.LabelField($"ID: {_viewModel.CharacterBlueprint.Id}", EditorStyles.boldLabel);
+                    EditorGUILayout.LabelField($"ID: {viewModel.CharacterBlueprint.Id}", EditorStyles.boldLabel);
                     GUILayout.Space(3); 
                 }
             }
