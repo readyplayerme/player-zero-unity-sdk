@@ -68,8 +68,9 @@ namespace PlayerZero.Editor.UI.Views
                     });
                     GUILayout.FlexibleSpace();
                 }
-
+                scrollViewScope.Dispose();
                 return;
+                
             }
 
             GUILayout.Label("Project Settings", new GUIStyle()
@@ -94,7 +95,7 @@ namespace PlayerZero.Editor.UI.Views
                        margin = new RectOffset(7, 7, 5, 0)
                    }))
             {
-                _selectInput.Render( async (applicationId) =>
+                _selectInput.Render(  async (applicationId) =>
                 {
                     _viewModel.Settings.ApplicationId = applicationId;
                     EditorUtility.SetDirty(_viewModel.Settings);
