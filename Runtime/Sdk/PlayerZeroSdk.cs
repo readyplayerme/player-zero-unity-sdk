@@ -83,10 +83,10 @@ namespace PlayerZero.Runtime.Sdk
 
         public static async Task<Sprite> GetIconAsync(string avatarId, RenderSizeLimitType size = RenderSizeLimitType.Size64)
         {
-            return await GetIconAsync(avatarId, new AvatarImageConfig { Size = size });
+            return await GetIconAsync(avatarId, new AvatarRenderConfig { Size = size });
         }
 
-        public static async Task<Sprite> GetIconAsync(string avatarId, AvatarImageConfig config)
+        public static async Task<Sprite> GetIconAsync(string avatarId, AvatarRenderConfig config)
         {
             Initialize();
             var iconUrl = $"https://avatars.readyplayer.me/{avatarId}.png?{config.GetParams()}";

@@ -70,16 +70,13 @@ var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(new CharacterRequestConf
 
 ### Load 2D Avatar Image
 
-Use `AvatarImageLoader` or `PlayerZeroSdk.GetIconAsync` to display a 2D render of an avatar:
+Use `PlayerZeroSdk.GetIconAsync` to request a 2D render of an avatar:
 
 ```csharp
-AvatarImageConfig options = ScriptableObject.CreateInstance<AvatarImageConfig>();
+AvatarRenderConfig config = ScriptableObject.CreateInstance<AvatarRenderConfig>();
 var sprite = await PlayerZeroSdk.GetIconAsync("AVATAR_ID_HERE", options);
 image.sprite = sprite;
 ```
-
-Attach `AvatarImageLoader` to any UI `Image`, configure the parameters in the inspector and set the avatar id to load automatically.
-
 
 ## 🎭 Mesh Transfer
 

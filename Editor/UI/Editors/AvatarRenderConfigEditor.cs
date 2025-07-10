@@ -9,11 +9,11 @@ using UnityEngine.UIElements;
 
 namespace PlayerZero.Editor
 {
-    [CustomEditor(typeof(AvatarImageConfig))]
-    public class AvatarImageConfigEditor : UnityEditor.Editor
+    [CustomEditor(typeof(AvatarRenderConfig))]
+    public class AvatarRenderConfigEditor : UnityEditor.Editor
     {
 
-        private AvatarImageConfig avatarImageConfig;
+        private AvatarRenderConfig avatarRenderConfig;
         private VisualElement root;
         
         public override VisualElement CreateInspectorGUI()
@@ -29,10 +29,10 @@ namespace PlayerZero.Editor
 
                 }
             };
-            avatarImageConfig = (AvatarImageConfig)target;
+            avatarRenderConfig = (AvatarRenderConfig)target;
             
             GenerateFields(FetchFields());
-            if (avatarImageConfig.Scene == SceneType.Custom)
+            if (avatarRenderConfig.Scene == SceneType.Custom)
             {
                 CustomScene();
             }
@@ -41,7 +41,7 @@ namespace PlayerZero.Editor
         
         private FieldInfo[] FetchFields()
         {
-            var properties = typeof(AvatarImageConfig).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            var properties = typeof(AvatarRenderConfig).GetFields(BindingFlags.Public | BindingFlags.Instance);
             return properties.Where(f => f.Name != "customScene").ToArray();
         }
         
@@ -53,10 +53,10 @@ namespace PlayerZero.Editor
             {
                 if (property.FieldType == typeof(RenderSizeLimitType))
                 {
-                    var sizeField = new EnumField(property.Name, (RenderSizeLimitType)property.GetValue(avatarImageConfig));
+                    var sizeField = new EnumField(property.Name, (RenderSizeLimitType)property.GetValue(avatarRenderConfig));
                     sizeField.RegisterValueChangedCallback(evt =>
                     {
-                        property.SetValue(avatarImageConfig, evt.newValue);
+                        property.SetValue(avatarRenderConfig, evt.newValue);
                         Save();
                         ReloadOnSave(property.Name);
                     });
@@ -64,10 +64,10 @@ namespace PlayerZero.Editor
                 }
                 else if (property.FieldType == typeof(AvatarQuality))
                 {
-                    var qualityField = new EnumField(property.Name, (AvatarQuality)property.GetValue(avatarImageConfig));
+                    var qualityField = new EnumField(property.Name, (AvatarQuality)property.GetValue(avatarRenderConfig));
                     qualityField.RegisterValueChangedCallback(evt =>
                     {
-                        property.SetValue(avatarImageConfig, evt.newValue);
+                        property.SetValue(avatarRenderConfig, evt.newValue);
                         Save();
                         ReloadOnSave(property.Name);
                     });
@@ -77,11 +77,11 @@ namespace PlayerZero.Editor
                 {
                     var colorField = new ColorField(property.Name)
                     {
-                        value = (Color)property.GetValue(avatarImageConfig)
+                        value = (Color)property.GetValue(avatarRenderConfig)
                     };
                     colorField.RegisterValueChangedCallback(evt =>
                     {
-                        property.SetValue(avatarImageConfig, evt.newValue);
+                        property.SetValue(avatarRenderConfig, evt.newValue);
                         Save();
                         ReloadOnSave(property.Name);
                     });
@@ -89,10 +89,10 @@ namespace PlayerZero.Editor
                 }
                 else if (property.FieldType.IsEnum)
                 {
-                    var enumField = new EnumField(property.Name, (Enum)property.GetValue(avatarImageConfig));
+                    var enumField = new EnumField(property.Name, (Enum)property.GetValue(avatarRenderConfig));
                     enumField.RegisterValueChangedCallback(evt =>
                     {
-                        property.SetValue(avatarImageConfig, evt.newValue);
+                        property.SetValue(avatarRenderConfig, evt.newValue);
                         Save();
                         ReloadOnSave(property.Name);
                     });
@@ -102,11 +102,11 @@ namespace PlayerZero.Editor
                 {
                     var textField = new TextField(property.Name)
                     {
-                        value = (string)property.GetValue(avatarImageConfig)
+                        value = (string)property.GetValue(avatarRenderConfig)
                     };
                     textField.RegisterValueChangedCallback(evt =>
                     {
-                        property.SetValue(avatarImageConfig, evt.newValue);
+                        property.SetValue(avatarRenderConfig, evt.newValue);
                         Save();
                         ReloadOnSave(property.Name);
                     });
@@ -116,11 +116,11 @@ namespace PlayerZero.Editor
                 {
                     var intField = new IntegerField(property.Name)
                     {
-                        value = (int)property.GetValue(avatarImageConfig)
+                        value = (int)property.GetValue(avatarRenderConfig)
                     };
                     intField.RegisterValueChangedCallback(evt =>
                     {
-                        property.SetValue(avatarImageConfig, evt.newValue);
+                        property.SetValue(avatarRenderConfig, evt.newValue);
                         Save();
                         ReloadOnSave(property.Name);
                     });
@@ -137,7 +137,7 @@ namespace PlayerZero.Editor
                 root.Clear();
                 GenerateFields(FetchFields());
 
-                if (avatarImageConfig.Scene == SceneType.Custom)
+                if (avatarRenderConfig.Scene == SceneType.Custom)
                 {
                     CustomScene();
                 }
@@ -149,7 +149,7 @@ namespace PlayerZero.Editor
             var customScene = new TextField("Custom Scene");
             customScene.RegisterValueChangedCallback(x =>
             {
-                avatarImageConfig.CustomScene = x.newValue;
+                avatarRenderConfig.CustomScene = x.newValue;
                 Save();
             });
             root.Add(customScene);
