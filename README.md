@@ -56,6 +56,28 @@ var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(new CharacterRequestConf
 });
 ```
 
+### Load From Short Code
+
+```csharp
+// Assume `inputField` is a Unity UI InputField containing the code
+var code = inputField.text;
+var avatarId = await PlayerZeroSdk.GetAvatarIdFromCodeAsync(code);
+var avatar = await PlayerZeroSdk.InstantiateAvatarAsync(new CharacterRequestConfig {
+    AvatarId = avatarId,
+    BlueprintId = "BLUEPRINT_ID_HERE"
+});
+```
+
+### Load 2D Avatar Image
+
+Use `PlayerZeroSdk.GetIconAsync` to request a 2D render of an avatar:
+
+```csharp
+AvatarRenderConfig config = ScriptableObject.CreateInstance<AvatarRenderConfig>();
+var sprite = await PlayerZeroSdk.GetIconAsync("AVATAR_ID_HERE", options);
+image.sprite = sprite;
+```
+
 ## 🎭 Mesh Transfer
 
 Seamlessly apply a Player Zero avatar's visuals to an existing prefab:
