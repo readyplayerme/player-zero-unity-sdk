@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PlayerZero.Data;
 using PlayerZero.Editor.UI.ViewModels;
 using UnityEngine;
 
@@ -20,14 +19,12 @@ namespace PlayerZero.Editor.UI.Views
         public async Task InitAsync()
         {
             await blueprintListViewModel.Init();
-            var applicationId = Resources.Load<Settings>( "PlayerZeroSettings" )?.ApplicationId;
-            var characterTemplateList = Resources.Load<CharacterTemplateConfig>(applicationId);
   
             _characterBlueprintViews = await Task.WhenAll(blueprintListViewModel.CharacterBlueprints.Select(async blueprint =>
             {
                 var blueprintViewModel = new CharacterBlueprintViewModel(blueprintListViewModel.AnalyticsApi);
                 var blueprintView = new CharacterBlueprintView(blueprintViewModel);
-                await blueprintView.Init(blueprint, characterTemplateList);
+                await blueprintView.Init(blueprint);
                 return blueprintView;
             }));
         }

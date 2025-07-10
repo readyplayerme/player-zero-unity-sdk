@@ -7,11 +7,11 @@ namespace PlayerZero.Editor.UI.Views
 {
     public class DeveloperLoginView
     {
-        private readonly DeveloperLoginViewModel _viewModel;
+        private readonly DeveloperLoginViewModel viewModel;
 
         public DeveloperLoginView(DeveloperLoginViewModel viewModel)
         {
-            _viewModel = viewModel;
+            this.viewModel = viewModel;
         }
 
         public void Render(Action onLogin)
@@ -22,29 +22,29 @@ namespace PlayerZero.Editor.UI.Views
 
                 EditorGUILayout.Space(10);
 
-                _viewModel.Username = EditorGUILayout.TextField("Username:", _viewModel.Username);
+                viewModel.Username = EditorGUILayout.TextField("Username:", viewModel.Username);
 
                 EditorGUILayout.Space(5);
 
-                _viewModel.Password = EditorGUILayout.PasswordField("Password:", _viewModel.Password);
+                viewModel.Password = EditorGUILayout.PasswordField("Password:", viewModel.Password);
 
                 EditorGUILayout.Space(5);
             }
 
-            if (GUILayout.Button(_viewModel.Loading ? "Loading..." : "Sign In", new GUIStyle(GUI.skin.button)
+            if (GUILayout.Button(viewModel.Loading ? "Loading..." : "Sign In", new GUIStyle(GUI.skin.button)
                 {
                     margin = new RectOffset(12, 12, 0, 0)
                 }))
             {
 
 #pragma warning disable CS4014
-                _viewModel.SignIn(onSuccess: onLogin);
+                viewModel.SignIn(onSuccess: onLogin);
 #pragma warning restore CS4014
             }
             
-            if (!string.IsNullOrEmpty(_viewModel.Error))
+            if (!string.IsNullOrEmpty(viewModel.Error))
             {
-                GUILayout.Label(_viewModel.Error, new GUIStyle()
+                GUILayout.Label(viewModel.Error, new GUIStyle()
                 {
                     normal = new GUIStyleState()
                     {
