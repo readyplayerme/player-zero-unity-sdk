@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.1] - 2025.07.22
+
+## Updated
+- fixed settings version number
+
+## Added
+- added IsMale extension method to Character class
+
 ## [2.6.0] - 2025.07.10
 
 ## Added
