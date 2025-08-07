@@ -26,6 +26,7 @@ namespace PlayerZero.Editor
         private const string TOOLTIP_MESH_OPT = "If true, the mesh will be compressed using meshoptimizer compression. (Experimental)";
         private const string TOOLTIP_MORPH_TARGETS = "Add morph targets are used to create facial expressions and other deformations. Otherwise, set to None.";
         private const string TOOLTIP_MORPH_TARGET_GROUPS = "Add morph target groups to include a set of morph targets.";
+        private const string TOOLTIP_REMOVE_SKIN = "If true, the skin mesh that is hidden underneath clothing will be removed from the avatar. WARNING:This can slow down avatar request times.";
         
         [SerializeField] private VisualTreeAsset visualTreeAsset;
         
@@ -58,7 +59,8 @@ namespace PlayerZero.Editor
             TextureChannels();
             MorphTargets();
             MorphTargetGroups();
-            CompressionPackages();
+            OptimizationPackages();
+            
             return root;
         }
         
@@ -157,7 +159,7 @@ namespace PlayerZero.Editor
             root.Add(sizeLimitField);
         }
         
-        private void CompressionPackages()
+        private void OptimizationPackages()
         {
             var optimizationFoldout = new Foldout
             {
@@ -207,10 +209,25 @@ namespace PlayerZero.Editor
                     opacity = 1
                 }
             };
+            
+            var removeSkinToggle = new Toggle("Remove Skin")
+            {
+                value = characterLoaderConfigTarget.RemoveSkin,
+                tooltip = TOOLTIP_REMOVE_SKIN,
+                style =
+                {
+                    marginLeft = 3,
+                    marginTop = 3,
+                    flexDirection = FlexDirection.Row,
+                    alignItems = Align.Center,
+                    justifyContent = Justify.FlexStart
+                }
+            };
 
             // Add toggles to the foldout
             optimizationFoldout.Add(dracoToggle);
             optimizationFoldout.Add(meshOptToggle);
+            optimizationFoldout.Add(removeSkinToggle);
 
             // Add the foldout to the root or desired parent
             root.Add(optimizationFoldout);
@@ -219,6 +236,7 @@ namespace PlayerZero.Editor
             {
                 dracoToggle.SetValueWithoutNotify(characterLoaderConfigTarget.DracoCompression);
                 meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.MeshCompression);
+                removeSkinToggle.SetValueWithoutNotify(characterLoaderConfigTarget.RemoveSkin);
             });
 
             dracoToggle.RegisterValueChangedCallback(x =>
@@ -280,6 +298,14 @@ namespace PlayerZero.Editor
                     Save();
                 }
             );
+            
+            removeSkinToggle.RegisterValueChangedCallback(x =>
+            {
+                if (characterLoaderConfigTarget.RemoveSkin == x.newValue) return;
+                characterLoaderConfigTarget.RemoveSkin = x.newValue;
+                meshOptToggle.SetValueWithoutNotify(characterLoaderConfigTarget.RemoveSkin);
+                Save();
+            });
         }
         
         private void MorphTargets()

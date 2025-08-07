@@ -74,6 +74,11 @@ namespace PlayerZero
             {
                 queryParams += "&meshCompression=true";
             }
+            
+            if (config.RemoveSkin)
+            {
+                queryParams += "&removeSkin=true";
+            }
 
             return queryParams;
         }

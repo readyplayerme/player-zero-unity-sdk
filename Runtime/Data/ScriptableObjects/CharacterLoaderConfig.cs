@@ -30,5 +30,7 @@ namespace PlayerZero.Data
         public bool DracoCompression;
         
         public bool MeshCompression;
+
+        public bool RemoveSkin;
     }
 }
