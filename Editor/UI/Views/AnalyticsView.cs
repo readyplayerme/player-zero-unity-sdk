@@ -108,11 +108,11 @@ namespace PlayerZero.Editor.UI.Views
             var response = await gameEventApi.SendGameEventAsync<AvatarSessionStartedEvent, AvatarSessionStartedProperties>(gameEvent);
             if (response.IsSuccess)
             {
-                EditorUtility.DisplayDialog("Test Event Success", "A Player Zero event sent successfully!", "ok");
+                EditorUtility.DisplayDialog("Test Event Success", "A Player Zero event sent successfully!", "OK");
             }
             else
             {
-                EditorUtility.DisplayDialog("Test Event Failed", "A Player Zero event failed to send!", "ok");
+                EditorUtility.DisplayDialog("Test Event Failed", "A Player Zero event failed to send!", "OK");
             }
         }
     }
