@@ -6,16 +6,20 @@ using UnityEngine.Networking;
 
 namespace PlayerZero.Api.V1
 {
+    /// <summary>
+    /// Handles sending game event data to the analytics server via HTTP requests.
+    /// Inherits from <see cref="WebApi"/> and provides an asynchronous method for dispatching events.
+    /// </summary>
     public class GameEventApi : WebApi
     {
         private const string PZ_TOKEN_PARAM = "token";
         private const string Resource = "public/events";
-        
+
         /// <summary>
         /// Sends a generic game event to the analytics server asynchronously.
         /// </summary>
         /// <typeparam name="T">The type of the payload.</typeparam>
-        /// <typeparam name="TEventProperties"></typeparam>
+        /// <typeparam name="TEventProperties">The type of the event properties.</typeparam>
         /// <param name="request">The event data to send.</param>
         public async Task SendGameEventAsync<T, TEventProperties>(T request)
             where T : IGameEvent<TEventProperties>

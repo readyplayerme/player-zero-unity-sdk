@@ -11,10 +11,22 @@ using UnityEngine.InputSystem.LowLevel;
 
 namespace PlayerZero.Runtime.Sdk
 {
+    /// <summary>
+    /// Handles Player Zero analytics session management, heartbeat, and activity tracking for avatars and games.
+    /// </summary>
     public class PlayerZeroAnalytics : MonoBehaviour
     {
+        /// <summary>
+        /// PlayerPrefs key for the game session ID.
+        /// </summary>
         private const string PZ_SESSION_ID = "PZ_SESSION_ID";
+        /// <summary>
+        /// PlayerPrefs key for the avatar session ID.
+        /// </summary>
         private const string PZ_AVATAR_SESSION_ID = "PZ_AVATAR_SESSION_ID";
+        /// <summary>
+        /// Interval in seconds between heartbeat events.
+        /// </summary>
         private const int HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
         private static PlayerZeroAnalytics _instance;
@@ -22,12 +34,18 @@ namespace PlayerZero.Runtime.Sdk
 
         private Coroutine _heartbeatTimer;
 
+        /// <summary>
+        /// Enables debug logging for analytics events.
+        /// </summary>
         public bool debugMode;
         private static DeviceContext _deviceContext;
         
         private long lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         private Vector3 lastMousePosition;
         
+        /// <summary>
+        /// Initializes the analytics session, device context, and heartbeat timer.
+        /// </summary>
         private void Awake()
         {
             _settings = Resources.Load<Settings>("PlayerZeroSettings");
@@ -97,7 +115,10 @@ namespace PlayerZero.Runtime.Sdk
             }
         }
         
-#if ENABLE_LEGACY_INPUT_MANAGER      
+#if ENABLE_LEGACY_INPUT_MANAGER  
+        /// <summary>
+        /// Updates player activity timestamp if legacy input is detected.
+        /// </summary>
         private void Update()
         {
             if (DetectLegacyInput())
@@ -106,6 +127,10 @@ namespace PlayerZero.Runtime.Sdk
             }
         }
         
+        /// <summary>
+        /// Detects player activity using the legacy input system.
+        /// </summary>
+        /// <returns>True if activity is detected; otherwise, false.</returns>
         private bool DetectLegacyInput()
         {
             // Legacy Input System (No setup needed)
@@ -132,13 +157,21 @@ namespace PlayerZero.Runtime.Sdk
 #endif  
         
 #if ENABLE_INPUT_SYSTEM
-    private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
-    {
-        // Any input event from any device
-        lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-    }
+        /// <summary>
+        /// Updates player activity timestamp when a new input event is received.
+        /// </summary>
+        /// <param name="eventPtr">The input event pointer.</param>
+        /// <param name="device">The input device.</param>
+        private void OnNewInputEvent(InputEventPtr eventPtr, InputDevice device)
+        {
+            // Any input event from any device
+            lastPlayerActivityAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        }
 #endif
 
+        /// <summary>
+        /// Coroutine that sends heartbeat events at regular intervals.
+        /// </summary>
         private IEnumerator Heartbeat()
         {
             while (true)
@@ -164,6 +197,9 @@ namespace PlayerZero.Runtime.Sdk
             }
         }
 
+        /// <summary>
+        /// Cleans up analytics sessions and sends session ended events on destruction.
+        /// </summary>
         private void OnDestroy()
         {
             if (_instance != this)

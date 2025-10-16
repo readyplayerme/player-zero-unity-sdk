@@ -3,9 +3,9 @@ using UnityEngine;
 namespace PlayerZero.Data
 {
     /// <summary>
-    ///     This enumeration describes the TextureAtlas setting options.
+    /// Specifies texture atlas options for combining avatar meshes, materials, and textures.
     /// </summary>
-    /// <remarks>If set to <c>None</c> the avatar meshes, materials and textures will NOT be combined.</remarks>
+    /// <remarks>If set to <c>None</c>, meshes, materials, and textures are not combined.</remarks>
     public enum TextureAtlas
     {
         None,
@@ -17,13 +17,19 @@ namespace PlayerZero.Data
         Low
     }
 
+    /// <summary>
+    /// Specifies the quality level for avatar textures.
+    /// </summary>
     public enum TextureQuality
     {
         High,
         Medium,
         Low
     }
-    
+
+    /// <summary>
+    /// Specifies the maximum allowed texture size for avatars.
+    /// </summary>
     public enum TextureSizeLimit
     {
         [InspectorName("256px")]
@@ -33,9 +39,9 @@ namespace PlayerZero.Data
         [InspectorName("1024px")]
         Size1024 = 1024
     }
-    
+
     /// <summary>
-    ///     This enumeration describes the avatar mesh LOD (Level of Detail) options.
+    /// Specifies mesh level of detail (LOD) options for avatars.
     /// </summary>
     public enum MeshLod
     {
@@ -46,7 +52,10 @@ namespace PlayerZero.Data
         [InspectorName("Low (LOD2)")]
         Low
     }
-    
+
+    /// <summary>
+    /// Specifies available texture channels for avatars.
+    /// </summary>
     public enum TextureChannel
     {
         baseColor,
@@ -55,14 +64,20 @@ namespace PlayerZero.Data
         emissive,
         occlusion
     }
-    
+
+    /// <summary>
+    /// Specifies overall avatar image quality.
+    /// </summary>
     public enum AvatarQuality
     {
         Low,
         Medium,
         High,
     }
-    
+
+    /// <summary>
+    /// Specifies camera framing options for avatar rendering.
+    /// </summary>
     public enum CameraType
     {
         Portrait,
@@ -70,6 +85,9 @@ namespace PlayerZero.Data
         Fit,
     }
 
+    /// <summary>
+    /// Specifies available avatar facial expressions.
+    /// </summary>
     public enum ExpressionType
     {
         None,
@@ -79,7 +97,10 @@ namespace PlayerZero.Data
         Rage,
         Sad,
     }
-    
+
+    /// <summary>
+    /// Specifies size limits for avatar rendering.
+    /// </summary>
     public enum RenderSizeLimitType
     {
         [InspectorName("64px")]
@@ -93,13 +114,19 @@ namespace PlayerZero.Data
         [InspectorName("1024px")]
         Size1024 = 1024
     }
-    
+
+    /// <summary>
+    /// Specifies scene types for avatar rendering.
+    /// </summary>
     public enum SceneType {
         Fullbody,
         Portrait,
         Custom,
     }
-    
+
+    /// <summary>
+    /// Specifies pose options for avatar rendering.
+    /// </summary>
     public enum PoseType
     {
         Default,

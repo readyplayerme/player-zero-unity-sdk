@@ -9,12 +9,18 @@ using UnityGLTF;
 
 namespace PlayerZero
 {
+    /// <summary>
+    /// Provides functionality to transfer skinned meshes and bone mappings between GameObjects,
+    /// including safe destruction of source objects and optional GLTF data transfer.
+    /// </summary>
     public class MeshTransfer
     {
         /// <summary>
-        ///     Transfer meshes from source to target GameObject.
-        ///     Destroys the source after transfer.
+        /// Transfers all skinned meshes from the source GameObject to the target GameObject,
+        /// remapping bones and updating the animator. The source GameObject is destroyed after transfer.
         /// </summary>
+        /// <param name="source">The GameObject to transfer meshes from.</param>
+        /// <param name="target">The GameObject to transfer meshes to.</param>
         public void Transfer(GameObject source, GameObject target)
         {
             var animator = target.GetComponent<Animator>();
@@ -33,6 +39,10 @@ namespace PlayerZero
             }
         }
         
+        /// <summary>
+        /// Safely destroys a GameObject, using immediate destruction in the editor and delayed destruction at runtime.
+        /// </summary>
+        /// <param name="obj">The GameObject to destroy.</param>
         private void SafeDestroy(GameObject obj)
         {
 #if UNITY_EDITOR
@@ -46,8 +56,9 @@ namespace PlayerZero
         }
 
         /// <summary>
-        /// Removes all non-attached SkinnedMeshRenderers from the target armature.
+        /// Removes all SkinnedMeshRenderer GameObjects from the target armature that are not attached via TemplateAttachment.
         /// </summary>
+        /// <param name="targetArmature">The target armature Transform.</param>
         private void RemoveMeshes(Transform targetArmature)
         {
             Renderer[] renderers = GetRenderers(targetArmature);
@@ -61,9 +72,12 @@ namespace PlayerZero
         }
 
         /// <summary>
-        /// Transfers all SkinnedMeshRenderers from sourceArmature to targetArmature,
-        /// remapping bones by name using a complete bone map built from all target meshes.
+        /// Transfers all SkinnedMeshRenderers from the source armature to the target armature,
+        /// remapping bones by name and updating mesh bounds. Also transfers GLTF data if available.
         /// </summary>
+        /// <param name="targetArmature">The target armature Transform.</param>
+        /// <param name="sourceArmature">The source armature Transform.</param>
+        /// <param name="rootBone">The root bone Transform for the transferred meshes.</param>
         public void TransferMeshes(Transform targetArmature, Transform sourceArmature, Transform rootBone)
         {
             var targetBoneMap = GetAllTargetBonesMap(targetArmature);
@@ -115,6 +129,11 @@ namespace PlayerZero
                 rootBone.SetAsLastSibling();
         }
 
+        /// <summary>
+        /// Builds a dictionary mapping bone names to Transforms from all SkinnedMeshRenderers in the target armature.
+        /// </summary>
+        /// <param name="targetArmature">The target armature Transform.</param>
+        /// <returns>A dictionary mapping bone names to Transforms.</returns>
         private Dictionary<string, Transform> GetAllTargetBonesMap(Transform targetArmature)
         {
             var skinnedMeshes = targetArmature.GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -134,6 +153,11 @@ namespace PlayerZero
             return boneMap;
         }
 
+        /// <summary>
+        /// Collects all SkinnedMeshRenderer components from the given armature, excluding those attached via TemplateAttachment.
+        /// </summary>
+        /// <param name="armature">The armature Transform to search.</param>
+        /// <returns>An array of Renderer components.</returns>
         private Renderer[] GetRenderers(Transform armature)
         {
             List<Renderer> renderers = new List<Renderer>();
@@ -141,6 +165,11 @@ namespace PlayerZero
             return renderers.ToArray();
         }
 
+        /// <summary>
+        /// Recursively collects SkinnedMeshRenderer components from the hierarchy, skipping TemplateAttachment nodes.
+        /// </summary>
+        /// <param name="parent">The parent Transform to search.</param>
+        /// <param name="renderers">The list to populate with found Renderer components.</param>
         private void GetRenderersRecursive(Transform parent, List<Renderer> renderers)
         {
             if (parent.GetComponent<TemplateAttachment>() != null)
@@ -156,6 +185,12 @@ namespace PlayerZero
             }
         }
 
+        /// <summary>
+        /// Gets the default root bone from the first SkinnedMeshRenderer in the target armature,
+        /// or returns the armature itself if none is found.
+        /// </summary>
+        /// <param name="targetArmature">The target armature Transform.</param>
+        /// <returns>The root bone Transform.</returns>
         private Transform GetDefaultRootBone(Transform targetArmature)
         {
             var smr = targetArmature.GetComponentInChildren<SkinnedMeshRenderer>();
