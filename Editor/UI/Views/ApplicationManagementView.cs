@@ -13,8 +13,10 @@ namespace PlayerZero.Editor.UI.Views
         private readonly SelectInput selectInput;
         private readonly TextInput textInput;
         private readonly CharacterBlueprintsView characterBlueprintsView;
+        private readonly AnalyticsView analyticsView;
         private Vector2 scrollPosition = Vector2.zero;
         private string applicationId;
+        private int toolbarInt = 0;
         
         public ApplicationManagementView(ApplicationManagementViewModel viewModel)
         {
@@ -24,6 +26,7 @@ namespace PlayerZero.Editor.UI.Views
 
             var characterBlueprintsViewModel = new CharacterBlueprintListViewModel(viewModel.BlueprintApi, viewModel.Settings, this.viewModel.AnalyticsApi);
             characterBlueprintsView = new CharacterBlueprintsView(characterBlueprintsViewModel);
+            analyticsView = new AnalyticsView();
         }
 
         public async Task Init()
@@ -129,26 +132,7 @@ namespace PlayerZero.Editor.UI.Views
                     {
                         margin = new RectOffset(10, 10, 0, 0)
                     });
-
-            GUILayout.Space(20);
-            
-            GUILayout.Label("Game ID", new GUIStyle()
-            {
-                fontStyle = FontStyle.Bold,
-                normal = new GUIStyleState()
-                {
-                    textColor = Color.white
-                },
-                margin = new RectOffset(10, 10, 0, 0),
-                fontSize = 14
-            });
-
-            GUILayout.Label("Paste your Game ID here",
-                new GUIStyle(GUI.skin.label)
-                {
-                    margin = new RectOffset(9, 10, 0, 0)
-                });
-            
+            GUILayout.Space(5);
             viewModel.Settings.GameId =
                 EditorGUILayout.TextField("Game ID", viewModel.Settings.GameId,
                     new GUIStyle(GUI.skin.textField)
@@ -156,50 +140,31 @@ namespace PlayerZero.Editor.UI.Views
                         margin = new RectOffset(10, 10, 0, 0)
                     });
             
-            GUILayout.Space(20);
-
-            characterBlueprintsView.Render();
-
-            GUILayout.Space(20);
+            GUILayout.Space(10);
             
-            GUILayout.Label("Auth Settings", new GUIStyle()
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace(); 
+
+            GUILayoutOption[] textFieldOptions = { GUILayout.Width(200) };
+            string[] toolbarStrings = { "Blueprints", "Analytics" };
+            toolbarInt = GUILayout.Toolbar(toolbarInt, toolbarStrings, textFieldOptions);
+
+            GUILayout.FlexibleSpace(); 
+            GUILayout.EndHorizontal();
+            GUILayout.Space(10);
+            
+            switch (toolbarInt)
             {
-                fontStyle = FontStyle.Bold,
-                normal = new GUIStyleState()
-                {
-                    textColor = Color.white
-                },
-                margin = new RectOffset(10, 10, 0, 0),
-                fontSize = 14
-            });
-
-            using (new GUILayout.VerticalScope(new GUIStyle()
-                   {
-                       margin = new RectOffset(7, 7, 5, 0)
-                   }))
-            {
-                viewModel.Settings.ApiProxyUrl =
-                    EditorGUILayout.TextField("Proxy Api Url", viewModel.Settings.ApiProxyUrl);
-
-                GUILayout.Space(5);
-
-                textInput.Render("Api Key", (value) =>
-                {
-                    viewModel.Settings.ApiKey = value;
-                    EditorUtility.SetDirty(viewModel.Settings);
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
-                });
-
-                GUILayout.Space(5);
-
-                EditorGUILayout.HelpBox(
-                    "Setting your API Key in the field above can be insecure as it means that your API Key can be discoverable in your game build, it is advisable to instead setup a proxy server. See our docs for more details.",
-                    MessageType.Info
-                );
+                case 0:
+                    characterBlueprintsView.Render();
+                    break;
+                case 1:
+                    analyticsView.Render(viewModel.Settings.GameId, viewModel.Settings.DefaultAvatarId);
+                    break;
             }
 
             GUILayout.Space(20);
+            
             scrollViewScope.Dispose();
         }
     }

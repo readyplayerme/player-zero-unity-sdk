@@ -83,8 +83,7 @@ namespace PlayerZero.Editor.UI.Windows
                     DeveloperAuthCache.Delete();
                 }
             }
-
-            applicationManagementView.Render();
+            applicationManagementView?.Render();
         }
     }
 }

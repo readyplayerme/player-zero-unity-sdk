@@ -91,23 +91,27 @@ namespace PlayerZero.Editor.UI.Views
                 {
                     margin = new RectOffset(9, 10, 0, 0)
                 });
-
-            using (new GUILayout.VerticalScope(new GUIStyle
-                   {
-                       margin = new RectOffset(9, 9, 5, 5)
-                   }))
+            var verticalScope = new GUILayout.VerticalScope(new GUIStyle
             {
-                if (_characterBlueprintViews == null)
-                    return;
-                
-                foreach (var characterBlueprintView in _characterBlueprintViews)
+                margin = new RectOffset(9, 9, 5, 5)
+            });
+
+            if (_characterBlueprintViews == null)
+            {
+                // dispose of the scope and return if no blueprints are loaded
+                verticalScope.Dispose();
+                return;
+            }
+            
+            foreach (var characterBlueprintView in _characterBlueprintViews)
+            {
+                using (new GUILayout.VerticalScope())
                 {
-                    using (new GUILayout.VerticalScope())
-                    {
-                        characterBlueprintView.Render();
-                    }
+                    characterBlueprintView.Render();
                 }
             }
+            verticalScope.Dispose();
+            
         }
     }
 }
