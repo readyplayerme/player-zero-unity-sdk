@@ -10,14 +10,29 @@ using System.Text;
 
 namespace PlayerZero
 {
+    /// <summary>
+    /// Provides methods for collecting device analytics information, including OS, hardware, browser, and unique device ID.
+    /// </summary>
     public static class DeviceAnalytics
     {
+        /// <summary>
+        /// The PlayerPrefs key for storing the time of first game load.
+        /// </summary>
         private const string FirstGameLoadTimeKey = "timeOfFirstGameLoad";
         
 #if UNITY_WEBGL && !UNITY_EDITOR
+        /// <summary>
+        /// Retrieves browser information from the WebGL environment.
+        /// </summary>
         [DllImport("__Internal")]
         private static extern IntPtr GetBrowser();
         
+        /// <summary>
+        /// Generates a unique device ID based on device info and first load time (WebGL only).
+        /// </summary>
+        /// <param name="deviceInfo">The device context information.</param>
+        /// <param name="firstLoadTime">The time of first game load.</param>
+        /// <returns>A SHA256 hash string representing the device ID.</returns>
         private static string GenerateDeviceId(DeviceContext deviceInfo, long firstLoadTime)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -38,6 +53,10 @@ namespace PlayerZero
         }
 #endif
 
+        /// <summary>
+        /// Collects and returns device information, including OS, hardware, browser, and unique device ID.
+        /// </summary>
+        /// <returns>A <see cref="DeviceContext"/> object containing device analytics data.</returns>
         public static DeviceContext GetDeviceInfo()
         {
             var deviceInfo = new DeviceContext
@@ -76,6 +95,10 @@ namespace PlayerZero
             return deviceInfo;
         }
 
+        /// <summary>
+        /// Retrieves browser information for the current environment.
+        /// </summary>
+        /// <returns>A string representing the browser name or an empty string if not available.</returns>
         private static string GetBrowserInfo()
         {
 #if UNITY_WEBGL && !UNITY_EDITOR

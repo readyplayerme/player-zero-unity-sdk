@@ -1,65 +1,117 @@
 ﻿using UnityEngine;
 
-/* Note: animations are called via the controller for both the character and capsule using animator null checks
- */
-
 namespace PlayerZero.Samples
 {
+    /// <summary>
+    /// Handles third-person character movement, camera rotation, jumping, gravity, and animation.
+    /// Requires a <see cref="CharacterController"/> component.
+    /// </summary>
     [RequireComponent(typeof(CharacterController))]
     public class ThirdPersonController : MonoBehaviour
     {
+        /// <summary>
+        /// Reference to the player input handler.
+        /// </summary>
         [SerializeField]
         private SamplePlayerInput input;
         
+        /// <summary>
+        /// Movement speed in meters per second.
+        /// </summary>
         [Header("Player")] 
         [SerializeField][Tooltip("Move speed of the character in m/s")]
         private float moveSpeed = 2.0f;
 
+        /// <summary>
+        /// Sprint speed in meters per second.
+        /// </summary>
         [SerializeField][Tooltip("Sprint speed of the character in m/s")]
         private float sprintSpeed = 5.335f;
 
+        /// <summary>
+        /// How fast the character turns to face movement direction.
+        /// </summary>
         [SerializeField][Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 0.3f)]
         private float rotationSmoothTime = 0.12f;
 
+        /// <summary>
+        /// Acceleration and deceleration rate.
+        /// </summary>
         [SerializeField][Tooltip("Acceleration and deceleration")]
         private float speedChangeRate = 10.0f;
         
+        /// <summary>
+        /// Jump height in meters.
+        /// </summary>
         [SerializeField][Space(10)] [Tooltip("The height the player can jump")]
         private float jumpHeight = 1.2f;
 
+        /// <summary>
+        /// Gravity value used for the character.
+        /// </summary>
         [SerializeField][Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
         private float gravity = -15.0f;
 
+        /// <summary>
+        /// Time before the player can jump again.
+        /// </summary>
         [Space(10)]
         [SerializeField][Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
         private float jumpTimeout = 0.50f;
 
+        /// <summary>
+        /// Time before entering the fall state.
+        /// </summary>
         [SerializeField][Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         private float fallTimeout = 0.15f;
 
+        /// <summary>
+        /// Indicates if the character is grounded.
+        /// </summary>
         [Header("Player Grounded")]
         [Tooltip(
             "If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
 
+        /// <summary>
+        /// Offset for the grounded check sphere.
+        /// </summary>
         [SerializeField][Tooltip("Useful for rough ground")] private float GroundedOffset = -0.14f;
 
+        /// <summary>
+        /// Radius for the grounded check sphere.
+        /// </summary>
         [SerializeField][Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
         private float groundedRadius = 0.28f;
 
+        /// <summary>
+        /// Layers considered as ground.
+        /// </summary>
         [SerializeField][Tooltip("What layers the character uses as ground")]
         private LayerMask groundLayers;
 
+        /// <summary>
+        /// Camera target GameObject for rotation.
+        /// </summary>
         [Header("Camera")]
         [SerializeField][Tooltip("The follow target set in the ThirdPersonCamera component that the camera will follow")]
         private GameObject cameraTarget;
 
+        /// <summary>
+        /// Maximum upward camera angle in degrees.
+        /// </summary>
         [SerializeField][Tooltip("How far in degrees can you move the camera up")]
         private float topClamp = 70.0f;
 
+        /// <summary>
+        /// Maximum downward camera angle in degrees.
+        /// </summary>
         [SerializeField][Tooltip("How far in degrees can you move the camera down")]
         private float bottomClamp = -30.0f;
 
+        /// <summary>
+        /// Additional degrees to override the camera. Useful for fine tuning camera position when locked.
+        /// </summary>
         [SerializeField][Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
         private float cameraAngleOverride = 0.0f;
         
@@ -101,6 +153,9 @@ namespace PlayerZero.Samples
             }
         }
 
+        /// <summary>
+        /// Initializes components and animation IDs on start.
+        /// </summary>
         private void Start()
         {
             cameraTargetYaw = cameraTarget.transform.rotation.eulerAngles.y;
@@ -114,6 +169,9 @@ namespace PlayerZero.Samples
             fallTimeoutDelta = fallTimeout;
         }
 
+        /// <summary>
+        /// Updates movement, gravity, and animation each frame.
+        /// </summary>
         private void Update()
         {
             hasAnimator = TryGetComponent(out animator);
@@ -123,11 +181,17 @@ namespace PlayerZero.Samples
             Move();
         }
 
+        /// <summary>
+        /// Updates camera rotation each frame.
+        /// </summary>
         private void LateUpdate()
         {
             CameraRotation();
         }
 
+        /// <summary>
+        /// Assigns animator parameter IDs.
+        /// </summary>
         private void AssignAnimationIDs()
         {
             animIDSpeed = Animator.StringToHash("Speed");
@@ -137,6 +201,9 @@ namespace PlayerZero.Samples
             animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
 
+        /// <summary>
+        /// Checks if the character is grounded.
+        /// </summary>
         private void GroundedCheck()
         {
             // set sphere position, with offset
@@ -152,6 +219,9 @@ namespace PlayerZero.Samples
             }
         }
 
+        /// <summary>
+        /// Handles camera rotation based on mouse input.
+        /// </summary>
         private void CameraRotation()
         {
             // if there is an input and camera position is not 
@@ -170,6 +240,9 @@ namespace PlayerZero.Samples
                 cameraTargetYaw, 0.0f);
         }
 
+        /// <summary>
+        /// Handles player movement and animation.
+        /// </summary>
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
@@ -238,6 +311,9 @@ namespace PlayerZero.Samples
             }
         }
 
+        /// <summary>
+        /// Handles jumping and gravity.
+        /// </summary>
         private void JumpAndGravity()
         {
             if (Grounded)
@@ -307,6 +383,13 @@ namespace PlayerZero.Samples
             }
         }
 
+        /// <summary>
+        /// Clamps an angle between minimum and maximum values.
+        /// </summary>
+        /// <param name="lfAngle">Angle to clamp.</param>
+        /// <param name="lfMin">Minimum value.</param>
+        /// <param name="lfMax">Maximum value.</param>
+        /// <returns>Clamped angle.</returns>
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
             if (lfAngle < -360f) lfAngle += 360f;
@@ -314,6 +397,9 @@ namespace PlayerZero.Samples
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
 
+        /// <summary>
+        /// Draws gizmos for the grounded check sphere in the editor.
+        /// </summary>
         private void OnDrawGizmosSelected()
         {
             var transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);

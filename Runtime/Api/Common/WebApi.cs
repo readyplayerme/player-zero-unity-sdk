@@ -8,13 +8,34 @@ using UnityEngine.Networking;
 
 namespace PlayerZero.Api
 {
+    /// <summary>
+    /// Abstract base class for making web API requests using UnityWebRequest.
+    /// Handles serialization, request dispatching, and error logging.
+    /// </summary>
     public abstract class WebApi
     {
+        /// <summary>
+        /// Cached reference to SDK settings loaded from resources.
+        /// </summary>
         private Settings _settings;
+        /// <summary>
+        /// Gets the SDK settings, loading them if not already cached.
+        /// </summary>
         protected Settings Settings => _settings != null ? _settings : (_settings = Resources.Load<Settings>("PlayerZeroSettings"));
         
+        /// <summary>
+        /// Controls whether failed requests log warnings to the Unity console.
+        /// </summary>
         protected bool LogWarnings = true;
 
+        /// <summary>
+        /// Dispatches an API request with a typed request body, serializing it to JSON.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the expected response.</typeparam>
+        /// <typeparam name="TRequestBody">Type of the request body.</typeparam>
+        /// <param name="data">API request data.</param>
+        /// <param name="cancellationToken">Token to cancel the request.</param>
+        /// <returns>Deserialized response object.</returns>
         protected virtual async Task<TResponse> Dispatch<TResponse, TRequestBody>(ApiRequest<TRequestBody> data, CancellationToken cancellationToken = default)
             where TResponse : ApiResponse, new()
         {
@@ -36,6 +57,13 @@ namespace PlayerZero.Api
             }, cancellationToken);
         }
 
+        /// <summary>
+        /// Dispatches an API request with a string payload, handling headers and cancellation.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the expected response.</typeparam>
+        /// <param name="data">API request data.</param>
+        /// <param name="cancellationToken">Token to cancel the request.</param>
+        /// <returns>Deserialized response object.</returns>
         protected virtual async Task<TResponse> Dispatch<TResponse>(ApiRequest<string> data, CancellationToken cancellationToken = default)
             where TResponse : ApiResponse, new()
         {
@@ -87,6 +115,9 @@ namespace PlayerZero.Api
             };
         }
 
+        /// <summary>
+        /// Internal helper class for wrapping request body data for serialization.
+        /// </summary>
         private class ApiRequestBody<T>
         {
             [JsonProperty("data")] public T Data { get; set; }

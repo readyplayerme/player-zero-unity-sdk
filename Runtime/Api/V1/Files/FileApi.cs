@@ -8,9 +8,16 @@ using UnityEngine.Networking;
 
 namespace PlayerZero.Api.V1
 {
+    /// <summary>
+    /// Provides methods for downloading images, asset icons, and files from remote URLs.
+    /// Utilizes UnityWebRequest for asynchronous network operations and supports cancellation.
+    /// </summary>
     public class FileApi
     {
-        
+        /// <summary>
+        /// Downloads an image from the specified URL as a <see cref="Texture2D"/> asynchronously.
+        /// Supports cancellation via <see cref="CancellationToken"/>.
+        /// </summary>
         public virtual async Task<Texture2D> DownloadImageAsync(string url, CancellationToken cancellationToken)
         {
             var request = UnityWebRequestTexture.GetTexture(url);
@@ -30,6 +37,9 @@ namespace PlayerZero.Api.V1
             return DownloadHandlerTexture.GetContent(request);
         }
         
+        /// <summary>
+        /// Downloads an image from the specified URL as a <see cref="Texture2D"/> asynchronously.
+        /// </summary>
         public virtual async Task<Texture2D> DownloadImageAsync(string url)
         {
             var request = UnityWebRequestTexture.GetTexture(url);
@@ -43,7 +53,9 @@ namespace PlayerZero.Api.V1
             return DownloadHandlerTexture.GetContent(request);
         }
         
-        // TODO: Move the string path to a class of constants
+        /// <summary>
+        /// Downloads and caches an asset icon if not already cached, then loads it as a <see cref="Texture2D"/>.
+        /// </summary>
         public virtual async Task<Texture2D> DownloadAssetIconAsync(Asset asset, CancellationToken cancellationToken = default)
         {
             if(!File.Exists(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id))
@@ -67,6 +79,9 @@ namespace PlayerZero.Api.V1
             return await GetTextureFromFile(CachePaths.CACHE_ASSET_ICON_PATH + asset.Id);
         }
         
+        /// <summary>
+        /// Loads a <see cref="Texture2D"/> from a file at the given path asynchronously.
+        /// </summary>
         private async Task<Texture2D> GetTextureFromFile(string path)
         {
 #if UNITY_2020_1_OR_NEWER
@@ -79,11 +94,18 @@ namespace PlayerZero.Api.V1
             return texture;
         }
 
+        /// <summary>
+        /// Downloads multiple images from the provided URLs as <see cref="Texture2D"/> objects asynchronously.
+        /// </summary>
         public virtual async Task<Texture2D[]> DownloadImagesAsync(IEnumerable<string> urls, CancellationToken cancellationToken = default)
         {
             return await Task.WhenAll(urls.Select(DownloadImageAsync));
         }
         
+        /// <summary>
+        /// Downloads a file from the specified URL into memory as a byte array asynchronously.
+        /// Supports cancellation via <see cref="CancellationToken"/>.
+        /// </summary>
         public virtual async Task<byte[]> DownloadFileIntoMemoryAsync(string url, CancellationToken cancellationToken = default)
         {
             var request = new UnityWebRequest();

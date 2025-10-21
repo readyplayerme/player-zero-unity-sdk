@@ -8,8 +8,17 @@ using UnityGLTF.Loader;
 
 namespace PlayerZero.Runtime.Sdk
 {
+    /// <summary>
+    /// Loads GLTF models asynchronously using the UnityGLTF library and returns the root GameObject.
+    /// </summary>
     public class UnityGltfLoader : IGltfLoader
     {
+        /// <summary>
+        /// Asynchronously loads a GLTF model from the specified URL using UnityGLTF.
+        /// Instantiates the main scene and returns the imported GameObject.
+        /// </summary>
+        /// <param name="url">The URL of the GLTF model to load.</param>
+        /// <returns>The root GameObject of the imported model, or null if loading fails or GLTF support is not enabled.</returns>
         public async Task<GameObject> LoadModelAsync(string url)
         {
 #if PZERO_UNITY_GLTF

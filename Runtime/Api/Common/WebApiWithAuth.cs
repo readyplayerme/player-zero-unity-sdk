@@ -5,15 +5,30 @@ using System.Threading.Tasks;
 
 namespace PlayerZero.Api
 {
+    /// <summary>
+    /// Abstract base class for web API requests that require authentication.
+    /// Extends <see cref="WebApi"/> to add authentication handling, including automatic token refresh on unauthorized responses.
+    /// </summary>
     public abstract class WebApiWithAuth : WebApi
     {
+        /// <summary>
+        /// The authentication strategy used to add authentication to requests and handle token refresh.
+        /// </summary>
         private IAuthenticationStrategy _authenticationStrategy;
 
+        /// <summary>
+        /// Sets the authentication strategy for API requests.
+        /// </summary>
+        /// <param name="authenticationStrategy">The authentication strategy implementation.</param>
         public void SetAuthenticationStrategy(IAuthenticationStrategy authenticationStrategy)
         {
             _authenticationStrategy = authenticationStrategy;
         }
 
+        /// <summary>
+        /// Dispatches an API request with a typed request body, ensuring authentication is applied.
+        /// Automatically retries the request if authentication is refreshed after an unauthorized response.
+        /// </summary>
         protected override async Task<TResponse> Dispatch<TResponse, TRequestBody>(
             ApiRequest<TRequestBody> data, CancellationToken cancellationToken = default)
         {
@@ -23,6 +38,10 @@ namespace PlayerZero.Api
                 data, cancellationToken);
         }
 
+        /// <summary>
+        /// Dispatches an API request with a string payload, ensuring authentication is applied.
+        /// Automatically retries the request if authentication is refreshed after an unauthorized response.
+        /// </summary>
         protected override async Task<TResponse> Dispatch<TResponse>(
             ApiRequest<string> data, CancellationToken cancellationToken = default)
         {
@@ -32,6 +51,9 @@ namespace PlayerZero.Api
                 data, cancellationToken);
         }
 
+        /// <summary>
+        /// Handles authentication for API requests, including adding authentication headers and retrying on unauthorized responses.
+        /// </summary>
         private async Task<TResponse> WithAuth<TResponse, TRequestBody>(
             Func<ApiRequest<TRequestBody>, Task<TResponse>> dispatchRequest,
             ApiRequest<TRequestBody> apiRequest,

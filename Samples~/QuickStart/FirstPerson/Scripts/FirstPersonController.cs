@@ -3,53 +3,118 @@ using UnityEngine;
 
 namespace PlayerZero.Samples
 {
+    /// <summary>
+    /// Handles first-person character movement, camera rotation, jumping, gravity, and animation.
+    /// Requires a <see cref="CharacterController"/> component.
+    /// </summary>
 	[RequireComponent(typeof(CharacterController))]
 	public class FirstPersonController : MonoBehaviour
 	{
+        /// <summary>
+        /// Reference to the player input handler.
+        /// </summary>
 		[SerializeField] private SamplePlayerInput input;
 		
+        /// <summary>
+        /// Movement speed in meters per second.
+        /// </summary>
 		[Header("Player")]
 		[SerializeField][Tooltip("Move speed of the character in m/s")]
 		private float moveSpeed = 4.0f;
+        
+        /// <summary>
+        /// Sprint speed in meters per second.
+        /// </summary>
 		[SerializeField][Tooltip("Sprint speed of the character in m/s")]
 		private float sprintSpeed = 6.0f;
+        
+        /// <summary>
+        /// Acceleration and deceleration rate.
+        /// </summary>
 		[SerializeField][Tooltip("Acceleration and deceleration")]
 		private float speedChangeRate = 10.0f;
 
+        /// <summary>
+        /// Jump height in meters.
+        /// </summary>
 		[Space(10)]
 		[SerializeField][Tooltip("The height the player can jump")]
 		private float jumpHeight = 1.2f;
+        
+        /// <summary>
+        /// Gravity value used for the character.
+        /// </summary>
 		[SerializeField][Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		private float gravity = -15.0f;
 
-		[Space(10)]
-		[SerializeField][Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-		private float jumpTimeout = 0.1f;
-		[SerializeField][Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-		private float fallTimeout = 0.15f;
-
-		[Header("Player Grounded")]
-		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-		public bool Grounded = true;
-		[SerializeField][Tooltip("Useful for rough ground")]
-		private float groundedOffset = -0.14f;
-		[SerializeField][Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
-		private float groundedRadius = 0.5f;
-		[SerializeField][Tooltip("What layers the character uses as ground")]
-		private LayerMask groundLayers;
-
-		[Header("Camera")]
-		[SerializeField][Tooltip("The follow target set in the Camera that the camera will follow")]
-		private GameObject cameraTarget;
-		[SerializeField][Tooltip("How far in degrees can you move the camera up")]
-		private float topClamp = 70.0f;
-		[SerializeField][Tooltip("How far in degrees can you move the camera down")]
-		private float bottomClamp = -70.0f;
-		[SerializeField][Tooltip("Mouse sensitivity multiplier")]
-		private float lookSensitivity = 1.0f;
-		[SerializeField][Tooltip("Time it takes to reach the target rotation")]
-		private float lookSmoothTime = 0.01f;
 		
+        /// <summary>
+        /// Time before the player can jump again.
+        /// </summary>
+        [SerializeField][Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
+        private float jumpTimeout = 0.1f;
+
+        /// <summary>
+        /// Time before entering the fall state.
+        /// </summary>
+        [SerializeField][Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
+        private float fallTimeout = 0.15f;
+
+        /// <summary>
+        /// Indicates if the character is grounded.
+        /// </summary>
+        [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
+        public bool Grounded = true;
+
+        /// <summary>
+        /// Offset for the grounded check sphere.
+        /// </summary>
+        [SerializeField][Tooltip("Useful for rough ground")]
+        private float groundedOffset = -0.14f;
+
+        /// <summary>
+        /// Radius for the grounded check sphere.
+        /// </summary>
+        [SerializeField][Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
+        private float groundedRadius = 0.5f;
+
+        /// <summary>
+        /// Layers considered as ground.
+        /// </summary>
+        [SerializeField][Tooltip("What layers the character uses as ground")]
+        private LayerMask groundLayers;
+
+        /// <summary>
+        /// Camera target GameObject for rotation.
+        /// </summary>
+        [SerializeField][Tooltip("The follow target set in the Camera that the camera will follow")]
+        private GameObject cameraTarget;
+
+        /// <summary>
+        /// Maximum upward camera angle in degrees.
+        /// </summary>
+        [SerializeField][Tooltip("How far in degrees can you move the camera up")]
+        private float topClamp = 70.0f;
+
+        /// <summary>
+        /// Maximum downward camera angle in degrees.
+        /// </summary>
+        [SerializeField][Tooltip("How far in degrees can you move the camera down")]
+        private float bottomClamp = -70.0f;
+
+        /// <summary>
+        /// Mouse sensitivity multiplier.
+        /// </summary>
+        [SerializeField][Tooltip("Mouse sensitivity multiplier")]
+        private float lookSensitivity = 1.0f;
+
+        /// <summary>
+        /// Time to reach target camera rotation.
+        /// </summary>
+        [SerializeField][Tooltip("Time it takes to reach the target rotation")]
+        private float lookSmoothTime = 0.01f;
+        
+        // Internal state variables for movement, camera, and animation.
 		private Vector2 currentMouseDelta;
 		private Vector2 currentMouseDeltaVelocity;
 
@@ -91,6 +156,7 @@ namespace PlayerZero.Samples
 
 		private void Start()
 		{
+            /// Initializes components and animation IDs on start.
 			controller = GetComponent<CharacterController>();
 			hasAnimator = TryGetComponent(out animator);
 			AssignAnimationIDs();
@@ -100,6 +166,9 @@ namespace PlayerZero.Samples
 			fallTimeoutDelta = fallTimeout;
 		}
 		
+        /// <summary>
+        /// Assigns animator parameter IDs.
+        /// </summary>
 		private void AssignAnimationIDs()
 		{
 			animIDSpeed = Animator.StringToHash("Speed");
@@ -109,6 +178,9 @@ namespace PlayerZero.Samples
 			animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
 		}
 
+        /// <summary>
+        /// Updates movement, gravity, and animation each frame.
+        /// </summary>
 		private void Update()
 		{
 			hasAnimator = TryGetComponent(out animator);
@@ -118,11 +190,17 @@ namespace PlayerZero.Samples
 			Move();
 		}
 
+        /// <summary>
+        /// Updates camera rotation each frame.
+        /// </summary>
 		private void LateUpdate()
 		{
 			CameraRotation();
 		}
 
+        /// <summary>
+        /// Checks if the character is grounded.
+        /// </summary>
 		private void GroundedCheck()
 		{
 			// set sphere position, with offset
@@ -135,6 +213,9 @@ namespace PlayerZero.Samples
 			}
 		}
 
+        /// <summary>
+        /// Handles camera rotation based on mouse input.
+        /// </summary>
 		private void CameraRotation()
 		{
 			if (input.MouseLook.sqrMagnitude >= threshold)
@@ -157,7 +238,9 @@ namespace PlayerZero.Samples
 			}
 		}
 
-
+        /// <summary>
+        /// Handles player movement and animation.
+        /// </summary>
 		private void Move()
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
@@ -214,6 +297,9 @@ namespace PlayerZero.Samples
 			}
 		}
 
+        /// <summary>
+        /// Handles jumping and gravity.
+        /// </summary>
 		private void JumpAndGravity()
 		{
 			if (Grounded)
@@ -284,6 +370,13 @@ namespace PlayerZero.Samples
 			}
 		}
 
+        /// <summary>
+        /// Clamps an angle between minimum and maximum values.
+        /// </summary>
+        /// <param name="lfAngle">Angle to clamp.</param>
+        /// <param name="lfMin">Minimum value.</param>
+        /// <param name="lfMax">Maximum value.</param>
+        /// <returns>Clamped angle.</returns>
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{
 			if (lfAngle < -360f) lfAngle += 360f;
@@ -291,6 +384,9 @@ namespace PlayerZero.Samples
 			return Mathf.Clamp(lfAngle, lfMin, lfMax);
 		}
 
+        /// <summary>
+        /// Draws gizmos for the grounded check sphere in the editor.
+        /// </summary>
 		private void OnDrawGizmosSelected()
 		{
 			var transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
