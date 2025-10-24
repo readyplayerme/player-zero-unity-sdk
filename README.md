@@ -17,6 +17,10 @@ Want to dive deeper? Check out this [video on analytics integration](https://www
 - Your developer account is set up, and credentials are provided.
 - If using a custom rig, your base FBX should have been shared and registered.
 
+## Dependencies
+- [GltFast](https://docs.unity3d.com/Packages/com.unity.cloud.gltfast@6.4/manual/index.html) 
+- [Newtonsoft JSON](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.0/manual/index.html)
+
 ## 📦 Installation
 
 1. Visit the [Unity SDK GitHub Releases](https://github.com/readyplayerme/player-zero-unity-sdk/releases) page.
